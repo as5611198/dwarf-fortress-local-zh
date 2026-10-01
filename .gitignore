@@ -1,8 +1,6 @@
 # Local build and runtime state
 **/target/
 **/node_modules/
-!distribution/steam/df-local-zh-complete/broker/node_modules/
-!distribution/steam/df-local-zh-complete/broker/node_modules/**
 **/.wrangler/
 **/runtime-*.jsonl
 **/translations.jsonl
@@ -12,3 +10,9 @@
 **/server.stdout
 **/server.stderr
 *.zip
+
+# MSVC build intermediates
+**/*.obj
+**/*.exp
+**/*.lib
+src/broker/test/launcher-host.exe

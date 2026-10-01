@@ -66,12 +66,16 @@ if (standalone) {
       config.requiresUpstreamChineseWorkshopData !== false) errors.push('standalone package declares an upstream dependency');
   if (JSON.stringify(manifest.languages) !== JSON.stringify(['zh-Hant','zh-Hans'])) errors.push('standalone package must include both languages');
   if (manifest.requiredWorkshopItems?.length !== 0) errors.push('standalone package has external Workshop dependencies');
-  for(const name of ['libs/df_local_zh_core.dll','broker/server.mjs','broker/runtime-queue.mjs',
+  for(const name of ['libs/df_local_zh_core.dll',...(manifest.runtime==='rust'?['broker/df-local-zh-broker.exe','broker/df-broker-launch.dll']:['broker/server.mjs','broker/runtime-queue.mjs']),
     'scripts_modinstalled/df-local-zh-core/native.lua','scripts_modinstalled/df-local-zh-core/mod.lua',
     'third-party-licenses/dfi18n-data-CC-BY-NC-4.0.md']) {
     if(!actual.has(name)) errors.push(`missing standalone runtime file: ${name}`);
   }
   if(manifest.nativeCoreSha256 !== actual.get('libs/df_local_zh_core.dll')) errors.push('standalone native core identity mismatch');
+  if(manifest.runtime==='rust') {
+    if(manifest.requiresNode!==false || manifest.brokerSha256!==actual.get('broker/df-local-zh-broker.exe')) errors.push('Rust runtime identity mismatch');
+    for(const name of actual.keys()) if(/node_modules|\.mjs$|Start-Broker\.ps1$/.test(name)) errors.push(`unexpected Node runtime dependency: ${name}`);
+  }
   const approved=manifest.upstreamLicenseMetadata?.some(row=>row.redistributionApproved===true &&
     row.repository===manifest.sourceMetadata?.repository && row.commit===manifest.sourceMetadata?.commit);
   if(!approved) errors.push('standalone source does not match an approved pinned repository');
@@ -84,10 +88,12 @@ if (standalone) {
     if(!config.staticDictionariesByLanguage?.[language]?.length) errors.push(`missing Broker language dictionaries: ${language}`);
   }
 }
-try { await stat(join(packageRoot, 'broker', 'node_modules', 'fast-xml-parser')); }
-catch { errors.push('missing bundled broker dependency: fast-xml-parser'); }
-try { await stat(join(packageRoot, 'broker', 'node_modules', 'opencc-js')); }
-catch { errors.push('missing bundled broker dependency: opencc-js'); }
+if(manifest.runtime!=='rust') {
+  try { await stat(join(packageRoot, 'broker', 'node_modules', 'fast-xml-parser')); }
+  catch { errors.push('missing bundled broker dependency: fast-xml-parser'); }
+  try { await stat(join(packageRoot, 'broker', 'node_modules', 'opencc-js')); }
+  catch { errors.push('missing bundled broker dependency: opencc-js'); }
+}
 if (upstreamDataBundled && manifest.upstreamRedistributionApproved !== true && !allowUnverifiedUpstream) {
   errors.push('upstream redistribution is not approved (use --allow-unverified-upstream for a private test package)');
 }

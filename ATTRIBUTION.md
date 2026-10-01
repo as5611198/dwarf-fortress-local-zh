@@ -18,12 +18,18 @@ Traditional/Simplified conversion, and redistribute the source in free modules
 and cloud translation libraries. Changes must be identified and the
 non-commercial condition remains in force.
 
-Release 0.3.1 bundles the pinned GitHub data and its Noto font (OFL), not a
+Releases 0.3.1 and 0.4.0 bundle the pinned GitHub data and its Noto font (OFL), not a
 copy of a player's installed Workshop package. Changes: OpenCC CN-to-TW
 conversion, local terminology/UI corrections, bilingual static dictionaries,
 and an independent native loader. Original Simplified data is retained where
 no local rule override applies; local overrides are converted to Simplified.
 Conversion alone is not proof of terminology or semantic review.
+
+Release 0.4.0 replaces the player-side Node.js service with a Rust executable.
+HTTPS and model calls use reqwest/rustls; manifest verification uses
+ed25519-dalek; Chinese conversion uses ferrous-opencc. Dependency licenses are
+included in third-party-licenses/rust-broker. Node.js is used only by developer
+build and regression tools and is not included in or required by the player package.
 
 The official R2 library currently published by this project is a separate
 project-authored CC0 corpus. It does not silently include unreviewed upstream

@@ -2,6 +2,8 @@
 
 # Pinned upstream source is checked against byte-level provenance hashes.
 vendor/** -text -whitespace
+src/df-local-zh-native/third-party-licenses/** -text -whitespace
+distribution/** -text -whitespace
 distribution/steam/df-local-zh-complete/third-party-licenses/** -whitespace
 
 # Preserve release artifacts byte-for-byte across Windows and Linux runners.

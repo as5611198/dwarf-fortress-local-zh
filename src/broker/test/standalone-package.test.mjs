@@ -17,7 +17,7 @@ test('one Workshop package supplies both languages and its own core without upst
   assert.equal(manifest.requiresOriginalDataSubscription, false);
   assert.deepEqual(manifest.languages, ['zh-Hant', 'zh-Hans']);
   assert.equal(manifest.upstreamRedistributionApproved, true);
-  for (const name of ['libs/df_local_zh_core.dll', 'broker/server.mjs', 'broker/runtime-queue.mjs',
+  for (const name of ['libs/df_local_zh_core.dll', ...(manifest.runtime==='rust'?['broker/df-local-zh-broker.exe']:['broker/server.mjs','broker/runtime-queue.mjs']),
     'scripts_modinstalled/df-local-zh-core/native.lua', 'scripts_modinstalled/df-local-zh-core/mod.lua']) {
     assert.ok((await stat(join(packageRoot, name))).isFile(), name);
   }
@@ -42,15 +42,15 @@ test('release validator refuses a self-consistent manifest missing the owned cor
     const manifest=JSON.parse(await readFile(join(directory,'PACKAGE-MANIFEST.json'),'utf8'));
     manifest.files=manifest.files.filter(row=>row.path!=='libs/df_local_zh_core.dll');
     await writeFile(join(directory,'PACKAGE-MANIFEST.json'),JSON.stringify(manifest));
-    const result=spawnSync(process.execPath,[join(directory,'broker/validate-workshop-package.mjs'),directory],{encoding:'utf8'});
+    const result=spawnSync(process.execPath,[fileURLToPath(new URL('../validate-workshop-package.mjs',import.meta.url)),directory],{encoding:'utf8'});
     assert.equal(result.status,1);
     assert.match(result.stderr,/missing standalone runtime file: libs\/df_local_zh_core.dll/);
   } finally {await rm(directory,{recursive:true,force:true});}
 });
 
 test('clean state and offline restart translate both languages with zero AI calls and preserve corrections', async () => {
-  const {TranslationBroker} = await import(pathToFileURL(join(packageRoot, 'broker/broker.mjs')));
-  const {applyStaticDictionaryRows, staticDictionaryFiles} = await import(pathToFileURL(join(packageRoot, 'broker/server.mjs')));
+  const {TranslationBroker} = await import('../broker.mjs');
+  const {applyStaticDictionaryRows, staticDictionaryFiles} = await import('../server.mjs');
   const config = JSON.parse(await readFile(join(packageRoot, 'broker/config.json'), 'utf8'));
   const state = await mkdtemp(join(tmpdir(), 'df-single-package-'));
   let aiCalls = 0;

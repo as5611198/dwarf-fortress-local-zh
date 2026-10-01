@@ -1,15 +1,15 @@
 # 繁簡整合包發布
 
-公開包使用 `standalone-bilingual` 模式；不以玩家 active mod 或 Workshop `3635900931` 作為組包來源，也不需要另訂 DFI18n `3613958631`。必要環境只有 Windows DF 53.16 與 DFHack 53.16-r1.1；選用 Broker 功能另需 Node.js。
+公開包使用 `standalone-bilingual` 模式；不以玩家 active mod 或 Workshop `3635900931` 作為組包來源，也不需要另訂 DFI18n `3613958631`。玩家必要環境只有 Windows DF 53.16 與 DFHack 53.16-r1.1。Rust 背景服務隨包附帶，玩家無需 Node.js。
 
 ## 重建
 
-在 `src/broker` 執行 `npm ci --ignore-scripts`，在 `src/df-local-zh-native` 執行 `cargo build --release -p df_local_zh_core`。Broker 啟動 DLL 由 `src/broker/launcher.cpp` 建置，或沿用經驗證的 `df-broker-launch.dll`。
+以下是開發者流程：在 `src/broker` 執行 `npm ci --ignore-scripts`。在 `src/df-local-zh-native` 設定 `$env:RUSTFLAGS='-C target-feature=+crt-static'`，執行 `cargo build --target x86_64-pc-windows-msvc --release -p df-local-zh-broker -p df_local_zh_core`，使所有相依套件採一致的靜態 CRT。Broker 啟動 DLL 由 `src/broker/launcher.cpp` 使用 MSVC `/std:c++17 /LD /MT /EHsc` 建置。確認 EXE/DLL 的系統依賴，再組包；不可沿用舊 Node 啟動器。
 
 從倉庫根目錄執行：
 
 ```powershell
-node src/broker/prepare-standalone-package.mjs --version=0.3.1
+node src/broker/prepare-standalone-package.mjs --version=0.4.0 --native-dll=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df_local_zh_core.dll --broker-exe=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df-local-zh-broker.exe
 node src/broker/validate-workshop-package.mjs distribution/steam/df-local-zh-complete
 cd src/broker
 npm test

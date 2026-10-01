@@ -17,11 +17,12 @@ const args = Object.fromEntries(process.argv.slice(2).map(value => {
   if (split < 3 || !value.startsWith('--')) throw new Error(`Expected --name=value: ${value}`);
   return [value.slice(2, split), value.slice(split + 1)];
 }));
-const version = args.version ?? '0.3.1';
+const version = args.version ?? '0.4.0';
 if (!/^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(version)) throw new Error('Invalid version');
 const output = resolve(args.output ?? join(root, 'distribution/steam/df-local-zh-complete'));
 const core = resolve(args['native-dll'] ?? join(root, 'src/df-local-zh-native/target/release/df_local_zh_core.dll'));
 const launcher = resolve(args['launcher-dll'] ?? join(here, 'df-broker-launch.dll'));
+const rustBroker = resolve(args['broker-exe'] ?? join(root,'src/df-local-zh-native/target/release/df-local-zh-broker.exe'));
 // No active mod, cache or player state is a package input.
 const vendor = join(root, 'vendor/dfi18n-data-zh-hans');
 const metadata = JSON.parse(await readFile(join(vendor, 'SOURCE.json'), 'utf8'));
@@ -43,7 +44,7 @@ for(const entry of metadata.files) {
   if(sha256(await readFile(join(vendor,entry.path))) !== entry.sha256) throw new Error(`Changed pinned source: ${entry.path}`);
 }
 if((await files(vendor)).length !== metadata.files.length+1) throw new Error('Untracked files in pinned source');
-for(const path of [core, launcher]) if(!(await stat(path)).isFile()) throw new Error(`Missing compiled DLL: ${path}`);
+for(const path of [core, launcher,rustBroker]) if(!(await stat(path)).isFile()) throw new Error(`Missing compiled runtime: ${path}`);
 // Restrict deletion to a dedicated package output, never a source or state root.
 if(!output.endsWith('df-local-zh-complete') || output === root || output.startsWith(join(root,'src')) || output.startsWith(join(root,'vendor'))) {
   throw new Error('Output must be a dedicated df-local-zh-complete package directory');
@@ -55,18 +56,17 @@ await mkdir(join(output,'libs'),{recursive:true});
 await mkdir(join(output,'self-tests'),{recursive:true});
 await cp(core,join(output,'libs/df_local_zh_core.dll'));
 await cp(launcher,join(output,'broker/df-broker-launch.dll'));
+await cp(rustBroker,join(output,'broker/df-local-zh-broker.exe'));
 await cp(join(root,'src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled'),join(output,'scripts_modinstalled'),{recursive:true});
 await rm(join(output,'scripts_modinstalled/df-local-zh-test.lua'),{force:true});
 for(const path of await files(here)) {
   const name=relative(here,path).replaceAll('\\','/');
   // Explicit source-only allowlist: runtime files are never copied.
   const topLevel=!name.includes('/');
-  const modules=topLevel && (name.endsWith('.mjs') || ['package.json','package-lock.json','Start-Broker.ps1','LICENSE-STATUS.json','README.md',
-    'glossary.json','glossary-zh-Hans.json','name-dictionary.json','reviewed.csv','corrections.csv','unit-prewarm.json'].includes(name));
+  const modules=topLevel && ['LICENSE-STATUS.json','glossary.json','glossary-zh-Hans.json','name-dictionary.json','reviewed.csv','corrections.csv','unit-prewarm.json'].includes(name);
   const staticData=/^data\/(?:announcement-rules\/.*\.toml|race-map\.json|fortress-hover\.json|fortress-ui\.csv|community-reviewed\.csv|community-workbook-zh-Ha(?:nt|ns)\.csv|prewarmed-(?:raw-states|reaction-names|case-variants|unresolved)\.csv|reviewed-raw-names\.csv)$/.test(name);
   if(modules||staticData) {await mkdir(dirname(join(output,'broker',name)),{recursive:true});await cp(path,join(output,'broker',name));}
 }
-await cp(join(here,'node_modules'),join(output,'broker/node_modules'),{recursive:true});
 for(const name of ['ATTRIBUTION.md','DFI18N-DATA-ZH-HANS-LICENSE.md','LICENSE.md','NOTICE.md']) await cp(join(root,name),join(output,name));
 await cp(join(root,'src/df-local-zh-native/LICENSE'),join(output,'NATIVE-LICENSE.txt'));
 await cp(join(root,'src/df-local-zh-native/third-party-licenses'),join(output,'third-party-licenses'),{recursive:true});
@@ -149,7 +149,7 @@ for(const language of ['zh-Hant','zh-Hans']) {
   await writeFile(join(output,'broker/config.json'),JSON.stringify(current,null,2)+'\n');
 }
 const creatureCounts=await buildCreatureDictionaries(output);
-await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與本機 Broker。需要 DFHack；不需要另訂中文資料或 DFI18n。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料與原生核心，於設定切換。靜態資料離線可用；AI 補譯選用且需要 Node.js。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：修正公開包缺漏，改為一包繁簡整合，不再依賴外部中文 Workshop 包。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
+await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與 Rust 本機服務。需要 DFHack；不需要 Node.js 或另外訂閱中文資料包。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料、原生核心與 Rust 背景服務，於設定切換。玩家無須安裝 Node.js；網路請求、AI 補譯及官方譯庫同步由隨包元件處理。靜態與已安裝譯庫可離線使用。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：改用 Rust 背景服務，移除玩家端 Node.js 依賴；保留繁簡、API 設定與本機快取。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
 await cp(join(root,'docs/PLAYER-INSTALL.md'),join(output,'README.md'));
 const counts={};
 for(const language of ['zh-Hant','zh-Hans']) {
@@ -170,6 +170,7 @@ for(const path of await files(output)) {
   manifestFiles.push({path:name,sha256:sha256(await readFile(path))});
 }
 const manifest={package:'df-local-zh-complete',version,generatedAt:new Date().toISOString(),releaseMode:'standalone-bilingual',
+  runtime:'rust',requiresNode:false,brokerSha256:sha256(await readFile(rustBroker)),
   languages:['zh-Hant','zh-Hans'],requiresOriginalEngine:false,requiresOriginalDataSubscription:false,
   requiredWorkshopItems:[],requiresDFHack:true,privateRuntimeExcluded:true,upstreamDataBundled:true,upstreamRedistributionApproved:true,
   upstreamLicenseMetadata:[approved],sourceMetadata:metadata,changes:['CN->TW conversion with OpenCC and local terminology corrections',

@@ -58,10 +58,33 @@ pub fn setup() {
     let root=std::path::PathBuf::from("dfhack-config/mods/df-local-zh-complete");
     let state=std::fs::read(root.join("official/state.json")).ok()
       .filter(|bytes|bytes.len()<=128*1024).and_then(|bytes|serde_json::from_slice::<serde_json::Value>(&bytes).ok()).unwrap_or_default();
+    let mut withdrawn=std::collections::HashSet::<String>::new();
+    if let Some(file)=state["highestManifestFile"].as_str() {
+      if file.len()<128 && !file.contains(['/', '\\', ':']) && file.ends_with(".manifest.json") {
+        let path=root.join("official").join(file);
+        if std::fs::metadata(&path).is_ok_and(|i|i.len()<=128*1024) {
+          if let Ok(bytes)=std::fs::read(path) {
+            if let Ok(manifest)=df_local_zh_broker::official::verify_manifest(&bytes,&df_local_zh_broker::official::trust()) {
+              for v in manifest["withdrawn"].as_array().unwrap() {withdrawn.insert(v.as_str().unwrap().into());}
+            }
+          }
+        }
+      }
+    }
+    if let Some(rows)=state["languages"].as_object() {
+      for row in rows.values() {for key in ["pending","active","previous"] {
+        if let Ok(manifest)=signed_manifest(&root.join("official"),&row[key]) {
+          for version in manifest["withdrawn"].as_array().unwrap() {withdrawn.insert(version.as_str().unwrap().into());}
+        }
+      }}
+    }
     for language in ["zh-Hant","zh-Hans"] {
       let mut snapshot=Snapshot::default();
-      for record in ["active","previous"] {
+      // Every game process pins once. Pending is safe at this startup boundary,
+      // irrespective of whether the background Broker has committed its pointer yet.
+      for record in ["pending","active","previous"] {
         let row=&state["languages"][language][record];
+        if row["version"].as_str().is_some_and(|v|withdrawn.contains(v)) {continue}
         if let Ok(value)=load_record(&root.join("official"),row,language) {snapshot=value;break}
       }
       let pins=root.join(format!("fixed-{language}.json"));
@@ -88,7 +111,24 @@ fn load_record(root:&std::path::Path,row:&serde_json::Value,language:&str)->anyh
   let path=root.join(file);anyhow::ensure!(std::fs::metadata(&path)?.len()<=32*1024*1024,"package too large");
   let bytes=std::fs::read(path)?;
   let digest=format!("{:064x}",base16ct::HexDisplay(&sha2::Sha256::digest(&bytes)));anyhow::ensure!(digest==sha,"official hash invalid");
+  let manifest=signed_manifest(root,row)?;
+  let descriptor=manifest["packages"].as_array().unwrap().iter().find(|p|p["language"]==language)
+    .ok_or_else(||anyhow::anyhow!("official language missing"))?;
+  anyhow::ensure!(descriptor["sha256"]==sha && row["version"]==manifest["version"] &&
+    !manifest["withdrawn"].as_array().unwrap().contains(&row["version"]),"official record incompatible");
+  df_local_zh_broker::official::validate_package(&bytes,descriptor,&manifest)?;
   prepare(&bytes,language)
+}
+fn signed_manifest(root:&std::path::Path,row:&serde_json::Value)->anyhow::Result<serde_json::Value> {
+  let version=row["version"].as_str().ok_or_else(||anyhow::anyhow!("missing version"))?;
+  let sequence=row["sequence"].as_u64().ok_or_else(||anyhow::anyhow!("missing sequence"))?;
+  let file=row["manifestFile"].as_str().ok_or_else(||anyhow::anyhow!("missing manifest"))?;
+  anyhow::ensure!(version.len()<=64 && !version.contains(['/', '\\', ':']) &&
+    file==format!("{version}-{sequence}.manifest.json"),"invalid signed manifest path");
+  let path=root.join(file);anyhow::ensure!(std::fs::metadata(&path)?.len()<=128*1024,"manifest too large");
+  let manifest=df_local_zh_broker::official::verify_manifest(&std::fs::read(path)?,&df_local_zh_broker::official::trust())?;
+  anyhow::ensure!(manifest["version"]==version && manifest["sequence"]==sequence,"manifest record mismatch");
+  Ok(manifest)
 }
 fn find(source:&str,rows:&HashMap<String,TranslationResponse>)->Option<TranslationResponse> {
   if let Some(value)=rows.get(source) {return Some(value.clone())}

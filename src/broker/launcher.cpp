@@ -29,20 +29,22 @@ extern "C" __declspec(dllexport) int start_broker(void*) {
         broker_job = job;
     }
     wchar_t module_path[32768]{};
-    wchar_t system_path[MAX_PATH]{};
+    wchar_t game_path[32768]{};
     if (!GetModuleFileNameW(module_handle, module_path, 32768) ||
-        !GetSystemDirectoryW(system_path, MAX_PATH)) return 0;
+        !GetCurrentDirectoryW(32768, game_path)) return 0;
     const std::wstring path(module_path);
-    const std::wstring script = path.substr(0, path.find_last_of(L"\\/")) + L"\\Start-Broker.ps1";
-    const std::wstring executable = std::wstring(system_path) + L"\\WindowsPowerShell\\v1.0\\powershell.exe";
-    std::wstring command = L"\"" + executable + L"\" -NoProfile -NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File \"" + script + L"\"";
+    const std::wstring directory = path.substr(0, path.find_last_of(L"\\/"));
+    const std::wstring executable = directory + L"\\df-local-zh-broker.exe";
+    const std::wstring config = directory + L"\\config.json";
+    const std::wstring state = std::wstring(game_path) + L"\\dfhack-config\\mods\\df-local-zh-complete";
+    std::wstring command = L"\"" + executable + L"\" \"" + config + L"\" \"" + state + L"\" --game-root \"" + game_path + L"\"";
     STARTUPINFOW startup{};
     startup.cb = sizeof(startup);
     startup.dwFlags = STARTF_USESHOWWINDOW;
     startup.wShowWindow = SW_HIDE;
     PROCESS_INFORMATION process{};
     if (CreateProcessW(executable.c_str(), command.data(), nullptr, nullptr, FALSE,
-        CREATE_NO_WINDOW | CREATE_SUSPENDED, nullptr, nullptr, &startup, &process)) {
+        CREATE_NO_WINDOW | CREATE_SUSPENDED, nullptr, game_path, &startup, &process)) {
         if (!AssignProcessToJobObject(broker_job, process.hProcess) ||
             ResumeThread(process.hThread) == static_cast<DWORD>(-1)) {
             TerminateProcess(process.hProcess, 1);

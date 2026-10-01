@@ -19,7 +19,7 @@ jobs:
           cache-dependency-path: src/broker/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm test
-      - run: node ../../distribution/steam/df-local-zh-complete/broker/validate-workshop-package.mjs ../../distribution/steam/df-local-zh-complete
+      - run: node validate-workshop-package.mjs ../../distribution/steam/df-local-zh-complete
 
   native:
     runs-on: windows-latest

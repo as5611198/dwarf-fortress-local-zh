@@ -8,6 +8,7 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
+df-local-zh-broker = { path = "../broker-rust" }
 cp437_string = { workspace = true }
 cpp = { workspace = true }
 executable = { workspace = true }

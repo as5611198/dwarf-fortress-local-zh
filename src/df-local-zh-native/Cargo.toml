@@ -1,5 +1,6 @@
 [workspace]
 members = [
+  "broker-rust",
   "dfi18n",
   "crates/cp437_string",
   "crates/cpp",

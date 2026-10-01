@@ -1,8 +1,11 @@
 {
   "package": "df-local-zh-complete",
-  "version": "0.3.1",
-  "generatedAt": "2026-10-01T13:23:16.656Z",
+  "version": "0.4.0",
+  "generatedAt": "2026-10-01T15:01:35.366Z",
   "releaseMode": "standalone-bilingual",
+  "runtime": "rust",
+  "requiresNode": false,
+  "brokerSha256": "e8684cd9166084381ed6833e1720c9cc07d57426fe32219da0ca1c6ce23260db",
   "languages": [
     "zh-Hant",
     "zh-Hans"
@@ -666,11 +669,11 @@
       "creatureRows": 4667
     }
   },
-  "nativeCoreSha256": "a4c0782b5a545b0c22d1117c3aef16090fbe0c9aa63ae47837b8668e7a828c25",
+  "nativeCoreSha256": "0c7f76ac1a1e46745fdca134151093f18cd2bb8afce9ecfec3e7ac8f69132728",
   "files": [
     {
       "path": "ATTRIBUTION.md",
-      "sha256": "a323a972f40d4036739a0305028b3c12d71a669101829f8ba90ca471b37ff886"
+      "sha256": "72d51bbd6224a8f84cecc9c8af38f9ded14fde3ad6e51bc2ffdb02d71c30c343"
     },
     {
       "path": "DFI18N-DATA-ZH-HANS-LICENSE.md",
@@ -690,83 +693,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "de8fd03ec1e2b77fb9a08e50e42b57162394401f6a46a35251b84ffbcfad217c"
+      "sha256": "558b9f6a6cc4b7ab76d0391817077878c3d00f7603e6f77c5a8c6ac5bdafd23d"
     },
     {
       "path": "WORKSHOP-PUBLISHING.md",
-      "sha256": "57960a5ed95ec9e95631489a88f11824fa6c1d2f0c22460a4067319d37d4c1ff"
+      "sha256": "865a59e68066c3f276fe04971f63b33d2f7bc5b7e6d8d876e1a23cc73ecd1658"
     },
     {
       "path": "broker/LICENSE-STATUS.json",
       "sha256": "2744d695a1033df29aa5aaa302f32bc348e678416eb63493cf4db09509a0bd40"
-    },
-    {
-      "path": "broker/README.md",
-      "sha256": "7f0be4100cd04e9f2d4c0975a302f237228fcbc48731541b6d225d25ef32885c"
-    },
-    {
-      "path": "broker/Start-Broker.ps1",
-      "sha256": "76daa3ab6e24e6b003941733c6867a3e3f509bf245d71eb8cf44faf5fb93dc19"
-    },
-    {
-      "path": "broker/apply-fortress-ui.mjs",
-      "sha256": "240c1a1cec8ddd632b907c1c0510677748c56769344388a3a989eda89f20be16"
-    },
-    {
-      "path": "broker/assess-community-xlsx.mjs",
-      "sha256": "65a1ac5c61cbc661a5aeeb5498b7a3ea10e7439c23e2e1558fe8da35e144b505"
-    },
-    {
-      "path": "broker/audit-fortress-gaps.mjs",
-      "sha256": "567e666120d2481c6fe6fc14c7c8bd40a1445070f63a020eb1320357fe902000"
-    },
-    {
-      "path": "broker/audit-raw-coverage.mjs",
-      "sha256": "f8dbb6cdb8848c3fa06ac137c4d30936d4f28220e07fcfe06d15740fd7e91723"
-    },
-    {
-      "path": "broker/audit-unit-display.mjs",
-      "sha256": "7ce8a65c76d0a0fe3d6bdf15a109b037073721bf3bf195dccb75c48f4777e5af"
-    },
-    {
-      "path": "broker/broker.mjs",
-      "sha256": "d8c33169144e150428042b51522788d33ac22be286832bd75e64df9940a5ebb9"
-    },
-    {
-      "path": "broker/build-arena-corrections.mjs",
-      "sha256": "abb2d2e8b8e08c03ce523ba21a58c9cf3b8ca9cf9bd9dd3e2472da5cd054d82b"
-    },
-    {
-      "path": "broker/build-creature-dictionaries.mjs",
-      "sha256": "411432032d170ab50e87583a59f5a99e99073cb3f077ab092913ee26ef9de09a"
-    },
-    {
-      "path": "broker/build-language-data.mjs",
-      "sha256": "96cc327906c5c349b5954abb81c7d676926cf8ddaa175f67b20c2c32f1e718d3"
-    },
-    {
-      "path": "broker/build-official-library.mjs",
-      "sha256": "30715bde7a51ea1c77ef79d9772152ce48dca94e99d25b2eb86324a86ff96052"
-    },
-    {
-      "path": "broker/build-race-map.mjs",
-      "sha256": "c22012778f1edccbe4cf106f97920a682276dca89a0c1cd91f4d26d5e399c4bd"
-    },
-    {
-      "path": "broker/build-workbook-context.mjs",
-      "sha256": "cf619f82e8065b5e18a0d94499a508a62cee0687b17c97af8765e9326ec3d761"
-    },
-    {
-      "path": "broker/clipboard.mjs",
-      "sha256": "a95f6ec82b9130b8d648cc0d81144d025625805be692fff4d1c76cd94080559a"
-    },
-    {
-      "path": "broker/compile-data.mjs",
-      "sha256": "807c7b0f0c0be3e4b3300533b94c03ca5f0067e6987a8b29c677b229c2b5c3ea"
-    },
-    {
-      "path": "broker/compose-legends.mjs",
-      "sha256": "fd5a3f4b464611e458be3f9eec4e137800df536f47bb4cc2a0c9c1a0078d13f4"
     },
     {
       "path": "broker/config.json",
@@ -775,10 +710,6 @@
     {
       "path": "broker/corrections.csv",
       "sha256": "057535d6b81e7454275ede84baeb73b02ba6428b4e2cb3a91d68093ded0179a0"
-    },
-    {
-      "path": "broker/data.mjs",
-      "sha256": "19a18ae0627d28415a9a378ba2ad017c2225a623177924c18f9977fb93aa30cf"
     },
     {
       "path": "broker/data/announcement-rules-zh-Hans/announcement_date.toml",
@@ -885,32 +816,12 @@
       "sha256": "2a3b5f1c5623d96a32a7a6e4fd9783571695ba04ca4c58764c0e6d5990bdde1d"
     },
     {
-      "path": "broker/description-terms.mjs",
-      "sha256": "876c164c02d798e1c628c54e1afa6335e45c513a35d8f7069e0cf6b2cffc8627"
-    },
-    {
       "path": "broker/df-broker-launch.dll",
-      "sha256": "7f9dccc173743950c08fb4107faf37b84d88dd3a8fc8441dca5f8454ff291cfa"
+      "sha256": "65252375261e96f0e4a7169cab838aa7a18e26cd0953b7b5758020fd1ca0fd8e"
     },
     {
-      "path": "broker/dynamic.mjs",
-      "sha256": "5150e9330c7f37f18076018567340b9b6309c411666305fd50d51e3804e1e676"
-    },
-    {
-      "path": "broker/equipment-names.mjs",
-      "sha256": "9fd0206ea7369c2824205ae6f8fdf2ef3b9b012ba9f48887d4474a950657bded"
-    },
-    {
-      "path": "broker/generate-fortress-hover.mjs",
-      "sha256": "363020440b108f7b0ea1c4a111f7d80159249421501979050502b91f9d790683"
-    },
-    {
-      "path": "broker/generate-raw-states.mjs",
-      "sha256": "e043d10a8aed1939f26ad5bcc4e38cd75ea4825ae5d9e0772b45385128043ca8"
-    },
-    {
-      "path": "broker/generate-reaction-names.mjs",
-      "sha256": "1e6a02ce28344a9ed252acee244d826747c5a277423f1d0855cfce6bb9688bfd"
+      "path": "broker/df-local-zh-broker.exe",
+      "sha256": "e8684cd9166084381ed6833e1720c9cc07d57426fe32219da0ca1c6ce23260db"
     },
     {
       "path": "broker/glossary-zh-Hans.json",
@@ -921,1128 +832,8 @@
       "sha256": "cc55a6295c11556825f66ed1148b956513c8632faf0951348f7ca8cc78ccdbdb"
     },
     {
-      "path": "broker/import-workbook-supplement.mjs",
-      "sha256": "cbbc3151e058b5128b779a3ba5da917ab728fd87ccb6476dee9306c7c23f230f"
-    },
-    {
-      "path": "broker/language-data.mjs",
-      "sha256": "9f6952dad42779d37777373b2ca82020b9f1b2c5ae89628682bd7894eeb7d460"
-    },
-    {
-      "path": "broker/legends-captions.mjs",
-      "sha256": "075c1230d07611a8cef761af2e5142c12d394707a922c7ff447ea9944021a0bc"
-    },
-    {
-      "path": "broker/literal-lookup.mjs",
-      "sha256": "243ce0c5ea35f8eb940cb2689cfe886c350392316e51c0f472e2a46fbe2affd5"
-    },
-    {
-      "path": "broker/live-check.mjs",
-      "sha256": "222ea503ff7c9b78a74c46c5b78e17b1badea7f6e2047116b070211735331bbc"
-    },
-    {
-      "path": "broker/migrate-legends-registry.mjs",
-      "sha256": "08fc108dc94894df2e3d33c8cf8244fd796df4f105a7f2a6d279b480f2c34a86"
-    },
-    {
-      "path": "broker/migrate-native-figure-registry.mjs",
-      "sha256": "2ffaacda9fb081c547f43dc34beb60c4a1b389653759c3dcd8a9ecec0654d965"
-    },
-    {
       "path": "broker/name-dictionary.json",
       "sha256": "7437f5a16de7fed0234cc51c5ea80d34d451c93a39a2dbf08224adede35efaaa"
-    },
-    {
-      "path": "broker/names.mjs",
-      "sha256": "b7ee065c15f7c74565f69adbd5c286edee7404a3d7b90ad47b409f93df0e25ae"
-    },
-    {
-      "path": "broker/native-prewarm.mjs",
-      "sha256": "a8bd9552678d18b4aab8bbd142b37dd94e2ddc54a4a239bc618343202f40d976"
-    },
-    {
-      "path": "broker/node_modules/.bin/fxparser",
-      "sha256": "0d640244a732a85b09fcce19492e4e2273eba3b1d69f2ae9f0a338c5c9bddc0c"
-    },
-    {
-      "path": "broker/node_modules/.bin/fxparser.cmd",
-      "sha256": "6e92bbb34b3d88ec3654a866a86d57cd0a7607f57d8e5af8d4d8e591bfc0aa17"
-    },
-    {
-      "path": "broker/node_modules/.bin/fxparser.ps1",
-      "sha256": "602ec72679945a4587e7d3e3420ccaf71d61162c4ed19aec1040afea0b3ddb0d"
-    },
-    {
-      "path": "broker/node_modules/.package-lock.json",
-      "sha256": "60660bce9d5c2b7f91df420941022ead14aeb6b82c6bf27b73770d22badbffa1"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/CHANGELOG.md",
-      "sha256": "c4fd08ccbca86279f5ce6ee6b065dd5e347959ff2fdff1c3f28021ae1a8e43ca"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/LICENSE",
-      "sha256": "d4dc58571be1260e45f2fb8ab174e0a838c9ca361720e1b0e2ca020c037988b2"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/README.md",
-      "sha256": "6a6174181ba25dffc9c4723215c0b5b94f30fe7c448c0c34028c70016524bbe9"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/index.d.ts",
-      "sha256": "4bf88e5e15846d49caf3477317740df62835f176863267fcfa2523ed02075482"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/create-date.js",
-      "sha256": "3941f4748f25f11c5ccf55c85ddc41e06e85379482e5885a8aff8b964d6a2ad8"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/create-datetime-float.js",
-      "sha256": "aa5ac5619fafcb487edf249d3a8bbd9d672626299966eba6945afbc96470c6c1"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/create-datetime.js",
-      "sha256": "b83215e9dd32e34332c7ddd9b868e03e321dcb28cde830d1b7951df68325bbbf"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/create-time.js",
-      "sha256": "2d40222ea3f60c1c95cf3f60e3b1554f39cc3a0d5ef5ff8bfb031635fa987707"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/format-num.js",
-      "sha256": "b4f02ed3ea839792827aacd1bd1492f0150f53024a006832579cd6ec43e92801"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/parser-debug.js",
-      "sha256": "3e202f84762b40144f338b1040a597aa2a0fa1537abbb22e13cd5480313df2ce"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/parser.js",
-      "sha256": "175e4cc273aea2e0505e0f0000bcba471f8da041d219a9ab73978567e8f66029"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/lib/toml-parser.js",
-      "sha256": "805ffd1b4e183566a15546024ca98b3f94ee39778ff43782d432c7c981c32191"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/package.json",
-      "sha256": "5f12af78655b4014079ecdd8c946ccea0356eb0282b36a2108bfb99abddf65e9"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/parse-async.js",
-      "sha256": "277f98c122d6f3c6755d2a1bf81bece2472696e0e899f02a193d8ad57255493f"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/parse-pretty-error.js",
-      "sha256": "4e9783b41b343c62be4d3bf3b21fb7972bfc27523e913a782c4624c008a80eb1"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/parse-stream.js",
-      "sha256": "b1ce5edabc3a7a4db886c9a5a0903cd2e20ffbcd338405b7b08da853b04c5913"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/parse-string.js",
-      "sha256": "cd9e497870ffda7ad1e266b86580c270388a45c2d04e75acd985a42a0597fdb0"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/parse.js",
-      "sha256": "a103f6919f045c44cddda84af4cd44b94fe4a253f8d07a81d779db06ab081976"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/stringify.js",
-      "sha256": "dc41912d4bcbb2352a338314caa4b16463061d1615dc0d9bcec6953638232ae1"
-    },
-    {
-      "path": "broker/node_modules/@iarna/toml/toml.js",
-      "sha256": "b6bdf7ac57047ec0a2fab0e34c42d500fb95a3234fa649c3ff5725aef9d09eb0"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/README.md",
-      "sha256": "7e3484a07c208b5c5813290a993244c6841efc3d4241c29a07ef948e8129a758"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/package.json",
-      "sha256": "548526ce0e1cad9ffe904fba19067013c9fea336eafd3cd52a337ec44406c9ed"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/src/EntityDecoder.js",
-      "sha256": "a56cf2bf8174e0adf94970d70e003afcfc3923a53d0cf973f92d374cfe684544"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/src/EntityEncoder.js",
-      "sha256": "812a2077e073564d6470b8fda8ac0d20ecaaf75ddb1594d55d28acc2da8a1a71"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/src/all-entities.js",
-      "sha256": "2f1340ab32dce314f41638b7ee6d0368b974e3302983154b815a6d49a6dfb63b"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/src/entities.js",
-      "sha256": "96ec5d127a4e8cd77bdc678422f0d57c8ff9e37bcec999983da71a7b72ce9a0e"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/src/entityTries.js",
-      "sha256": "fa2838d141fba0e8ee5bd2197956c3f6b1d23668be2c8841a585614ea7051f99"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/src/index.d.ts",
-      "sha256": "aea4188bf00c7d6474a34adb715810cfa9e45acafb1b4931e63db0b4253c07da"
-    },
-    {
-      "path": "broker/node_modules/@nodable/entities/src/index.js",
-      "sha256": "79a65ddeda08664d00b7b82f5a903ea437de1dff54a02ed469e9cb1067cb568b"
-    },
-    {
-      "path": "broker/node_modules/anynum/LICENSE",
-      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
-    },
-    {
-      "path": "broker/node_modules/anynum/README.md",
-      "sha256": "1e88190ad99aa33ac5114a49f5661319938346d35fbc1babcaca0b4b47fbbb09"
-    },
-    {
-      "path": "broker/node_modules/anynum/anynum.js",
-      "sha256": "f8c6a9b031489dfc1573e7a669e4860223ddeedc0007db5dbf5878a14249776d"
-    },
-    {
-      "path": "broker/node_modules/anynum/digitTable.js",
-      "sha256": "c649d39c53ebe6817c71407de8105b6d8cbc2326867f90d59f49ab02d9271b44"
-    },
-    {
-      "path": "broker/node_modules/anynum/package.json",
-      "sha256": "41c5d60f0aa8b5f4133aeff56573a8c4130d4d1c19dc240398ff806b40a4470e"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/LICENSE",
-      "sha256": "032efe3de772e9f85c722ee9ff7ccd5cab01e024296b2b8d25893bf779be9360"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/README.md",
-      "sha256": "5298f505709284925523b47770c39ab533ca5a95ee321e858c039251819e6171"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/cjs/index.cjs",
-      "sha256": "d8e42d4e921976d0c7503cb51b062bbde7e1168da2fc76534d668d4b09b2fab3"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/cjs/index.d.cts",
-      "sha256": "863dc84658dce935b527e72cba43cd8d764b649e670c91572fc4e04b7ffc13e9"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/cjs/sync.cjs",
-      "sha256": "6f952c942ee511edda936b1245600c32d558fe2da6cdc16bc1f68fc4fdff94b6"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/cjs/sync.d.cts",
-      "sha256": "a20c04b53ef58f5d9e9b6d7d352fbed92731f944d3dd5e81f838a1268034b2f2"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/esm/index.d.ts",
-      "sha256": "863dc84658dce935b527e72cba43cd8d764b649e670c91572fc4e04b7ffc13e9"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/esm/index.js",
-      "sha256": "a51fc6ab05d1d276dd2691b8b1fa5c2e6749fd56f57fb5400194b899b66888a9"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/esm/stream.d.ts",
-      "sha256": "93e342e123f420c49b97029c8692c8f3ea83d6e47ebbbb43ad3914561df30ee7"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/esm/sync.d.ts",
-      "sha256": "2f8d8af2a2ed7ca2ee1ed91b1ff5676d2dcf5e133f487378c63c1c98e98e2804"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/esm/sync.js",
-      "sha256": "7a7514688670dcc09ba5f764e84b253e5f49fb93548d7a1413abaf5e82e6c16b"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/iife/index.js",
-      "sha256": "fc28e4c0034efc3d8e66d36219414593c4796e5253996893cb36668da04c7821"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/iife/sync.js",
-      "sha256": "c107a60e9f9be9a4f67447c59e45a089104ec4d8bd6a3b4349b1ab88f9d0685b"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/umd/index.js",
-      "sha256": "4c50f3662482507b7de5c45d5d1cc1e845646569c110c9d64e1964c390b74508"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/dist/umd/sync.js",
-      "sha256": "ad97010e1582297cdf882d55d557c216ac12f11b1f086e8413b114e6afd37283"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/api/CsvError.js",
-      "sha256": "75c91323d96fbe1357e944850eea090f8a1a2fee5cc1336a311de56d1cf13fcb"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/api/index.js",
-      "sha256": "8025deff020982a76d4df30f4ff5c74a2f9d702ba35d2e863eaba08f8e5f759c"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/api/init_state.js",
-      "sha256": "2ccd534510ccbfaca6538458faa310dbda0ebaa30aed0ccc29ceb918d6e0f1fc"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/api/normalize_columns_array.js",
-      "sha256": "8ee28e9345c33fd1f435f1219c5579b30cc18d26b4a5c845a846befb48dedb22"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/api/normalize_options.js",
-      "sha256": "7748565f4803a674002828624b83466d62284dae6d5cb1100e1d45e6921eee68"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/index.d.ts",
-      "sha256": "863dc84658dce935b527e72cba43cd8d764b649e670c91572fc4e04b7ffc13e9"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/index.js",
-      "sha256": "0f93cf354365a2667c38405066b7ed6ecfc40a1d17ed006d837ecd224b12fa80"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/stream.d.ts",
-      "sha256": "93e342e123f420c49b97029c8692c8f3ea83d6e47ebbbb43ad3914561df30ee7"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/stream.js",
-      "sha256": "64c1e54c4e64b628ba40a89ad6dfbc2c90da5d23d18fc4c7cb4a0958337e5e1a"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/sync.d.ts",
-      "sha256": "2f8d8af2a2ed7ca2ee1ed91b1ff5676d2dcf5e133f487378c63c1c98e98e2804"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/sync.js",
-      "sha256": "4eadd8816917332fc45bdea2b859d7180de32b24cd0e30da819632508fbbe984"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/utils/ResizeableBuffer.js",
-      "sha256": "27dfb01fb2e9507cec90b8614b72cfbe2b491eadcee3e6af445b46b2800d7041"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/utils/is_object.js",
-      "sha256": "c2376181876ada65c71f2a19fb0b4a4c495e242c1f68f560df22e9d224c9761b"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/lib/utils/underscore.js",
-      "sha256": "015f642c76345ad144f9846e36008de6a7c430d1c7fde239c2919cd0b5ec8058"
-    },
-    {
-      "path": "broker/node_modules/csv-parse/package.json",
-      "sha256": "66ad16049da3f9987b667416c882aacdca420a725074859d2cc14e55488eacfe"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/LICENSE",
-      "sha256": "032efe3de772e9f85c722ee9ff7ccd5cab01e024296b2b8d25893bf779be9360"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/README.md",
-      "sha256": "63891372cdc0160a5c00658d670d4c6627455258adf07defa96bb2f7309d8d9a"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/cjs/index.cjs",
-      "sha256": "73729aa15aa462d139ca4f0e9d43c19d473ba47d387338e7e8b4867c710635f7"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/cjs/index.d.cts",
-      "sha256": "f3b3dd7652d0738119af69262dc426601b081623dc8f025c094846bdfeb007b4"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/cjs/sync.cjs",
-      "sha256": "e9673916d88800a9853804e5ca57909bf5b20e4b1d26480e2d3e534d39404642"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/cjs/sync.d.cts",
-      "sha256": "e40c2faaa60913f5c4c2c6a960973b9389d5250993b1ad2530b1db8b831a30c3"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/esm/index.d.ts",
-      "sha256": "f3b3dd7652d0738119af69262dc426601b081623dc8f025c094846bdfeb007b4"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/esm/index.js",
-      "sha256": "907774a333c96f456d992354019857bd41cdf712670bacf7b6a861c067c3d610"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/esm/sync.d.ts",
-      "sha256": "ed3dc32de29115351a8efed0ba03b202b85170181e459c5b94ac068f9e2dcbff"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/esm/sync.js",
-      "sha256": "587e0e6569fbf43b569434c5eb47c9bc12ec61cd6c96ade9c0a5ff5bf2527ba8"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/iife/index.js",
-      "sha256": "c7036091d08270a1ad22f1ce42c0685f3b0479fe6d1c9619db5a9b9ad7981493"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/iife/sync.js",
-      "sha256": "d039c7d6af3a8d94ac9bda22c22a86eddc1c67e62448717d779695dc39933899"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/umd/index.js",
-      "sha256": "13a8154a0102edc5df6ab2349afa86bbf9c35d2adc200d99edfd2aaac503f002"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/dist/umd/sync.js",
-      "sha256": "8774b059e23bf0d429d8007f55097d70d60077f51cf158ce91a38db9d5ba5fa3"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/api/CsvError.js",
-      "sha256": "7feec6b28812faf36f60fc0d025337b6784273950a2aebb559d797203099fdb7"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/api/index.js",
-      "sha256": "984ef90b4310fb002d721d7b0da3c13616ee7a2302a88861e9d7dc2607ddf593"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/api/normalize_columns.js",
-      "sha256": "46e403ab3b002d9500bd38f57dfd5c552d3e7ebd9f21452ffb5847c39dcfa573"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/api/normalize_options.js",
-      "sha256": "074abee09fc978ba7543efb1d6216686f3993336cb1914e8991c5fac9fb9da2c"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/index.d.ts",
-      "sha256": "f3b3dd7652d0738119af69262dc426601b081623dc8f025c094846bdfeb007b4"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/index.js",
-      "sha256": "a97b722f7e1802d3610daea390461680f49497caafd12d1b779da83352b0da04"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/sync.d.ts",
-      "sha256": "ed3dc32de29115351a8efed0ba03b202b85170181e459c5b94ac068f9e2dcbff"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/sync.js",
-      "sha256": "1481970717496dc5b53c30ed8d4e62596086c767db861dd3892f0b727467801f"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/utils/get.js",
-      "sha256": "ffd0e7e631cb5e2ed4c46eca3af70e6c4d6646e1403e3e5260a5b9fe359b928a"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/utils/is_object.js",
-      "sha256": "c2376181876ada65c71f2a19fb0b4a4c495e242c1f68f560df22e9d224c9761b"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/lib/utils/underscore.js",
-      "sha256": "015f642c76345ad144f9846e36008de6a7c430d1c7fde239c2919cd0b5ec8058"
-    },
-    {
-      "path": "broker/node_modules/csv-stringify/package.json",
-      "sha256": "300dd023b0a58b7dbbd156e65f1cd8e563dc2dcc8ff49ec7255c93ef51869a23"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/CHANGELOG.md",
-      "sha256": "80fc1081d9612e7c476c8244d2febbda786d87094e72b2f70db869514ee2a51e"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/LICENSE",
-      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/README.md",
-      "sha256": "b55a37d12169e4fcfa8718b132c446eba4fa067e22c3cafc5a4d6cf6054fce76"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/lib/fxb.cjs",
-      "sha256": "987f2d413ff7c005f2aa8488c132e97204aaed1ae947b05c15c2517b86561408"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/lib/fxb.d.cts",
-      "sha256": "bf00115bf4352db46e091290ff5e60b7f89e07b9a9df556bcd6201c206845476"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/lib/fxb.min.js",
-      "sha256": "7bb5cf789808985b95cf4ad339633086bdec2423fcc76b1391f93304b8243147"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/lib/fxb.min.js.map",
-      "sha256": "e6d41878c8127bda929e4ec2441b7715665443f27fd697edee03d8390a9dd2c9"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/package.json",
-      "sha256": "304416f412412cd967ee1139f0eadfebaa263e92bfbfa264bedbb37055d5c27e"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/src/fxb.d.ts",
-      "sha256": "6a1352422b247af7058811bca5c0e159d03fad512e0eca38eb765a46154be045"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/src/fxb.js",
-      "sha256": "44d54aa1500d8b179b56c47003530ade9220c0daec31caeeeb1a59760eca6d88"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/src/ignoreAttributes.js",
-      "sha256": "40bdf3ab37f544b9f8ea7e474114f489a77ed3247e0be597b9e83e01688e8c80"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/src/orderedJs2Xml.js",
-      "sha256": "4d5b4d0e3a8b3bfa4535e85a2182446f05f32e179dffba00e07422da84cbdb69"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/src/prettifyJs2Xml.js",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-builder/src/util.js",
-      "sha256": "f585f26c6fa18af890c32d00fbb00fbfd05b9c7217419b6fe8675bdcee264140"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/CHANGELOG.md",
-      "sha256": "0c159daf0c5d77839dde1e5ec118fbb2c0d272c7631785c73b98a2e80cfdd2f9"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/LICENSE",
-      "sha256": "7883225d5e84a6bbb9b170c3d891b4bf6d6259cee869c86bd86381a927071745"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/README.md",
-      "sha256": "2b0548e4d819a6b654f3df466728a9f8cedd6767ffaa9b2bec16ee38da69cce5"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxbuilder.min.js",
-      "sha256": "7ca510aefbac305dd88b6290b9a2b85823bd6b1e3e8006dcb19ef5bb9a5d2c55"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxbuilder.min.js.map",
-      "sha256": "32ebf12816315c98cce8a90ae2002d7d0ae874ab41450c86bafe3d2b4199a43a"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxp.cjs",
-      "sha256": "c83b535419c52bb2868ea4c6a698720b9e0d56cdc6c1bbdec02b3080e5b0d2fb"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxp.d.cts",
-      "sha256": "7239bc0a6efdff93e662ca974248286aab408e0b56328436db220a5b8931e24d"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxp.min.js",
-      "sha256": "8d17723383e8b451250e411902a49ab7acbd235a2b56e5264c11040c46995161"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxp.min.js.map",
-      "sha256": "da7bb183201e13726b7f051579e5b2ecdd3fd759eb5d2a0341bc5d24c6da35fa"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxparser.min.js",
-      "sha256": "c76c500f69dc99804ae429524f55e417497e1cef45f6e04089d022a3dc1a6395"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxparser.min.js.map",
-      "sha256": "d736dfc5eea40267c414b3381e3ddab3a5004d449a28ef25244c5944d12e5056"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxvalidator.min.js",
-      "sha256": "df1158c8e35bb82882eb48818f96e717516ad720260e666146971d038f624430"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/lib/fxvalidator.min.js.map",
-      "sha256": "80ef2a27fc52d98899b43554ddcf6cf68a977bb2d6626e2f534492bba6810006"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/package.json",
-      "sha256": "41c5f7f2ed20d6ab2b54d3f42730246444685a838cf381d5bf3e1eb93e2fa4cb"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/cli/cli.js",
-      "sha256": "8f5e6ebdc7cd90fa77a5e835fec6a57f399f82ec5eb0dd277b26415a83e29c48"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/cli/man.js",
-      "sha256": "3780acda8a91a1a0fc4ca789acd50b3e1f22dc86e892ddf02765d3a5c33985fe"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/cli/read.js",
-      "sha256": "5276d01f9e03dfe20d13996dc60aaf99d7eb2f9090030a82cd78e5e922b44188"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/fxp.d.ts",
-      "sha256": "b112bfa7e245b7bc336f1c62506539b1e8e08db01d4bdff35af2bcd7223a2d7d"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/fxp.js",
-      "sha256": "587bee5d27b6dbc99d24f472ea93028659610c3496be7d667e72483483c3f3ba"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/ignoreAttributes.js",
-      "sha256": "40bdf3ab37f544b9f8ea7e474114f489a77ed3247e0be597b9e83e01688e8c80"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/util.js",
-      "sha256": "870ccd88a5d51e35ef8cbc59e7f2a35d31defc87aded9c06023ae57838851901"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/CharsSymbol.js",
-      "sha256": "e037787fbc37aa0309937b3b41e4a76e118167ba384e83fbc49e04f94740aedb"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/EntitiesParser.js",
-      "sha256": "8705dd25e2d2f6e6457fa491881e1f9eab082b0406cd5dcdc745aa61a2798725"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/OptionsBuilder.js",
-      "sha256": "2102f6735008c449c41728bbd5cf008f53a518cf3dc7ba2794c9d4dc7937f0b7"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/BaseOutputBuilder.js",
-      "sha256": "88dafcd928965417b34ece595705827cfdbb9bf639df72a809642e1adbad1160"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/JsArrBuilder.js",
-      "sha256": "6f5b0632d80eb6865124a553451f69b4a8b0c73cdacf21d4597ade0d097fbf20"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/JsMinArrBuilder.js",
-      "sha256": "4a77b68d3ed107c7f5a006f2616b439c4660a14a537c66ff545ba3b68812d6f3"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/JsObjBuilder.js",
-      "sha256": "3db399917d6ecc5541c518a0e7402d11e4023fa745a87eb187b534635e17e239"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/ParserOptionsBuilder.js",
-      "sha256": "dacb3a0b8da41e10a9531b2ce0f9939b7db3cb73b8850fc3918a62cb26a2fc3d"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/Report.js",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/TagPath.js",
-      "sha256": "c3201f12a399d0c2d6932e0b2ab0ffe11d59b25d8cbfad888139a6f8493c3574"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/TagPathMatcher.js",
-      "sha256": "424002a4c4cbaba5b739bc2008fe9c7e4523a63865acabe26f2f46167c236464"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/XMLParser.js",
-      "sha256": "3ec7a6bcca9bf19de16ef3b019dedc3bf590ecd4b931d62b1e7f39aa988eecac"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/Xml2JsParser.js",
-      "sha256": "f29463c843327731271f8240ed87146704954958ad124f623b7789c056dbabd0"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/XmlPartReader.js",
-      "sha256": "0b5d19de5039d3fd16c091d5a60a8ccb36335748ea44e55bac5a27e59051aa55"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/XmlSpecialTagsReader.js",
-      "sha256": "9c2b765ad9131a1a1d71d699cdaf69ae547ad4534c6f76169657f06c623e05cd"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/inputSource/BufferSource.js",
-      "sha256": "ba2df3ffe9b67d5d37c1729ede6870972207964719fd638eb63b8fdf6a334a57"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/inputSource/StringSource.js",
-      "sha256": "5e9eb312fc320fb87a07424c98e439c4637b80d168879230c21f5435d35cb140"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/valueParsers/EntitiesParser.js",
-      "sha256": "2356a65d0256c6658b2d066b82d13d31ca28b39bbd7c75db89d3e939df76a47f"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/valueParsers/booleanParser.js",
-      "sha256": "5bf8e1b9e11068b3e25b384a217b71c576b344224cb50d90b98ce2e63062aa2d"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/valueParsers/booleanParserExt.js",
-      "sha256": "ce154fbe652ba2de46b2083e8c99a58c4a0e337558f8c36330a04188cc4a38e1"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/valueParsers/currency.js",
-      "sha256": "f653f705032ce04e9d12749a4bc28dada74fff0e24192205e3d8a9d32e88428f"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/valueParsers/join.js",
-      "sha256": "19d179c90a52654c50e4eea52ce86c5ea4a72f90106d5afdfc86bc3b574e2eae"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/valueParsers/number.js",
-      "sha256": "50165c7d0f33534911f7ef9ee3ee7a1531786ee12aba89186e90fb601ab0d2e8"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/v6/valueParsers/trim.js",
-      "sha256": "99e6101bbc04ad8882480e2c4c85aafac0dd6d25b42e00033ca8ccd1157a1c7e"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/validator.js",
-      "sha256": "e818788b069429443a97756a4c458999d6751461c4ef41c7bfe1cc58bd70dde4"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/xmlbuilder/json2xml.js",
-      "sha256": "bcc5325758b3b940384c7bf2a7132874421989c2561a59dc49c4ef0b88c352dc"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js",
-      "sha256": "e693e1e1b6b972aa641bd2d3f7e18b653088a1f4af2c89d05b6f1f9897f4d7b8"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js",
-      "sha256": "4f177e43f1ac36dc25b2b6a44970c97918091416bd15722b65ac938256bda687"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js",
-      "sha256": "d1d5d64ecfb3df9b07ba3bd5ee020d166eaecbf569ebce67be692aa5892a21b5"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js",
-      "sha256": "286c659a8f940c313077afe8a00c0dc128d4a138edf6d9a4519f29538b58c94f"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/xmlparser/node2json.js",
-      "sha256": "cce0e8a8876bd1d3305a666e70cd556fd1ae57560fbca9f4ff0577d91178a0b1"
-    },
-    {
-      "path": "broker/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js",
-      "sha256": "758d7a8b80ea22d19872b5219c874b4039ea2725e7af5ef0afe2a3e295b779e7"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/LICENSE",
-      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/README.md",
-      "sha256": "037ee459a3870681c47d454eec265ead4822ab25724519b90e047cf2d4b2efad"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/package.json",
-      "sha256": "0fb03fbe6e0df6090d778679929c7c34c9fca298bc72190468217171e8154943"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/html.js",
-      "sha256": "5f378567e5be461b0850876c91b8f1c8ffdc8d29201d87edd7aa666eecabb9f3"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/log.js",
-      "sha256": "fe1678ab1c98db7387bea6892ec10a90a06a8e2ed01efb1ee577c3d155e4a395"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/nosql.js",
-      "sha256": "e20a132033f105a29db1cfdb3d85bbadbb7206b9a7e3336bcb030a63d66b4ab2"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/redos.js",
-      "sha256": "59ceb09d3fd2402e81ed7e5992245f2b398c7ceeb80141138f4eab5da0244586"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/shell.js",
-      "sha256": "c26834ef2c968e8a4223a89b2d0e5653952bbf6f3eed95e5ba45465e1870eb65"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/sql-strict.js",
-      "sha256": "16d6522ee4ecf4a91c4d29357ebc874844c266f2ae89ef2a92ec2d391f3762e9"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/sql.js",
-      "sha256": "4de8a60302e6ab22ef5607ee88ab6dd6559221fb8620780fb874a1dcf3000d06"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/svg.js",
-      "sha256": "eb9e106e81226ab9547882079e7fd6a9d885d2c71ba78784f7edaa7db61bb941"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/contexts/xml.js",
-      "sha256": "2ae9cb95ada7140a80c1ad378f2c4c5f7360bc3f3f6480a96247712df8d8ab16"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/index.cjs",
-      "sha256": "827e7cc23034bdad2831dac7d8c5da9bcc966f259425107074064a42dff1230a"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/index.d.ts",
-      "sha256": "75ecf95b575eaf2c9f84b541452fa9c9f6d97f4d914eedddc306329ce138127c"
-    },
-    {
-      "path": "broker/node_modules/is-unsafe/src/index.js",
-      "sha256": "24f5eb575e633b68771328cc12fa6fde751ecc5f2700a6f52ea325938dc94342"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/CHANGELOG.md",
-      "sha256": "6906678ecac84f11300eb0684d85ee71d717c79414cdf77f6922873f5934b863"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/LICENSE",
-      "sha256": "960f7fc16d8baa126802316a7df9078a383af4fb6bc60033adb28e85c08d5e5e"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/LICENSES/Apache-2.0.txt",
-      "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/README-zh-CN.md",
-      "sha256": "95d8b040964155727eb417f20a107b4f9630e32a6a81e398efeb819443b18520"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/README-zh-TW.md",
-      "sha256": "314871d3fdab87aca49bfe109252559a75a4a400cc3a8165ffb08c03d60a518b"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/README.md",
-      "sha256": "f382e67ee8ea689c0fccadf61fe1ef32491928fafb7939ef24d0bfbc527f4834"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/THIRD_PARTY_LICENSES.md",
-      "sha256": "42c7dbe71c178fcca97ba945e9ac9ff360fb69bbfea4cb50556f6c65bfa59806"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/core.js",
-      "sha256": "5675706adcebf6a524dc016548b8e61a9b086b4ae4caf8ec4e84d6753024b168"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/CJK_Compatibility_Ideographs.js",
-      "sha256": "b770f457ac89a58bf621aba22baa0a5da2ae46bfc57869aa1e8a8880664683c9"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/HKPhrases.js",
-      "sha256": "d0a1e20c5dd94bc434ff9ccc2f5c3865a9700c12384565d754f0cb6ba5607ab7"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/HKPhrasesRev.js",
-      "sha256": "25df00b20075c984cb37aecf72e00986d55afc8a35d55d59a2ff3a24fd8e99af"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariants.js",
-      "sha256": "dc1547a9d03d32cf6075807c25eb06b7363ee7985c07865ce8111c87f190460e"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariantsPhrases.js",
-      "sha256": "bc883752fae231478cf1528f33dd9d585409a18526966e2470d7313287ae86aa"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariantsRev.js",
-      "sha256": "c3ccd8ffe34d06a90fea6dbb5c6ce1ad3f09bba5fece3a01e6250250b550b999"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariantsRevPhrases.js",
-      "sha256": "1353060268182b4ac268425993b9150263199983a807ba880d9ef46b7c6a4bc4"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/JPShinjitaiCharacters.js",
-      "sha256": "e481f5643db66c689088bdf0d7e2bbad3c00476e1a06fcd2144961a4a2bed091"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/JPShinjitaiCharactersRev.js",
-      "sha256": "3cf382f345d5c5a0864c2be6b53738182c7d1bbb4ad79c8d8907d964e4ea9c22"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/JPShinjitaiPhrases.js",
-      "sha256": "bf26c5719fde907e4cc79431e14a613017017fcd7a5bd3b565e569563e1f4ebb"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/STCharacters.js",
-      "sha256": "6252e30c5e5d871d77e7f7acfaa5d3697f7fb9ac844752439ceb53e9eeaecbc7"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/STPhrases.js",
-      "sha256": "37f40ed90e91a68730cc3631ea6327307e46364efe4daa3cca0ecf6c96af708b"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/STPhrases_GeneratedFromRegionalPhrases.js",
-      "sha256": "4495f36f93cfca00e0c0eed81a519fbe26fd86bb8182b023bc727fb2a9a96c03"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TSCharacters.js",
-      "sha256": "85aee197470c6fa5fce207b4d1fe17b178eb8075b622133cd0eaa3c7d75fe16c"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TSPhrases.js",
-      "sha256": "d3cb6c2d1d08f8b1ccd808f4b913877b41ec1905f4c8f04299d0ddfcde623f4e"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TWPhrases.js",
-      "sha256": "3d2be425ab11c422a3ce29fa53e4558ea4ff190f27eab45ddce470340715e0a9"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TWPhrasesRev.js",
-      "sha256": "68159452847b7c6387822817b845e5b5a69293a8ea0112badf1195e9659a68a1"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariants.js",
-      "sha256": "dfbfeaef45840a9fe24f582ba8870b13b4c98adcc88d50959e7c76c687e8ce9e"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariantsPhrases.js",
-      "sha256": "67675a603377832c8875912652e56a96b8451e34d397f5a267814f1ab222014e"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariantsRev.js",
-      "sha256": "1af525545ae3013361418b3c580317e79e05295775354916b8045c10d870dff2"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariantsRevPhrases.js",
-      "sha256": "34c21b13a81d3cfce3faae4028450a0c2930a8bdc02f450b783bb5e378611ea8"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/from/cn.js",
-      "sha256": "4edd11dbc2742a2ad0522813ee3e07fb0c541a293b530b547f577de0fd03eb0a"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/from/hk.js",
-      "sha256": "633f18fb19d6365ec892f160b6a07158f9a2b2b7ad3e8a6b4f2607929ca0eb86"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/from/hkp.js",
-      "sha256": "ed04649440d0ec92ce22d4e08254e42d563e8274ab9943ba5a6c959077400e47"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/from/index.js",
-      "sha256": "b44e9c58dd80dcc38920537eed40a50a5bf157fe116eff543b32f266173e977b"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/from/jp.js",
-      "sha256": "faa626eac080bdbbe1784c25e0c6305d3048fccfb73bfd518f7048ae3f8689a7"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/from/tw.js",
-      "sha256": "dce422d77f788334ab4a46b07424f6cf4b4ab68093d315b62405ca6ffa10ffb8"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/from/twp.js",
-      "sha256": "8c934f736e3c862a771f5d74291092aaee485a16df10db428c73185fbaa4772f"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/preset/cn2t.js",
-      "sha256": "b5d78faffcc3c9152cf79a1996f64430dd417918d52494f4d7386906fb6c8d19"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/preset/full.js",
-      "sha256": "e6bd231311affaa7c3a099e2d535617fe5310a3b8a6c11b63b80b8abfb2b7fc5"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/preset/t2cn.js",
-      "sha256": "f31d0644943a8967420cfe7c946fc04dc3d20e5d0c0669b5bcc4dc999dfe8090"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/to/cn.js",
-      "sha256": "0dfc73909d20c1e15ef74522f83e0e7c53f78cb8d55fb248ff3ccf6954ddfa23"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/to/hk.js",
-      "sha256": "91b959648772b23a2df3da1eb091173810c24ee2a00a0505944761b1fd1cbeac"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/to/hkp.js",
-      "sha256": "08d10efa19293d019a2256ddbf67bb9bfb730c72daebcc857a826a719ab475ad"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/to/index.js",
-      "sha256": "b44e9c58dd80dcc38920537eed40a50a5bf157fe116eff543b32f266173e977b"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/to/jp.js",
-      "sha256": "7950e6a206dee07730e607f95ab79ccf3d7399cc920d5104788bf8a7493910a5"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/to/tw.js",
-      "sha256": "24761e67af91299c80ee1336f2552c6f4e7bdece77f6e35a3c1a492e2b10cbed"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm-lib/to/twp.js",
-      "sha256": "c06d155a6c69add0c67c5fcf305159efda6988f9a7725347955a27d5ae5efde1"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm/cn2t.js",
-      "sha256": "f11354bf1dc5fdc4a53a5cfbf8808fe832bc27640a69d96fb60e547090010214"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm/full.js",
-      "sha256": "855e5c95f90dbe114649f09359aedfaded676cc4a37f55b075ac10199d0b3561"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/esm/t2cn.js",
-      "sha256": "b78e83f940e73a022d8d996333e924edf07aa5b6133b8cddd46fbbff1ac339b6"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/umd/cn2t.js",
-      "sha256": "d66d920069ab526db08c6f2bc15fcf6feb7d07de3cf98e7e27c0aaf7d136baee"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/umd/full.js",
-      "sha256": "95b04abf136d9c28263773bb7d357eac80b7954d101efd23c4d09c737d3d379e"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/umd/package.json",
-      "sha256": "8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/dist/umd/t2cn.js",
-      "sha256": "5009384a6bdc904babee967a8bb9928e3c92288ec8a89ed036d53257e74cd8ab"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/package.json",
-      "sha256": "69e19b15f39d716b4c209ad928e32e8c04084d7d8ee06aac642f89d067308a64"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/types/core.d.ts",
-      "sha256": "a4844433ec45fdbc5e0ee1b56017c7690a803138569a22523e6a4b5aaa7edb0c"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/types/full.d.ts",
-      "sha256": "fc65f175bb8fdfce91e1cc8b846682bc9d689e97cf76788da27dcfdc62b4ec40"
-    },
-    {
-      "path": "broker/node_modules/opencc-js/types/preset.d.ts",
-      "sha256": "432fad36d6fa7eafffb017f56246c873f8c7cf07db58efc484a089bb1b058b84"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/LICENSE",
-      "sha256": "75486ea0af9309140ca6e2c401d7e67bea8f4892344e5707f6394dc5e83dfc44"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/README.md",
-      "sha256": "b3624137327085ee17b4731c3431a56e93b64e1627521cfdc43ab9e20a5c584d"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/lib/pem.cjs",
-      "sha256": "aec62344de39f1c7a2c42e31767cd068af933c034837bbceaf5a7a4032b76a0d"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/lib/pem.d.cts",
-      "sha256": "d9bcaed1c26d15e944fa95ed2d2129fcf70e0c35b193933ed3210deb546e131a"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/lib/pem.min.js",
-      "sha256": "b39340293e75855e6efc54dbd36fc0422360ff78de98a41fe16883adcbcfcf88"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/lib/pem.min.js.map",
-      "sha256": "9e1ee6e6c38de96125700ab1612d30709b6507f1c81932d36feba283ee8edeb7"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/package.json",
-      "sha256": "625ca3a27a289160508a79773ddfd7bf678a6401bd96321cac0bc43ebebe01f8"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/src/Expression.js",
-      "sha256": "c24531320e7f2a69708fa8127b660bfb0efaa3a26636e6f56209f8cf4e984b9a"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/src/ExpressionSet.js",
-      "sha256": "a6250aa83ce7f238614fb7421f31e541c63c415a295e3764687693464918f3c4"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/src/Matcher.js",
-      "sha256": "d3b6ddfa1e9a07d6db63939e55106f4df3e8f2e48119c81e372f60f157914d66"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/src/index.d.ts",
-      "sha256": "be6fa8af49b89cf35b7e3351e66df1f0c20a7737cde5aa443cacd25f8f899808"
-    },
-    {
-      "path": "broker/node_modules/path-expression-matcher/src/index.js",
-      "sha256": "ebbf22c6979f6b2b05c580922e7dd197f4f4a246d504d4c0cc8e64778f12d4ed"
-    },
-    {
-      "path": "broker/node_modules/strnum/CHANGELOG.md",
-      "sha256": "3aaf642d07a3e737b94acb44ec62121e9672db199d046f1abb745f7ed4e7939b"
-    },
-    {
-      "path": "broker/node_modules/strnum/LICENSE",
-      "sha256": "2aa16be0f4fad003a352a955a43314e9d1d8deef7034060a82ac9c49f32b81e2"
-    },
-    {
-      "path": "broker/node_modules/strnum/README.md",
-      "sha256": "6423769d4556b51fd966ed0cbf5d9bfd7813553560a1849966f48677ed674f83"
-    },
-    {
-      "path": "broker/node_modules/strnum/package.json",
-      "sha256": "38bf3bf508c5f454549308baf2b4c56ed01c14dfa29bb3efd51308cecb8efd70"
-    },
-    {
-      "path": "broker/node_modules/strnum/strnum.js",
-      "sha256": "2d8d2377f8c39b0805c9badf048cb22ffb52033f6db0d50a9576fa8bbd5c3dd0"
-    },
-    {
-      "path": "broker/node_modules/xml-naming/LICENSE",
-      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
-    },
-    {
-      "path": "broker/node_modules/xml-naming/README.md",
-      "sha256": "aa6f359e935296f26e878a119528daa37b9755391ecb701dd1a1330477440423"
-    },
-    {
-      "path": "broker/node_modules/xml-naming/package.json",
-      "sha256": "e6ff1758837bca3ca6877308c0d51f9e3e47efd07497fa62c8291fd88ab8216f"
-    },
-    {
-      "path": "broker/node_modules/xml-naming/src/index.d.ts",
-      "sha256": "0f3bd36772edf86964a85459ebe5e910bf85b2fc9e5e871e83785549fc9a9f5d"
-    },
-    {
-      "path": "broker/node_modules/xml-naming/src/index.js",
-      "sha256": "1a5d9fd32360e2cec4adbee9e56221fb26def66bb9d122e0b5745cebc963d92e"
-    },
-    {
-      "path": "broker/official-library.mjs",
-      "sha256": "b440e22cf69f99a24c7126b28a4a8ed325fae3fa9f43d06b5c0dde39969c916a"
-    },
-    {
-      "path": "broker/official-owned.mjs",
-      "sha256": "5a1a63f9d4873356df40aedbe34175afbdee36c7727f5572d667e51578e15876"
-    },
-    {
-      "path": "broker/official-trust.mjs",
-      "sha256": "ba97ea79739e509137457a403a52ec5d505fd2e1c302c879653886587076703e"
-    },
-    {
-      "path": "broker/package-lock.json",
-      "sha256": "95c90e8fa17070f779f121d953809b84591febc9736f35a5eea57b6ce784013f"
-    },
-    {
-      "path": "broker/package.json",
-      "sha256": "fb1cdfcdcf7d9e9d8d0e0723e33d4964b269e37e0a5411cee0432d51b15639e2"
-    },
-    {
-      "path": "broker/prepare-descriptions.mjs",
-      "sha256": "a02f68edf5ca2eb93fb61bd92942a8f9f5fad1fc984ffc5f72765498c4a84884"
-    },
-    {
-      "path": "broker/prepare-standalone-package.mjs",
-      "sha256": "4b6830c7bd6fee6ea1dbd77aba0a1758f37e47b48d9585f4efafe39e5cbf5328"
-    },
-    {
-      "path": "broker/prepare-workshop-package.mjs",
-      "sha256": "e164451665b9776c4066edb0139d0152fe09312ecf5e52e97f74e654d8285db8"
-    },
-    {
-      "path": "broker/prewarm.mjs",
-      "sha256": "43ae3090b1f32b5d654d22b11e7ba2df3e09671b5e8aef049a680d70a541731e"
-    },
-    {
-      "path": "broker/probe-native-prime.mjs",
-      "sha256": "24147eaa377de5babf9c62bd2b83f766b37e434e3bf185e565d737fdfc576192"
-    },
-    {
-      "path": "broker/prompts.mjs",
-      "sha256": "1b294cde579e9ae3088389d1171f9bf57c341d3cf16a917699bef0b6cd582e52"
-    },
-    {
-      "path": "broker/provider-pool.mjs",
-      "sha256": "3701d1396c948efa81f7f39c6042d6792e81a060208e6ffa9cd4871ffed4a833"
-    },
-    {
-      "path": "broker/provider.mjs",
-      "sha256": "8f62da7e96ea47abaf38cf0a9d84d4eb2173422f04c14bed34cb8341af3e3c7a"
-    },
-    {
-      "path": "broker/raw-states.mjs",
-      "sha256": "e4582368eee3c30a8ec9b0746c1008fd12aec4895ff4af7b5c800b080a56eee3"
-    },
-    {
-      "path": "broker/reaction-names.mjs",
-      "sha256": "964df744456e8fb7d0c0f2e1b396368b78b7e3ec0f6dded1a9d5666f86c3ab92"
-    },
-    {
-      "path": "broker/review-case-variants.mjs",
-      "sha256": "03f88ea3250fb93e0990aec49195ed864c4523cb69ca476ed6a502381f271b8c"
     },
     {
       "path": "broker/reviewed-zh-Hans.csv",
@@ -2053,72 +844,8 @@
       "sha256": "890d6577e48742a291b69be0703ac8dd8b2f06d85e69c94260995d5f8ab42ab9"
     },
     {
-      "path": "broker/rich-text.mjs",
-      "sha256": "7989fbdd7970fc0ae7a2ef11b1994753d6fd20fe250f51e167de8c13ce6edcca"
-    },
-    {
-      "path": "broker/runtime-queue.mjs",
-      "sha256": "b5b4c1e41a32997e6e4d862afed8705df33cfd17d76f060a4d3eb83c3ee3026c"
-    },
-    {
-      "path": "broker/safety.mjs",
-      "sha256": "51225dc6ebe74960c001f6d90df41d9f45f6002bfa97b629a0d02ecca7d04b32"
-    },
-    {
-      "path": "broker/scan-mods.mjs",
-      "sha256": "5827994122bf25ee405a40978096b3ae2f83d249219eb8d4f2a7f13c28059a4d"
-    },
-    {
-      "path": "broker/server.mjs",
-      "sha256": "50776618f669b9ac00ac24b62b501bbece59c99c79d79ce3aa8a8c330ab86e85"
-    },
-    {
-      "path": "broker/settings.mjs",
-      "sha256": "7bd96bb651ee547c434f762b84c78cef77fd1a8354b9ff752128f3ac58017e8a"
-    },
-    {
-      "path": "broker/shared-outbox.mjs",
-      "sha256": "1acdf695ad37f9b662f499ab22d240711133dc5acd63b6c310b52ad3dbf50274"
-    },
-    {
-      "path": "broker/shared-policy.mjs",
-      "sha256": "dd9f6ef228866eba4df48a0d3d4e39b63ba16e70ea6dea33395ee9192a9c6f6e"
-    },
-    {
-      "path": "broker/status.mjs",
-      "sha256": "daeab5316eb3ff22f418596b11ef8fbe3dab6629b9980951f8e58d1b8f23c9a2"
-    },
-    {
       "path": "broker/unit-prewarm.json",
       "sha256": "de32144e8e668a8eee6f14937c4fe364de229bdd0ee4227e4f504beafb5dc622"
-    },
-    {
-      "path": "broker/unit-prewarm.mjs",
-      "sha256": "0efdff2aee58d3d0cc93c7388c74f98a658832aed447f48b8825c149e33ffcef"
-    },
-    {
-      "path": "broker/validate-workshop-package.mjs",
-      "sha256": "4b2fee089fa093cdaa18f7f6ba929486fcc3b6020c13a1a87d8a85147229c7b6"
-    },
-    {
-      "path": "broker/verify-descriptions.mjs",
-      "sha256": "821317ca692d9a5d747bc9056d90c567f2c75ae39466d9d2577f39c9e4ef9ed6"
-    },
-    {
-      "path": "broker/verify-fortress-live.mjs",
-      "sha256": "74e9a51091908158407220c8ba74a44f8f56ddbc98677d5b166f6c86166ed417"
-    },
-    {
-      "path": "broker/verify-official-live.mjs",
-      "sha256": "eb9244d6511e1def6e89ef60df3f231b01350beec20a32fd957f2ef182aaeaa0"
-    },
-    {
-      "path": "broker/workbook-expansion.mjs",
-      "sha256": "4d039e4b8cff2280b8fe22bd5736b5b848ca38f1ee14677f51f3b33760abe8a8"
-    },
-    {
-      "path": "broker/workbook-supplement.mjs",
-      "sha256": "0fb777d7905a274e9b95c9249750d9a86643e040a611e76e5dc6ed7f7df468ac"
     },
     {
       "path": "dfi18n-data/dfi18n.txt",
@@ -3430,11 +2157,11 @@
     },
     {
       "path": "info.txt",
-      "sha256": "a855cb80213ea98591c0a90c8977e9bedcdb807bc24810a4cb8444d5282194ed"
+      "sha256": "f18720cc9938d2f74e70dbe6d50f14595e306dc2b54d9d96c44cfaa89d67748f"
     },
     {
       "path": "libs/df_local_zh_core.dll",
-      "sha256": "a4c0782b5a545b0c22d1117c3aef16090fbe0c9aa63ae47837b8668e7a828c25"
+      "sha256": "0c7f76ac1a1e46745fdca134151093f18cd2bb8afce9ecfec3e7ac8f69132728"
     },
     {
       "path": "preview.png",
@@ -3639,6 +2366,1582 @@
     {
       "path": "third-party-licenses/pinyin-MIT.txt",
       "sha256": "dbee1336f5286b3b26fb6b4a71ab1e8d89f80b4073d9c8d2b2b33c06abc3bcbe"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/DEPENDENCIES.json",
+      "sha256": "1b58c3e2819b2f8caf94940bfda10b979936b56056f509680e240b27540c6f4f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/aho-corasick-1.1.4/COPYING",
+      "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/aho-corasick-1.1.4/LICENSE-MIT",
+      "sha256": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/aho-corasick-1.1.4/UNLICENSE",
+      "sha256": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/allocator-api2-0.2.21/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/allocator-api2-0.2.21/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/anyhow-1.0.102/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/anyhow-1.0.102/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/atomic-waker-1.1.2/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/atomic-waker-1.1.2/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/atomic-waker-1.1.2/LICENSE-THIRD-PARTY",
+      "sha256": "6226d0632e2e1a80c23597e964da9812ae193c535fe058154afb034e94167aa5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/autocfg-1.5.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/autocfg-1.5.0/LICENSE-MIT",
+      "sha256": "27995d58ad5c1145c1a8cd86244ce844886958a35eb2b78c6b772748669999ac"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/axum-0.8.9/LICENSE",
+      "sha256": "6a13bc24a100a6812f053879ec51b126b103af7cda6dbf48c4188722da44da9f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/axum-core-0.5.6/LICENSE",
+      "sha256": "008c87afcd2e626eaf564093250bed06dd7efb5732113264bba3dda8f1c556a1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/backtrace-0.3.76/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/backtrace-0.3.76/LICENSE-MIT",
+      "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base16ct-1.0.0/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base16ct-1.0.0/LICENSE-MIT",
+      "sha256": "54fb6dfe99a6906f862aa40282f0e8e9d9d0f22d57d99ab8acbaf4c8ceaa70e0"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base64-0.22.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base64-0.22.1/LICENSE-MIT",
+      "sha256": "0dd882e53de11566d50f8e8e2d5a651bcf3fabee4987d70f306233cf39094ba7"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base64-0.23.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base64-0.23.1/LICENSE-MIT",
+      "sha256": "ab499c75a0f0da8e0fe83bf9ba3a27e5c39705310f07107c6c66b69958d2401c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base64ct-1.8.3/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/base64ct-1.8.3/LICENSE-MIT",
+      "sha256": "2d1c57bff28344b9e698f51063bc8509799cc4c99a4e0cf2aa3f7e7c3e1f9a9d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/bitflags-1.3.2/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/bitflags-1.3.2/LICENSE-MIT",
+      "sha256": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/bitflags-2.10.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/bitflags-2.10.0/LICENSE-MIT",
+      "sha256": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/block-buffer-0.10.4/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/block-buffer-0.10.4/LICENSE-MIT",
+      "sha256": "d5c22aa3118d240e877ad41c5d9fa232f9c77d757d4aac0c2f943afc0a95e0ef"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/block-buffer-0.12.0/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/block-buffer-0.12.0/LICENSE-MIT",
+      "sha256": "98181e7249d0c01737645ec982499ce99a0f07eb8f7d625b8840d799d10dbc01"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/bytecheck-0.8.3/LICENSE",
+      "sha256": "744ba853c063f56a8d79385406413e5e3600adbc6aae359c74022701fb55a42a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/bytecheck_derive-0.8.3/LICENSE",
+      "sha256": "fd8fd6dd623c97a311881bac2621022a29d2bdf31caa784f029d965dfa9491b6"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/bytes-1.11.0/LICENSE",
+      "sha256": "45f522cacecb1023856e46df79ca625dfc550c94910078bd8aec6e02880b3d42"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cc-1.2.59/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cc-1.2.59/LICENSE-MIT",
+      "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cfg-if-1.0.4/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cfg-if-1.0.4/LICENSE-MIT",
+      "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cfg_aliases-0.2.2/LICENSE",
+      "sha256": "31b94860253d8ec7b4529f51901044d3b459d6292d996504a36b1bae3a36a812"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/chacha20-0.10.2/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/chacha20-0.10.2/LICENSE-MIT",
+      "sha256": "b8c6939380a400f53e11923d50fcc4dd2fa1ba8339fd9d04cda38a0251b6c9b0"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/chrono-0.4.42/LICENSE.txt",
+      "sha256": "a3d4e565d73d108b07074757733e1dcd3ee20617350a135e1122935881311d50"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/const-oid-0.10.2/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/const-oid-0.10.2/LICENSE-MIT",
+      "sha256": "73b9dc2e79c7308998dd30296e073aefaefb944a68fb89aa412c23c0edcabcaa"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/const-oid-0.9.6/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/const-oid-0.9.6/LICENSE-MIT",
+      "sha256": "bada9e7ed8dc00d63502053c455d7c8d7575dfb7e8277a2a832531844d900682"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/core_affinity-0.8.3/LICENSE-APACHE",
+      "sha256": "769f80b5bcb42ed0af4e4d2fd74e1ac9bf843cb80c5a29219d1ef3544428a6bb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/core_affinity-0.8.3/LICENSE-MIT",
+      "sha256": "14435fbcd271e2783f721b57b7bf4f6502c1379249a4300e0e5bb774686c2d90"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cpufeatures-0.2.17/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cpufeatures-0.2.17/LICENSE-MIT",
+      "sha256": "ae9baa7beea910273c2f384c2a6b721fb7bd02bda3436074a1072e4ee689f985"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cpufeatures-0.3.0/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/cpufeatures-0.3.0/LICENSE-MIT",
+      "sha256": "ae9baa7beea910273c2f384c2a6b721fb7bd02bda3436074a1072e4ee689f985"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crossbeam-channel-0.5.15/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crossbeam-channel-0.5.15/LICENSE-MIT",
+      "sha256": "5734ed989dfca1f625b40281ee9f4530f91b2411ec01cb748223e7eb87e201ab"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crossbeam-channel-0.5.15/LICENSE-THIRD-PARTY",
+      "sha256": "b16db96b93b1d7cf7bea533f572091ec6bca3234fbe0a83038be772ff391a44c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crossbeam-queue-0.3.12/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crossbeam-queue-0.3.12/LICENSE-MIT",
+      "sha256": "5734ed989dfca1f625b40281ee9f4530f91b2411ec01cb748223e7eb87e201ab"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crossbeam-utils-0.8.21/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crossbeam-utils-0.8.21/LICENSE-MIT",
+      "sha256": "5734ed989dfca1f625b40281ee9f4530f91b2411ec01cb748223e7eb87e201ab"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crypto-common-0.1.6/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crypto-common-0.1.6/LICENSE-MIT",
+      "sha256": "3521672491a3479422d5fe1aca6645dd2984090f85da6e5205abfb18fb7a6897"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crypto-common-0.2.1/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/crypto-common-0.2.1/LICENSE-MIT",
+      "sha256": "d2e7ec5355c96eeade56b09187ceb48a6a30299da3ce7531a66d3d11405ab963"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/csv-1.4.0/COPYING",
+      "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/csv-1.4.0/LICENSE-MIT",
+      "sha256": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/csv-1.4.0/UNLICENSE",
+      "sha256": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/csv-core-0.1.13/COPYING",
+      "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/csv-core-0.1.13/LICENSE-MIT",
+      "sha256": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/csv-core-0.1.13/UNLICENSE",
+      "sha256": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/curve25519-dalek-4.1.3/LICENSE",
+      "sha256": "cca0bd3c4fcdba74145ef9d49c62337e2c9fbf9368288f11d0547f1b0273219f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/curve25519-dalek-derive-0.1.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/curve25519-dalek-derive-0.1.1/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/der-0.7.10/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/der-0.7.10/LICENSE-MIT",
+      "sha256": "ad64fcb9589f162720f3cc5010ad76ca6ad3764e11861f9192c489df176bb71d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/digest-0.10.7/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/digest-0.10.7/LICENSE-MIT",
+      "sha256": "9e0dfd2dd4173a530e238cb6adb37aa78c34c6bc7444e0e10c1ab5d8881f63ba"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/digest-0.11.2/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/digest-0.11.2/LICENSE-MIT",
+      "sha256": "af59cea35d7f5e2777a713b8d155d65efa2c339eb43f3c14e868c6ac8506edad"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/displaydoc-0.2.7/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/displaydoc-0.2.7/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ed25519-2.2.3/LICENSE-APACHE",
+      "sha256": "78779d420019e6b4630376af8e86b6b335ee8a2f89ede6e0411e0469a326aaa4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ed25519-2.2.3/LICENSE-MIT",
+      "sha256": "b3470648aff02beb36d7a53240fc9260ed80ed93bd43bace6b67d7ef7336ee33"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ed25519-dalek-2.2.0/LICENSE",
+      "sha256": "7a313964a6e050794d2ad57f4863c11f6bbe055c0ae6ce2cf3b9fc45150bada3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/equivalent-1.0.2/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/equivalent-1.0.2/LICENSE-MIT",
+      "sha256": "7365cc8878a1d7ce155a58c4ca09c3d7a6be413efa5334a80ea842912b669349"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fastrand-2.5.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fastrand-2.5.0/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ferrous-opencc-0.4.0/LICENSE-SPDX-Apache-2.0.txt",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ferrous-opencc-compiler-0.4.0/LICENSE-SPDX-Apache-2.0.txt",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/find-msvc-tools-0.1.9/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/find-msvc-tools-0.1.9/LICENSE-MIT",
+      "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/flexi_logger-0.31.8/LICENSE-APACHE",
+      "sha256": "769f80b5bcb42ed0af4e4d2fd74e1ac9bf843cb80c5a29219d1ef3544428a6bb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/flexi_logger-0.31.8/LICENSE-MIT",
+      "sha256": "62d0091c68f5ea056b68db24013da489578008ca8a60fc17606277b30075e588"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/foldhash-0.1.5/LICENSE",
+      "sha256": "b1181a40b2a7b25cf66fd01481713bc1005df082c53ef73e851e55071b102744"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fontdue-0.9.3/LICENSE-APACHE",
+      "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fontdue-0.9.3/LICENSE-MIT",
+      "sha256": "a72354dd6206c20dff7c9fd45b137261e00a31f71ffb8fe67d5ca0c8170b5fd5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fontdue-0.9.3/LICENSE-ZLIB",
+      "sha256": "d829cfa632d2a44fe9e303ff293add677ed70e4b8f5e2176aa7a19d0936e61ac"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/form_urlencoded-1.2.2/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/form_urlencoded-1.2.2/LICENSE-MIT",
+      "sha256": "20c7855c364d57ea4c97889a5e8d98470a9952dade37bd9248b9a54431670e5e"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fst-0.4.7/COPYING",
+      "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fst-0.4.7/LICENSE-MIT",
+      "sha256": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fst-0.4.7/UNLICENSE",
+      "sha256": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-channel-0.3.34/LICENSE-APACHE",
+      "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-channel-0.3.34/LICENSE-MIT",
+      "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-core-0.3.34/LICENSE-APACHE",
+      "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-core-0.3.34/LICENSE-MIT",
+      "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-io-0.3.34/LICENSE-APACHE",
+      "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-io-0.3.34/LICENSE-MIT",
+      "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-macro-0.3.34/LICENSE-APACHE",
+      "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-macro-0.3.34/LICENSE-MIT",
+      "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-sink-0.3.34/LICENSE-APACHE",
+      "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-sink-0.3.34/LICENSE-MIT",
+      "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-task-0.3.34/LICENSE-APACHE",
+      "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-task-0.3.34/LICENSE-MIT",
+      "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-util-0.3.34/LICENSE-APACHE",
+      "sha256": "275c491d6d1160553c32fd6127061d7f9606c3ea25abfad6ca3f6ed088785427"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/futures-util-0.3.34/LICENSE-MIT",
+      "sha256": "6652c868f35dfe5e8ef636810a4e576b9d663f3a17fb0f5613ad73583e1b88fd"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/generic-array-0.14.9/LICENSE",
+      "sha256": "ad4fcfaf8d5b12b97409c137a03d4a4e4b21024c65c54f976cc3b609c1bd5b0f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/getrandom-0.2.17/LICENSE-APACHE",
+      "sha256": "aaff376532ea30a0cd5330b9502ad4a4c8bf769c539c87ffe78819d188a18ebf"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/getrandom-0.2.17/LICENSE-MIT",
+      "sha256": "42fa16951ce7f24b5a467a40e5b449a1d41e662f97ca779864f053f39e097737"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/getrandom-0.4.3/LICENSE-APACHE",
+      "sha256": "aaff376532ea30a0cd5330b9502ad4a4c8bf769c539c87ffe78819d188a18ebf"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/getrandom-0.4.3/LICENSE-MIT",
+      "sha256": "523a42c25d245dde9c015f882cec7f4555aad883382a6cf19b4b7d9b2cd5419b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/goblin-0.10.5/LICENSE",
+      "sha256": "655e3ee7a4c27430774962e62a6d37d7348e5f2f292010ad674ce1bebefd24bc"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashbrown-0.15.5/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashbrown-0.15.5/LICENSE-MIT",
+      "sha256": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashbrown-0.16.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashbrown-0.16.1/LICENSE-MIT",
+      "sha256": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashbrown-0.17.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashbrown-0.17.1/LICENSE-MIT",
+      "sha256": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/http-1.5.0/LICENSE-APACHE",
+      "sha256": "8bb1b50b0e5c9399ae33bd35fab2769010fa6c14e8860c729a52295d84896b7a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/http-1.5.0/LICENSE-MIT",
+      "sha256": "dc91f8200e4b2a1f9261035d4c18c33c246911a6c0f7b543d75347e61b249cff"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/http-body-1.1.0/LICENSE",
+      "sha256": "248378d0a3383c173fb925f17141b88e71580b3ba17ddc6ac3d2a344683232ab"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/http-body-util-0.1.5/LICENSE",
+      "sha256": "248378d0a3383c173fb925f17141b88e71580b3ba17ddc6ac3d2a344683232ab"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/httparse-1.10.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/httparse-1.10.1/LICENSE-MIT",
+      "sha256": "391a5396cec6230bfabd4ef4eb2350eb895bc5efce377a2218f5702ed020d3e3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/httpdate-1.0.3/LICENSE-APACHE",
+      "sha256": "4d10fe5f3aa176b05b229a248866bad70b834c173f1252a814ff4748d8a13837"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/httpdate-1.0.3/LICENSE-MIT",
+      "sha256": "934887691e05d69d7c86ad3f2c360980fa30c15b035e351f3c9865e99da4debc"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hybrid-array-0.4.10/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hybrid-array-0.4.10/LICENSE-MIT",
+      "sha256": "70c9d40f1f9545c3f133b8a67206e89da850f6468eed072281bb3701514114a9"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hyper-1.11.1/LICENSE",
+      "sha256": "2d01890414494742ba4a509fcec8efa40f6d8be22cbd72be7cff08d6fda4ec89"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hyper-rustls-0.27.10/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hyper-rustls-0.27.10/LICENSE-ISC",
+      "sha256": "7cfafc877eccc46c0e346ccbaa5c51bb6b894d2b818e617d970211e232785ad4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hyper-rustls-0.27.10/LICENSE-MIT",
+      "sha256": "709e3175b4212f7b13aa93971c9f62ff8c69ec45ad8c6532a7e0c41d7a7d6f8c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hyper-util-0.1.21/LICENSE",
+      "sha256": "9e0a97848ea543aef745c98e84fde696a9a3e0735538f6daefdd3cb1942effc1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/iced-x86-1.21.0/LICENSE-SPDX-MIT.txt",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/icu_collections-2.3.0/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/icu_locale_core-2.3.0/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/icu_normalizer-2.3.0/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/icu_normalizer_data-2.3.0/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/icu_properties-2.3.0/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/icu_properties_data-2.3.0/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/icu_provider-2.3.1/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/idna-1.1.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/idna-1.1.0/LICENSE-MIT",
+      "sha256": "b38f11f6096706e6de553dabe2a7ed142d59b6fa8c97e290c67496154745cdd5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/idna_adapter-1.2.2/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/idna_adapter-1.2.2/LICENSE-MIT",
+      "sha256": "8b43ce8accd61e9d370b5ca9e9c4f953279b5c239926c62315b40e24df51b726"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/indexmap-2.13.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/indexmap-2.13.1/LICENSE-MIT",
+      "sha256": "ecc269ef87fd38a1d98e30bfac9ba964a9dbd9315c3770fed98d4d7cb5882055"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ipnet-2.12.2/LICENSE-APACHE",
+      "sha256": "87d9feb9238c6bd8e0024fc4733b06cff036f89f36d93b7df1c8a0549bbb7a5b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ipnet-2.12.2/LICENSE-MIT",
+      "sha256": "47dc9ff29128ddfb4d6a0435383c9f89120bc374dbcc1dd00b933a0b28aa7865"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/itoa-1.0.15/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/itoa-1.0.15/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/lazy_static-1.5.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/lazy_static-1.5.0/LICENSE-MIT",
+      "sha256": "0621878e61f0d0fda054bcbe02df75192c28bde1ecc8289cbd86aeba2dd72720"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/libc-0.2.184/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/libc-0.2.184/LICENSE-MIT",
+      "sha256": "123a331b5dbf04c30097fa43b8f858bc85df671fe776de498d01f3d6b7c1f69e"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/libloading-0.9.0/LICENSE",
+      "sha256": "b29f8b01452350c20dd1af16ef83b598fea3053578ccc1c7a0ef40e57be2620f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/litemap-0.8.3/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/lock_api-0.4.14/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/lock_api-0.4.14/LICENSE-MIT",
+      "sha256": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/log-0.4.29/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/log-0.4.29/LICENSE-MIT",
+      "sha256": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/lru-slab-0.1.3/LICENSE-APACHE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/lru-slab-0.1.3/LICENSE-MIT",
+      "sha256": "1466d9b4f3a59bb8997fc8d5fa977ce3f6a24bb2358793c09bfdf007039f6486"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/lru-slab-0.1.3/LICENSE-ZLIB",
+      "sha256": "09785877275ffada6c371b652a30e95c26b435126fc0fc62f1bc2d72171f80a4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/matchit-0.8.4/LICENSE",
+      "sha256": "de701d0618d694feb1af90f02181a1763d9b0bdeb70a3a592781e529077dba65"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/matchit-0.8.4/LICENSE.httprouter",
+      "sha256": "162ce11ad71338d0a0c6ebaf5c48af72c6ae237b468859d3656fe2d9ed3f3a85"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/memchr-2.7.6/COPYING",
+      "sha256": "01c266bced4a434da0051174d6bee16a4c82cf634e2679b6155d40d75012390f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/memchr-2.7.6/LICENSE-MIT",
+      "sha256": "0f96a83840e146e43c0ec96a22ec1f392e0680e6c1226e6f3ba87e0740af850f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/memchr-2.7.6/UNLICENSE",
+      "sha256": "7e12e5df4bae12cb21581ba157ced20e1986a0508dd10d0e8a4ab9a4cf94e85c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/mime-0.3.17/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/mime-0.3.17/LICENSE-MIT",
+      "sha256": "df9cfd06d8a44d9a671eadd39ffd97f166481da015a30f45dfd27886209c5922"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/mio-1.2.0/LICENSE",
+      "sha256": "07919255c7e04793d8ea760d6c2ce32d19f9ff02bdbdde3ce90b1e1880929a9b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/mmap-fixed-fixed-0.1.3/LICENSE",
+      "sha256": "21f74eae1b2bd2e6a4c89122aad3f69dd71a3fb4f5317228a2d8b02db2723433"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/munge-0.4.7/LICENSE",
+      "sha256": "36255ffb717f26818f87f08a39864aa7b7310fbf3a153bc72dbb89d9835276c2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/munge_macro-0.4.7/LICENSE",
+      "sha256": "36255ffb717f26818f87f08a39864aa7b7310fbf3a153bc72dbb89d9835276c2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/nu-ansi-term-0.50.3/LICENSE",
+      "sha256": "cfdb7491dfa8800a1d561957d6a072ad63a6305ffa48386d04eae8eac8d65e8a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/num-traits-0.2.19/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/num-traits-0.2.19/LICENSE-MIT",
+      "sha256": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/num_cpus-1.17.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/num_cpus-1.17.0/LICENSE-MIT",
+      "sha256": "391a5396cec6230bfabd4ef4eb2350eb895bc5efce377a2218f5702ed020d3e3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/once_cell-1.21.3/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/once_cell-1.21.3/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/parking_lot-0.12.5/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/parking_lot-0.12.5/LICENSE-MIT",
+      "sha256": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/parking_lot_core-0.9.12/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/parking_lot_core-0.9.12/LICENSE-MIT",
+      "sha256": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pem-rfc7468-0.7.0/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pem-rfc7468-0.7.0/LICENSE-MIT",
+      "sha256": "90c503b61dee04e1449c323ec34c229dfb68d7adcb96c7e140ee55f70fce2d8e"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/percent-encoding-2.3.2/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/percent-encoding-2.3.2/LICENSE-MIT",
+      "sha256": "b38f11f6096706e6de553dabe2a7ed142d59b6fa8c97e290c67496154745cdd5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/phf-0.13.1/LICENSE",
+      "sha256": "0ab4d106b6faac07fb6a051815fd1b4d862d730895e2d7d7358c2f13565e7a38"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/phf_codegen-0.13.1/LICENSE",
+      "sha256": "0ab4d106b6faac07fb6a051815fd1b4d862d730895e2d7d7358c2f13565e7a38"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/phf_generator-0.13.1/LICENSE",
+      "sha256": "0ab4d106b6faac07fb6a051815fd1b4d862d730895e2d7d7358c2f13565e7a38"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/phf_macros-0.13.1/LICENSE",
+      "sha256": "0ab4d106b6faac07fb6a051815fd1b4d862d730895e2d7d7358c2f13565e7a38"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/phf_shared-0.13.1/LICENSE",
+      "sha256": "0ab4d106b6faac07fb6a051815fd1b4d862d730895e2d7d7358c2f13565e7a38"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pin-project-lite-0.2.16/LICENSE-APACHE",
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pin-project-lite-0.2.16/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pinyin-0.11.0/LICENSE",
+      "sha256": "dbee1336f5286b3b26fb6b4a71ab1e8d89f80b4073d9c8d2b2b33c06abc3bcbe"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pkcs8-0.10.2/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pkcs8-0.10.2/LICENSE-MIT",
+      "sha256": "ad64fcb9589f162720f3cc5010ad76ca6ad3764e11861f9192c489df176bb71d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/plain-0.2.3/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/plain-0.2.3/LICENSE-MIT",
+      "sha256": "bc12b75fd81829814d843a03fa52aad0e53355b1f13665e309ff7fa33c66e5b5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/potential_utf-0.1.6/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/proc-macro2-1.0.106/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/proc-macro2-1.0.106/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ptr_meta-0.3.2/LICENSE",
+      "sha256": "635111a955495b5d8d34b8052f69656e8e45f6437f9266329077b9aad5fbe8d3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ptr_meta_derive-0.3.2/LICENSE",
+      "sha256": "635111a955495b5d8d34b8052f69656e8e45f6437f9266329077b9aad5fbe8d3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quinn-0.11.12/LICENSE-APACHE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quinn-0.11.12/LICENSE-MIT",
+      "sha256": "4b2d0aca6789fa39e03d6738e869ea0988cceba210ca34ebb59c15c463e93a04"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quinn-proto-0.11.19/LICENSE-APACHE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quinn-proto-0.11.19/LICENSE-MIT",
+      "sha256": "4b2d0aca6789fa39e03d6738e869ea0988cceba210ca34ebb59c15c463e93a04"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quinn-udp-0.5.16/LICENSE-APACHE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quinn-udp-0.5.16/LICENSE-MIT",
+      "sha256": "4b2d0aca6789fa39e03d6738e869ea0988cceba210ca34ebb59c15c463e93a04"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quote-1.0.45/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/quote-1.0.45/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rancor-0.1.3/LICENSE",
+      "sha256": "744ba853c063f56a8d79385406413e5e3600adbc6aae359c74022701fb55a42a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand-0.10.3/LICENSE-APACHE",
+      "sha256": "35242e7a83f69875e6edeff02291e688c97caafe2f8902e4e19b49d3e78b4cab"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand-0.10.3/LICENSE-MIT",
+      "sha256": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand_core-0.10.1/LICENSE-APACHE",
+      "sha256": "6df43f6f4b5d4587f3d8d71e45532c688fd168afa5fe89d571cb32fa09c4ef51"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand_core-0.10.1/LICENSE-MIT",
+      "sha256": "8b6e9feec03e7c9a5facb26855cecd31662bf989b636bcfe79521bdf8ac863f0"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand_core-0.6.4/LICENSE-APACHE",
+      "sha256": "6df43f6f4b5d4587f3d8d71e45532c688fd168afa5fe89d571cb32fa09c4ef51"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand_core-0.6.4/LICENSE-MIT",
+      "sha256": "209fbbe0ad52d9235e37badf9cadfe4dbdc87203179c0899e738b39ade42177b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand_pcg-0.10.2/LICENSE-APACHE",
+      "sha256": "6df43f6f4b5d4587f3d8d71e45532c688fd168afa5fe89d571cb32fa09c4ef51"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rand_pcg-0.10.2/LICENSE-MIT",
+      "sha256": "2234e3cefee876aeb686ad89e978bdb07bf118a1186ab1cf161bcdf69d4b4f57"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/regex-1.12.3/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/regex-1.12.3/LICENSE-MIT",
+      "sha256": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/regex-automata-0.4.13/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/regex-automata-0.4.13/LICENSE-MIT",
+      "sha256": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/regex-syntax-0.8.8/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/regex-syntax-0.8.8/LICENSE-MIT",
+      "sha256": "6485b8ed310d3f0340bf1ad1f47645069ce4069dcc6bb46c7d5c6faf41de1fdb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/region-3.0.2/LICENSE",
+      "sha256": "e2a8a2f43d6926ab9cfc47cffd7f78f8fced21d23e7b1896067b74036fd3bf2c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rend-0.5.4/LICENSE",
+      "sha256": "635111a955495b5d8d34b8052f69656e8e45f6437f9266329077b9aad5fbe8d3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/reqwest-0.12.28/LICENSE-APACHE",
+      "sha256": "751963a8b88c0e3a9f27e98933079fbcf09b9998b2c13ac49c2e4d58444520d6"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/reqwest-0.12.28/LICENSE-MIT",
+      "sha256": "47d4e1803702728e03d30f8a848ae2249ba274bbd9f8443e803f7924d83cd371"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/retour-0.4.0-alpha.4/LICENSE",
+      "sha256": "31283bd91b810d6692f584c4b5655502fe41093daa636be5e675e614e8560c75"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ring-0.17.14/LICENSE",
+      "sha256": "b3d734001a94efff3579978d953391aa7115f877657d25eb54037a43875d078a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ring-0.17.14/LICENSE-BoringSSL",
+      "sha256": "005fc765ddc5115da796cca915baa9557abae13ff35e0a47c47affc56f6c414d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ring-0.17.14/LICENSE-other-bits",
+      "sha256": "f025ccfb7dfb6bdfedc75ca0f67acc69e6fb4998143d834f7c2f38a29989680f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rkyv-0.8.18/LICENSE",
+      "sha256": "635111a955495b5d8d34b8052f69656e8e45f6437f9266329077b9aad5fbe8d3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rkyv_derive-0.8.18/LICENSE",
+      "sha256": "635111a955495b5d8d34b8052f69656e8e45f6437f9266329077b9aad5fbe8d3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustc-demangle-0.1.26/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustc-demangle-0.1.26/LICENSE-MIT",
+      "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustc-hash-2.1.3/LICENSE-APACHE",
+      "sha256": "95bd3988beee069fa2848f648dab43cc6e0b2add2ad6bcb17360caf749802bcc"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustc-hash-2.1.3/LICENSE-MIT",
+      "sha256": "30fefc3a7d6a0041541858293bcbea2dde4caa4c0a5802f996a7f7e8c0085652"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustc_version-0.4.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustc_version-0.4.1/LICENSE-MIT",
+      "sha256": "c9a75f18b9ab2927829a208fc6aa2cf4e63b8420887ba29cdb265d6619ae82d5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustls-0.23.45/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustls-0.23.45/LICENSE-ISC",
+      "sha256": "7cfafc877eccc46c0e346ccbaa5c51bb6b894d2b818e617d970211e232785ad4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustls-0.23.45/LICENSE-MIT",
+      "sha256": "709e3175b4212f7b13aa93971c9f62ff8c69ec45ad8c6532a7e0c41d7a7d6f8c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustls-pki-types-1.15.1/LICENSE-APACHE",
+      "sha256": "45fd05c4865e7c350b98ad7ac50e1b15462d49af4a91e9b0c9dd933dc9a69742"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustls-pki-types-1.15.1/LICENSE-MIT",
+      "sha256": "9117d922e667125508dde62b02c1f57ed22f5ad21eb536aa2e2d99e1c796e639"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rustls-webpki-0.103.15/LICENSE",
+      "sha256": "5b698ca13897be3afdb7174256fa1574f8c6892b8bea1a66dd6469d3fe27885a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ryu-1.0.20/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ryu-1.0.20/LICENSE-BOOST",
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/scopeguard-1.2.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/scopeguard-1.2.0/LICENSE-MIT",
+      "sha256": "fb77f0a9c53e473abe5103c8632ef9f0f2874d4fb3f17cb2d8c661aab9cee9d7"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/scroll-0.13.0/LICENSE",
+      "sha256": "6e24b7455f0b9afefdf4f3efd59a56ce76a3020c2dc4371937e281fc5e587fd7"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/scroll_derive-0.13.1/LICENSE",
+      "sha256": "afb11426e09da40a1ae4f8fa17ddcc6b6a52d14df04c29bc5bcd06eb8730624d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/semver-1.0.28/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/semver-1.0.28/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde-1.0.228/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde-1.0.228/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_core-1.0.228/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_core-1.0.228/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_derive-1.0.228/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_derive-1.0.228/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_json-1.0.145/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_json-1.0.145/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_path_to_error-0.1.20/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_path_to_error-0.1.20/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_spanned-1.1.1/LICENSE-APACHE",
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_spanned-1.1.1/LICENSE-MIT",
+      "sha256": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_urlencoded-0.7.1/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/serde_urlencoded-0.7.1/LICENSE-MIT",
+      "sha256": "b9eb266294324f672cbe945fe8f2e32f85024f0d61a1a7d14382cdde0ac44769"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/sha2-0.10.9/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/sha2-0.10.9/LICENSE-MIT",
+      "sha256": "b4eb00df6e2a4d22518fcaa6a2b4646f249b3a3c9814509b22bd2091f1392ff1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/sha2-0.11.0/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/sha2-0.11.0/LICENSE-MIT",
+      "sha256": "831e0f43ad0bf014c1c4fec5767aae470434c1d66d6e671be2d823e729063e25"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/shlex-1.3.0/LICENSE-APACHE",
+      "sha256": "553fffcd9b1cb158bc3e9edc35da85ca5c3b3d7d2e61c883ebcfa8a65814b583"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/shlex-1.3.0/LICENSE-MIT",
+      "sha256": "4455bf75a91154108304cb283e0fea9948c14f13e20d60887cf2552449dea3b1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/signature-2.2.0/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/signature-2.2.0/LICENSE-MIT",
+      "sha256": "b3470648aff02beb36d7a53240fc9260ed80ed93bd43bace6b67d7ef7336ee33"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/simdutf8-0.1.5/LICENSE-Apache",
+      "sha256": "0cec06e0e55fbc3dc5cee4fca9b607f66cb8f4e4dbcf3b3c013594dd156732e9"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/simdutf8-0.1.5/LICENSE-MIT",
+      "sha256": "1847e0e0698142ed4347c1441a9fa81c8fbddd44b1d8bbcd5e3647f991759d7f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/siphasher-1.0.4/COPYING",
+      "sha256": "c962ee4d1d05ddc138b202b2540219ebc57893fcf97b364852094a9a94ce1365"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/siphasher-1.0.4/LICENSE-APACHE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/siphasher-1.0.4/LICENSE-MIT",
+      "sha256": "f9c4c77baa3828004ee54b8a4f2db2e88ed44a6237a493965bf551fac0fcb62d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/slab-0.4.12/LICENSE",
+      "sha256": "8ce0830173fdac609dfb4ea603fdc002c2f4af0dc9b1a005653f5da9cf534b18"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/slice-pool2-0.4.3/LICENSE-SPDX-MIT.txt",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/smallvec-1.15.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/smallvec-1.15.1/LICENSE-MIT",
+      "sha256": "0b28172679e0009b655da42797c03fd163a3379d5cfa67ba1f1655e974a2a1a9"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/socket2-0.6.3/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/socket2-0.6.3/LICENSE-MIT",
+      "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/spki-0.7.3/LICENSE-APACHE",
+      "sha256": "a9040321c3712d8fd0b09cf52b17445de04a23a10165049ae187cd39e5c86be5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/spki-0.7.3/LICENSE-MIT",
+      "sha256": "c995204cc6bad2ed67dd41f7d89bb9f1a9d48e0edd745732b30640d7912089a4"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/stable_deref_trait-1.2.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/stable_deref_trait-1.2.1/LICENSE-MIT",
+      "sha256": "5e05b024f653a5ce199e77cbbbd42fb5553562ec714b819421ed0c3e552a75d7"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/subtle-2.6.1/LICENSE",
+      "sha256": "d1fc1bc0d155df60b2e7705b6b2ae02a05c96f948e1cec6e2fb86360b09f346b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/syn-1.0.109/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/syn-1.0.109/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/syn-2.0.117/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/syn-2.0.117/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/syn-3.0.6/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/syn-3.0.6/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/sync_wrapper-1.0.2/LICENSE",
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/synstructure-0.14.0/LICENSE",
+      "sha256": "219920e865eee70b7dcfc948a86b099e7f4fe2de01bcca2ca9a20c0a033f2b59"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tempfile-3.27.0/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tempfile-3.27.0/LICENSE-MIT",
+      "sha256": "8b427f5bc501764575e52ba4f9d95673cf8f6d80a86d0d06599852e1a9a20a36"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/thiserror-2.0.17/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/thiserror-2.0.17/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/thiserror-impl-2.0.17/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/thiserror-impl-2.0.17/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tinystr-0.8.4/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tinyvec-1.13.3/LICENSE-APACHE.md",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tinyvec-1.13.3/LICENSE-MIT.md",
+      "sha256": "fd80a26fbb3f644af1fa994134446702932968519797227e07a1368dea80f0bc"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tinyvec-1.13.3/LICENSE-ZLIB.md",
+      "sha256": "84b34dd7608f7fb9b17bd588a6bf392bf7de504e2716f024a77d89f1b145a151"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tokio-1.51.0/LICENSE",
+      "sha256": "253cd04c6714889df2d32f3f64d669179a1c95c76ac43c40882c52eb06bc3552"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tokio-macros-2.7.0/LICENSE",
+      "sha256": "0b83dc40cba89b9922bb84b0a9c7d2768ce37c1d7e138b7424fd4549915778c9"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tokio-rustls-0.26.6/LICENSE-APACHE",
+      "sha256": "cc117d90b498b32b11a886f279b359da16a73c3b01efbb2f5cc004b20262334e"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tokio-rustls-0.26.6/LICENSE-MIT",
+      "sha256": "e20fa2b8e0a2565f24a792b94b4bf4b6c2b9d36f781d8a9516e218a036e6677a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tokio-util-0.7.19/LICENSE",
+      "sha256": "253cd04c6714889df2d32f3f64d669179a1c95c76ac43c40882c52eb06bc3552"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml-1.1.2+spec-1.1.0/LICENSE-APACHE",
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml-1.1.2+spec-1.1.0/LICENSE-MIT",
+      "sha256": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml_datetime-1.1.1+spec-1.1.0/LICENSE-APACHE",
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml_datetime-1.1.1+spec-1.1.0/LICENSE-MIT",
+      "sha256": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml_parser-1.1.2+spec-1.1.0/LICENSE-APACHE",
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml_parser-1.1.2+spec-1.1.0/LICENSE-MIT",
+      "sha256": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml_writer-1.1.1+spec-1.1.0/LICENSE-APACHE",
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/toml_writer-1.1.1+spec-1.1.0/LICENSE-MIT",
+      "sha256": "6efb0476a1cc085077ed49357026d8c173bf33017278ef440f222fb9cbcb66e6"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tower-0.5.3/LICENSE",
+      "sha256": "4249c8e6c5ebb85f97c77e6457c6fafc1066406eb8f1ef61e796fbdc5ff18482"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tower-http-0.6.11/LICENSE",
+      "sha256": "5049cf464977eff4b4fcfa7988d84e74116956a3eb9d5f1d451b3f828f945233"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tower-layer-0.3.3/LICENSE",
+      "sha256": "4249c8e6c5ebb85f97c77e6457c6fafc1066406eb8f1ef61e796fbdc5ff18482"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tower-service-0.3.3/LICENSE",
+      "sha256": "4249c8e6c5ebb85f97c77e6457c6fafc1066406eb8f1ef61e796fbdc5ff18482"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tracing-0.1.44/LICENSE",
+      "sha256": "898b1ae9821e98daf8964c8d6c7f61641f5f5aa78ad500020771c0939ee0dea1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/tracing-core-0.1.36/LICENSE",
+      "sha256": "898b1ae9821e98daf8964c8d6c7f61641f5f5aa78ad500020771c0939ee0dea1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/try-lock-0.2.5/LICENSE",
+      "sha256": "c816a0749cdc6bf062a5111c159723de51b2bfac66a1dac2655abd9e6b1583eb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ttf-parser-0.21.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/ttf-parser-0.21.1/LICENSE-MIT",
+      "sha256": "f3c9fe731c701ed77fd5fbaac573872af04dc5869385eb9bd5e3c73c42713814"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/typenum-1.19.0/LICENSE",
+      "sha256": "db11fec9946737df39ca3898d9cd8c10ec6f6c3a884a6802b0ad0b81b4e8f23a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/typenum-1.19.0/LICENSE-APACHE",
+      "sha256": "516b24e051bf5630880ebbd55c40a25ce9552ebaf8970a53e8976eb70e522406"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/typenum-1.19.0/LICENSE-MIT",
+      "sha256": "a825bd853ab71619a4923d7b4311221427848070ff44d990da39b0b274c1683f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/unicode-ident-1.0.22/LICENSE-APACHE",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/unicode-ident-1.0.22/LICENSE-MIT",
+      "sha256": "23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/unicode-ident-1.0.22/LICENSE-UNICODE",
+      "sha256": "f7db81051789b729fea528a63ec4c938fdcb93d9d61d97dc8cc2e9df6d47f2a1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/untrusted-0.9.0/LICENSE.txt",
+      "sha256": "7abd9b6960dcf7d4d0a48606a5b71bfe37d472db68d70637f3a58a56785f1621"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/url-2.5.8/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/url-2.5.8/LICENSE-MIT",
+      "sha256": "b38f11f6096706e6de553dabe2a7ed142d59b6fa8c97e290c67496154745cdd5"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/utf8_iter-1.0.4/LICENSE-APACHE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/utf8_iter-1.0.4/LICENSE-MIT",
+      "sha256": "3fa4ca83dcc9237839b1bdeb2e6d16bdfb5ec0c5ce42b24694d8bbf0dcbef72c"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/uuid-1.26.1/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/uuid-1.26.1/LICENSE-MIT",
+      "sha256": "436bc5a105d8e57dcd8778730f3754f7bf39c14d2f530e4cde4bd2d17a83ec3d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/version_check-0.9.5/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/version_check-0.9.5/LICENSE-MIT",
+      "sha256": "b7e650f3fce5c53249d1cdc608b54df156a97edd636cf9d23498d0cfe7aec63e"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/want-0.3.1/LICENSE",
+      "sha256": "a65f5d0a945d267751344c95665945b90c030ea107faf5c85d518929886187da"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/webpki-roots-1.0.9/LICENSE",
+      "sha256": "e271993808fec50ab29350b39539cdec611a9103f827e0aa26d61da70e2d33f8"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/winapi-0.3.9/LICENSE-APACHE",
+      "sha256": "b40930bbcf80744c86c46a12bc9da056641d722716c378f5659b9e555ef833e1"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/winapi-0.3.9/LICENSE-MIT",
+      "sha256": "ce7bc3499fee93d5022ef430d5e4201e79a6d9154f3974e42f41349f0569e09b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-link-0.2.1/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-link-0.2.1/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-sys-0.52.0/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-sys-0.52.0/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-sys-0.61.2/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-sys-0.61.2/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-targets-0.52.6/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-targets-0.52.6/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows_x86_64_msvc-0.52.6/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows_x86_64_msvc-0.52.6/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/winnow-1.0.1/LICENSE-MIT",
+      "sha256": "cb5aedb296c5246d1f22e9099f925a65146f9f0d6b4eebba97fd27a6cdbbab2d"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/with_builtin_macros-0.1.0/LICENSE-APACHE",
+      "sha256": "65d4222196bc4a324dfba8ea3a75b899b85c4f3073c40cc772870c915d63d4aa"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/with_builtin_macros-0.1.0/LICENSE-MIT",
+      "sha256": "84871f1f0aaa528ca8a42931b8a224cc2eaed665bf8913de05d841edd9ae46fa"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/with_builtin_macros-0.1.0/LICENSE-ZLIB",
+      "sha256": "67f654ceb5eb8d215144761c2e49b2a6b591e881fbbd27022ddde9b22f6c15be"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/with_builtin_macros-proc_macros-0.1.0/LICENSE-SPDX-Zlib OR MIT OR Apache-2.0.txt",
+      "sha256": "62c7a1e35f56406896d7aa7ca52d0cc0d272ac022b5d2796e7d6905db8a3636a"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/writeable-0.6.4/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/yoke-0.8.3/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/yoke-derive-0.8.3/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/zerofrom-0.1.8/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/zerofrom-derive-0.1.8/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/zeroize-1.9.0/LICENSE-APACHE",
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/zeroize-1.9.0/LICENSE-MIT",
+      "sha256": "8c7516d4b27b1e495be5e38b612298b63de48d05f49cdac94f70f3cd70f8864b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/zerotrie-0.2.5/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/zerovec-0.11.8/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/zerovec-derive-0.11.6/LICENSE",
+      "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
     }
   ]
 }
