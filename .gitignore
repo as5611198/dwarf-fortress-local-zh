@@ -1,0 +1,14 @@
+# Local build and runtime state
+**/target/
+**/node_modules/
+!distribution/steam/df-local-zh-complete/broker/node_modules/
+!distribution/steam/df-local-zh-complete/broker/node_modules/**
+**/.wrangler/
+**/runtime-*.jsonl
+**/translations.jsonl
+**/world-names.json
+**/*.log
+**/*.private.json
+**/server.stdout
+**/server.stderr
+*.zip

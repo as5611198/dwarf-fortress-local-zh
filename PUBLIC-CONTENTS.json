@@ -1,0 +1,3296 @@
+{
+  "schema": 1,
+  "generatedAt": "2026-10-01",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "bytes": 802,
+      "sha256": "bfe69ea5c222caa5063287929c4bb43a06171f081f21fc3105f149129545051e"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 342,
+      "sha256": "62ce89c59cf8238486c42b5fff7927aa1c77d1769822da81bf75677609084b8b"
+    },
+    {
+      "path": "ATTRIBUTION.md",
+      "bytes": 1010,
+      "sha256": "f7cc3a4d70e81fe731ab232f8db26bac2d4df0fea9f097ae7bd10bb2e90e25a2"
+    },
+    {
+      "path": "DFI18N-DATA-ZH-HANS-LICENSE.md",
+      "bytes": 1198,
+      "sha256": "16e94750eff34db1262d7585a0eb6eed63f0fa5b2eccdee8d7b434734a2013da"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/ATTRIBUTION.md",
+      "bytes": 1010,
+      "sha256": "f7cc3a4d70e81fe731ab232f8db26bac2d4df0fea9f097ae7bd10bb2e90e25a2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/broker.mjs",
+      "bytes": 13368,
+      "sha256": "d8c33169144e150428042b51522788d33ac22be286832bd75e64df9940a5ebb9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/compile-data.mjs",
+      "bytes": 11210,
+      "sha256": "807c7b0f0c0be3e4b3300533b94c03ca5f0067e6987a8b29c677b229c2b5c3ea"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/config.json",
+      "bytes": 572,
+      "sha256": "51478d1ac7a83d69ff1e7296f58893b5ddac2245cd2add5cd693f1e70c061a5e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/announcement-rules/announcement_date.toml",
+      "bytes": 646,
+      "sha256": "27a3ba6f4d7812e4f9af48b2cb3d1d1a6c9aaa33a2da89368388f5633771ed65"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/announcement-rules/index.toml",
+      "bytes": 76,
+      "sha256": "8a2ce22f64362f09a8543b6dec56fda28f49f9f89318488919f04b1e781e6e73"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/descriptions.jsonl",
+      "bytes": 268846,
+      "sha256": "b0a244b4616223102a4652604c9ee9034027661ef82943017fa6b1cb3ef17dbd"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/fortress-hover.json",
+      "bytes": 48097,
+      "sha256": "d6a9dd7458c481c3aee260e69011fab0451e96194b19cb991782951289b5db80"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/fortress-ui.csv",
+      "bytes": 47116,
+      "sha256": "50443877a2b80431eb2c1e71ce55080961fced1253f882852f2905f3b03ebc46"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/prewarmed-case-variants.csv",
+      "bytes": 3584,
+      "sha256": "aa0135ffcb04a99e161de48f218e171602f07b7a9b5c2aa7f9eb1958904c03cd"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/prewarmed-raw-states.csv",
+      "bytes": 10960,
+      "sha256": "b7c572b02e2a323aed52d354e7e52c9dd8a579f2fb43f907da1a82942f6c5fd4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/prewarmed-reaction-names.csv",
+      "bytes": 3029,
+      "sha256": "cee0335b94b72bbf5cba94e8d46d9aa472775ffda8811af86a35ad540d4b49df"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/prewarmed-unresolved.csv",
+      "bytes": 4310,
+      "sha256": "ea4a892c1ce40f45705de5c52947c8e7a7493b58983a9777c80112ffb4772157"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/race-map.json",
+      "bytes": 74508,
+      "sha256": "6596b4b4c7e90cff0680cdf25c0a1284d0c5b3cf2c7486d1e4e5546e44865d71"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data/reviewed-raw-names.csv",
+      "bytes": 3819,
+      "sha256": "2a3b5f1c5623d96a32a7a6e4fd9783571695ba04ca4c58764c0e6d5990bdde1d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/data.mjs",
+      "bytes": 4394,
+      "sha256": "19a18ae0627d28415a9a378ba2ad017c2225a623177924c18f9977fb93aa30cf"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/description-terms.mjs",
+      "bytes": 1528,
+      "sha256": "876c164c02d798e1c628c54e1afa6335e45c513a35d8f7069e0cf6b2cffc8627"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/df-broker-launch.dll",
+      "bytes": 124416,
+      "sha256": "7f9dccc173743950c08fb4107faf37b84d88dd3a8fc8441dca5f8454ff291cfa"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/dynamic.mjs",
+      "bytes": 2791,
+      "sha256": "5150e9330c7f37f18076018567340b9b6309c411666305fd50d51e3804e1e676"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/glossary.json",
+      "bytes": 2161,
+      "sha256": "cc55a6295c11556825f66ed1148b956513c8632faf0951348f7ca8cc78ccdbdb"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/legends-captions.mjs",
+      "bytes": 3081,
+      "sha256": "075c1230d07611a8cef761af2e5142c12d394707a922c7ff447ea9944021a0bc"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/LICENSE-STATUS.json",
+      "bytes": 2153,
+      "sha256": "2744d695a1033df29aa5aaa302f32bc348e678416eb63493cf4db09509a0bd40"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/name-dictionary.json",
+      "bytes": 34164,
+      "sha256": "7437f5a16de7fed0234cc51c5ea80d34d451c93a39a2dbf08224adede35efaaa"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/names.mjs",
+      "bytes": 6862,
+      "sha256": "b7ee065c15f7c74565f69adbd5c286edee7404a3d7b90ad47b409f93df0e25ae"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/native-prewarm.mjs",
+      "bytes": 8163,
+      "sha256": "a8bd9552678d18b4aab8bbd142b37dd94e2ddc54a4a239bc618343202f40d976"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/.bin/fxparser",
+      "bytes": 409,
+      "sha256": "0d640244a732a85b09fcce19492e4e2273eba3b1d69f2ae9f0a338c5c9bddc0c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/.bin/fxparser.cmd",
+      "bytes": 335,
+      "sha256": "a9e7bd29b703e4639adc05296b9e911ec7bbaf9fafe7d6e781e6e1ded053a543"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/.bin/fxparser.ps1",
+      "bytes": 845,
+      "sha256": "602ec72679945a4587e7d3e3420ccaf71d61162c4ed19aec1040afea0b3ddb0d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/.package-lock.json",
+      "bytes": 5388,
+      "sha256": "60660bce9d5c2b7f91df420941022ead14aeb6b82c6bf27b73770d22badbffa1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/CHANGELOG.md",
+      "bytes": 10640,
+      "sha256": "c4fd08ccbca86279f5ce6ee6b065dd5e347959ff2fdff1c3f28021ae1a8e43ca"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/index.d.ts",
+      "bytes": 1650,
+      "sha256": "4bf88e5e15846d49caf3477317740df62835f176863267fcfa2523ed02075482"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/create-date.js",
+      "bytes": 485,
+      "sha256": "3941f4748f25f11c5ccf55c85ddc41e06e85379482e5885a8aff8b964d6a2ad8"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/create-datetime-float.js",
+      "bytes": 663,
+      "sha256": "aa5ac5619fafcb487edf249d3a8bbd9d672626299966eba6945afbc96470c6c1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/create-datetime.js",
+      "bytes": 197,
+      "sha256": "b83215e9dd32e34332c7ddd9b868e03e321dcb28cde830d1b7951df68325bbbf"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/create-time.js",
+      "bytes": 508,
+      "sha256": "2d40222ea3f60c1c95cf3f60e3b1554f39cc3a0d5ef5ff8bfb031635fa987707"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/format-num.js",
+      "bytes": 120,
+      "sha256": "b4f02ed3ea839792827aacd1bd1492f0150f53024a006832579cd6ec43e92801"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/parser-debug.js",
+      "bytes": 1986,
+      "sha256": "3e202f84762b40144f338b1040a597aa2a0fa1537abbb22e13cd5480313df2ce"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/parser.js",
+      "bytes": 2975,
+      "sha256": "175e4cc273aea2e0505e0f0000bcba471f8da041d219a9ab73978567e8f66029"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/lib/toml-parser.js",
+      "bytes": 45566,
+      "sha256": "805ffd1b4e183566a15546024ca98b3f94ee39778ff43782d432c7c981c32191"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/LICENSE",
+      "bytes": 752,
+      "sha256": "d4dc58571be1260e45f2fb8ab174e0a838c9ca361720e1b0e2ca020c037988b2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/package.json",
+      "bytes": 2710,
+      "sha256": "5f12af78655b4014079ecdd8c946ccea0356eb0282b36a2108bfb99abddf65e9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/parse-async.js",
+      "bytes": 863,
+      "sha256": "277f98c122d6f3c6755d2a1bf81bece2472696e0e899f02a193d8ad57255493f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/parse-pretty-error.js",
+      "bytes": 1045,
+      "sha256": "4e9783b41b343c62be4d3bf3b21fb7972bfc27523e913a782c4624c008a80eb1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/parse-stream.js",
+      "bytes": 1625,
+      "sha256": "b1ce5edabc3a7a4db886c9a5a0903cd2e20ffbcd338405b7b08da853b04c5913"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/parse-string.js",
+      "bytes": 415,
+      "sha256": "cd9e497870ffda7ad1e266b86580c270388a45c2d04e75acd985a42a0597fdb0"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/parse.js",
+      "bytes": 227,
+      "sha256": "a103f6919f045c44cddda84af4cd44b94fe4a253f8d07a81d779db06ab081976"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/README.md",
+      "bytes": 18226,
+      "sha256": "6a6174181ba25dffc9c4723215c0b5b94f30fe7c448c0c34028c70016524bbe9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/stringify.js",
+      "bytes": 8292,
+      "sha256": "dc41912d4bcbb2352a338314caa4b16463061d1615dc0d9bcec6953638232ae1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@iarna/toml/toml.js",
+      "bytes": 97,
+      "sha256": "b6bdf7ac57047ec0a2fab0e34c42d500fb95a3234fa649c3ff5725aef9d09eb0"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/package.json",
+      "bytes": 1270,
+      "sha256": "548526ce0e1cad9ffe904fba19067013c9fea336eafd3cd52a337ec44406c9ed"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/README.md",
+      "bytes": 3485,
+      "sha256": "7e3484a07c208b5c5813290a993244c6841efc3d4241c29a07ef948e8129a758"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/src/all-entities.js",
+      "bytes": 1497,
+      "sha256": "2f1340ab32dce314f41638b7ee6d0368b974e3302983154b815a6d49a6dfb63b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/src/entities.js",
+      "bytes": 18791,
+      "sha256": "96ec5d127a4e8cd77bdc678422f0d57c8ff9e37bcec999983da71a7b72ce9a0e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/src/EntityDecoder.js",
+      "bytes": 25816,
+      "sha256": "a56cf2bf8174e0adf94970d70e003afcfc3923a53d0cf973f92d374cfe684544"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/src/EntityEncoder.js",
+      "bytes": 8479,
+      "sha256": "812a2077e073564d6470b8fda8ac0d20ecaaf75ddb1594d55d28acc2da8a1a71"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/src/entityTries.js",
+      "bytes": 2359,
+      "sha256": "fa2838d141fba0e8ee5bd2197956c3f6b1d23668be2c8841a585614ea7051f99"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/src/index.d.ts",
+      "bytes": 12183,
+      "sha256": "aea4188bf00c7d6474a34adb715810cfa9e45acafb1b4931e63db0b4253c07da"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/@nodable/entities/src/index.js",
+      "bytes": 515,
+      "sha256": "79a65ddeda08664d00b7b82f5a903ea437de1dff54a02ed469e9cb1067cb568b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/anynum/anynum.js",
+      "bytes": 4309,
+      "sha256": "f8c6a9b031489dfc1573e7a669e4860223ddeedc0007db5dbf5878a14249776d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/anynum/digitTable.js",
+      "bytes": 5126,
+      "sha256": "c649d39c53ebe6817c71407de8105b6d8cbc2326867f90d59f49ab02d9271b44"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/anynum/LICENSE",
+      "bytes": 1077,
+      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/anynum/package.json",
+      "bytes": 896,
+      "sha256": "41c5d60f0aa8b5f4133aeff56573a8c4130d4d1c19dc240398ff806b40a4470e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/anynum/README.md",
+      "bytes": 4642,
+      "sha256": "1e88190ad99aa33ac5114a49f5661319938346d35fbc1babcaca0b4b47fbbb09"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/cjs/index.cjs",
+      "bytes": 62606,
+      "sha256": "d8e42d4e921976d0c7503cb51b062bbde7e1168da2fc76534d668d4b09b2fab3"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/cjs/index.d.cts",
+      "bytes": 18483,
+      "sha256": "863dc84658dce935b527e72cba43cd8d764b649e670c91572fc4e04b7ffc13e9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/cjs/sync.cjs",
+      "bytes": 59512,
+      "sha256": "6f952c942ee511edda936b1245600c32d558fe2da6cdc16bc1f68fc4fdff94b6"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/cjs/sync.d.cts",
+      "bytes": 673,
+      "sha256": "a20c04b53ef58f5d9e9b6d7d352fbed92731f944d3dd5e81f838a1268034b2f2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/esm/index.d.ts",
+      "bytes": 18483,
+      "sha256": "863dc84658dce935b527e72cba43cd8d764b649e670c91572fc4e04b7ffc13e9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/esm/index.js",
+      "bytes": 206295,
+      "sha256": "a51fc6ab05d1d276dd2691b8b1fa5c2e6749fd56f57fb5400194b899b66888a9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/esm/stream.d.ts",
+      "bytes": 411,
+      "sha256": "93e342e123f420c49b97029c8692c8f3ea83d6e47ebbbb43ad3914561df30ee7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/esm/sync.d.ts",
+      "bytes": 671,
+      "sha256": "2f8d8af2a2ed7ca2ee1ed91b1ff5676d2dcf5e133f487378c63c1c98e98e2804"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/esm/sync.js",
+      "bytes": 113615,
+      "sha256": "7a7514688670dcc09ba5f764e84b253e5f49fb93548d7a1413abaf5e82e6c16b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/iife/index.js",
+      "bytes": 280765,
+      "sha256": "fc28e4c0034efc3d8e66d36219414593c4796e5253996893cb36668da04c7821"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/iife/sync.js",
+      "bytes": 155279,
+      "sha256": "c107a60e9f9be9a4f67447c59e45a089104ec4d8bd6a3b4349b1ab88f9d0685b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/umd/index.js",
+      "bytes": 281052,
+      "sha256": "4c50f3662482507b7de5c45d5d1cc1e845646569c110c9d64e1964c390b74508"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/dist/umd/sync.js",
+      "bytes": 155560,
+      "sha256": "ad97010e1582297cdf882d55d557c216ac12f11b1f086e8413b114e6afd37283"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/api/CsvError.js",
+      "bytes": 630,
+      "sha256": "75c91323d96fbe1357e944850eea090f8a1a2fee5cc1336a311de56d1cf13fcb"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/api/index.js",
+      "bytes": 32224,
+      "sha256": "8025deff020982a76d4df30f4ff5c74a2f9d702ba35d2e863eaba08f8e5f759c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/api/init_state.js",
+      "bytes": 2537,
+      "sha256": "2ccd534510ccbfaca6538458faa310dbda0ebaa30aed0ccc29ceb918d6e0f1fc"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/api/normalize_columns_array.js",
+      "bytes": 1162,
+      "sha256": "8ee28e9345c33fd1f435f1219c5579b30cc18d26b4a5c845a846befb48dedb22"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/api/normalize_options.js",
+      "bytes": 21562,
+      "sha256": "7748565f4803a674002828624b83466d62284dae6d5cb1100e1d45e6921eee68"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/index.d.ts",
+      "bytes": 18483,
+      "sha256": "863dc84658dce935b527e72cba43cd8d764b649e670c91572fc4e04b7ffc13e9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/index.js",
+      "bytes": 4054,
+      "sha256": "0f93cf354365a2667c38405066b7ed6ecfc40a1d17ed006d837ecd224b12fa80"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/stream.d.ts",
+      "bytes": 411,
+      "sha256": "93e342e123f420c49b97029c8692c8f3ea83d6e47ebbbb43ad3914561df30ee7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/stream.js",
+      "bytes": 885,
+      "sha256": "64c1e54c4e64b628ba40a89ad6dfbc2c90da5d23d18fc4c7cb4a0958337e5e1a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/sync.d.ts",
+      "bytes": 671,
+      "sha256": "2f8d8af2a2ed7ca2ee1ed91b1ff5676d2dcf5e133f487378c63c1c98e98e2804"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/sync.js",
+      "bytes": 871,
+      "sha256": "4eadd8816917332fc45bdea2b859d7180de32b24cd0e30da819632508fbbe984"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/utils/is_object.js",
+      "bytes": 134,
+      "sha256": "c2376181876ada65c71f2a19fb0b4a4c495e242c1f68f560df22e9d224c9761b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/utils/ResizeableBuffer.js",
+      "bytes": 1520,
+      "sha256": "27dfb01fb2e9507cec90b8614b72cfbe2b491eadcee3e6af445b46b2800d7041"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/lib/utils/underscore.js",
+      "bytes": 162,
+      "sha256": "015f642c76345ad144f9846e36008de6a7c430d1c7fde239c2919cd0b5ec8058"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/LICENSE",
+      "bytes": 1074,
+      "sha256": "032efe3de772e9f85c722ee9ff7ccd5cab01e024296b2b8d25893bf779be9360"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/package.json",
+      "bytes": 4487,
+      "sha256": "66ad16049da3f9987b667416c882aacdca420a725074859d2cc14e55488eacfe"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-parse/README.md",
+      "bytes": 3266,
+      "sha256": "5298f505709284925523b47770c39ab533ca5a95ee321e858c039251819e6171"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/cjs/index.cjs",
+      "bytes": 29070,
+      "sha256": "73729aa15aa462d139ca4f0e9d43c19d473ba47d387338e7e8b4867c710635f7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/cjs/index.d.cts",
+      "bytes": 8550,
+      "sha256": "f3b3dd7652d0738119af69262dc426601b081623dc8f025c094846bdfeb007b4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/cjs/sync.cjs",
+      "bytes": 26746,
+      "sha256": "e9673916d88800a9853804e5ca57909bf5b20e4b1d26480e2d3e534d39404642"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/cjs/sync.d.cts",
+      "bytes": 309,
+      "sha256": "e40c2faaa60913f5c4c2c6a960973b9389d5250993b1ad2530b1db8b831a30c3"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/esm/index.d.ts",
+      "bytes": 8550,
+      "sha256": "f3b3dd7652d0738119af69262dc426601b081623dc8f025c094846bdfeb007b4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/esm/index.js",
+      "bytes": 172909,
+      "sha256": "907774a333c96f456d992354019857bd41cdf712670bacf7b6a861c067c3d610"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/esm/sync.d.ts",
+      "bytes": 307,
+      "sha256": "ed3dc32de29115351a8efed0ba03b202b85170181e459c5b94ac068f9e2dcbff"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/esm/sync.js",
+      "bytes": 80871,
+      "sha256": "587e0e6569fbf43b569434c5eb47c9bc12ec61cd6c96ade9c0a5ff5bf2527ba8"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/iife/index.js",
+      "bytes": 183450,
+      "sha256": "c7036091d08270a1ad22f1ce42c0685f3b0479fe6d1c9619db5a9b9ad7981493"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/iife/sync.js",
+      "bytes": 110960,
+      "sha256": "d039c7d6af3a8d94ac9bda22c22a86eddc1c67e62448717d779695dc39933899"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/umd/index.js",
+      "bytes": 183727,
+      "sha256": "13a8154a0102edc5df6ab2349afa86bbf9c35d2adc200d99edfd2aaac503f002"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/dist/umd/sync.js",
+      "bytes": 111241,
+      "sha256": "8774b059e23bf0d429d8007f55097d70d60077f51cf158ce91a38db9d5ba5fa3"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/api/CsvError.js",
+      "bytes": 598,
+      "sha256": "7feec6b28812faf36f60fc0d025337b6784273950a2aebb559d797203099fdb7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/api/index.js",
+      "bytes": 12412,
+      "sha256": "984ef90b4310fb002d721d7b0da3c13616ee7a2302a88861e9d7dc2607ddf593"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/api/normalize_columns.js",
+      "bytes": 1279,
+      "sha256": "46e403ab3b002d9500bd38f57dfd5c552d3e7ebd9f21452ffb5847c39dcfa573"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/api/normalize_options.js",
+      "bytes": 9398,
+      "sha256": "074abee09fc978ba7543efb1d6216686f3993336cb1914e8991c5fac9fb9da2c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/index.d.ts",
+      "bytes": 8550,
+      "sha256": "f3b3dd7652d0738119af69262dc426601b081623dc8f025c094846bdfeb007b4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/index.js",
+      "bytes": 3338,
+      "sha256": "a97b722f7e1802d3610daea390461680f49497caafd12d1b779da83352b0da04"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/sync.d.ts",
+      "bytes": 307,
+      "sha256": "ed3dc32de29115351a8efed0ba03b202b85170181e459c5b94ac068f9e2dcbff"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/sync.js",
+      "bytes": 963,
+      "sha256": "1481970717496dc5b53c30ed8d4e62596086c767db861dd3892f0b727467801f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/utils/get.js",
+      "bytes": 2528,
+      "sha256": "ffd0e7e631cb5e2ed4c46eca3af70e6c4d6646e1403e3e5260a5b9fe359b928a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/utils/is_object.js",
+      "bytes": 134,
+      "sha256": "c2376181876ada65c71f2a19fb0b4a4c495e242c1f68f560df22e9d224c9761b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/lib/utils/underscore.js",
+      "bytes": 162,
+      "sha256": "015f642c76345ad144f9846e36008de6a7c430d1c7fde239c2919cd0b5ec8058"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/LICENSE",
+      "bytes": 1074,
+      "sha256": "032efe3de772e9f85c722ee9ff7ccd5cab01e024296b2b8d25893bf779be9360"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/package.json",
+      "bytes": 2998,
+      "sha256": "300dd023b0a58b7dbbd156e65f1cd8e563dc2dcc8ff49ec7255c93ef51869a23"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/csv-stringify/README.md",
+      "bytes": 2786,
+      "sha256": "63891372cdc0160a5c00658d670d4c6627455258adf07defa96bb2f7309d8d9a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/CHANGELOG.md",
+      "bytes": 1433,
+      "sha256": "80fc1081d9612e7c476c8244d2febbda786d87094e72b2f70db869514ee2a51e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/lib/fxb.cjs",
+      "bytes": 21985,
+      "sha256": "987f2d413ff7c005f2aa8488c132e97204aaed1ae947b05c15c2517b86561408"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/lib/fxb.d.cts",
+      "bytes": 7096,
+      "sha256": "bf00115bf4352db46e091290ff5e60b7f89e07b9a9df556bcd6201c206845476"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/lib/fxb.min.js",
+      "bytes": 23661,
+      "sha256": "7bb5cf789808985b95cf4ad339633086bdec2423fcc76b1391f93304b8243147"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/lib/fxb.min.js.map",
+      "bytes": 116030,
+      "sha256": "e6d41878c8127bda929e4ec2441b7715665443f27fd697edee03d8390a9dd2c9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/LICENSE",
+      "bytes": 1077,
+      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/package.json",
+      "bytes": 1883,
+      "sha256": "304416f412412cd967ee1139f0eadfebaa263e92bfbfa264bedbb37055d5c27e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/README.md",
+      "bytes": 4913,
+      "sha256": "b55a37d12169e4fcfa8718b132c446eba4fa067e22c3cafc5a4d6cf6054fce76"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/src/fxb.d.ts",
+      "bytes": 7161,
+      "sha256": "6a1352422b247af7058811bca5c0e159d03fad512e0eca38eb765a46154be045"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/src/fxb.js",
+      "bytes": 23479,
+      "sha256": "44d54aa1500d8b179b56c47003530ade9220c0daec31caeeeb1a59760eca6d88"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/src/ignoreAttributes.js",
+      "bytes": 586,
+      "sha256": "40bdf3ab37f544b9f8ea7e474114f489a77ed3247e0be597b9e83e01688e8c80"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/src/orderedJs2Xml.js",
+      "bytes": 13598,
+      "sha256": "4d5b4d0e3a8b3bfa4535e85a2182446f05f32e179dffba00e07422da84cbdb69"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/src/prettifyJs2Xml.js",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-builder/src/util.js",
+      "bytes": 866,
+      "sha256": "f585f26c6fa18af890c32d00fbb00fbfd05b9c7217419b6fe8675bdcee264140"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/CHANGELOG.md",
+      "bytes": 31430,
+      "sha256": "0c159daf0c5d77839dde1e5ec118fbb2c0d272c7631785c73b98a2e80cfdd2f9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxbuilder.min.js",
+      "bytes": 21765,
+      "sha256": "7ca510aefbac305dd88b6290b9a2b85823bd6b1e3e8006dcb19ef5bb9a5d2c55"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxbuilder.min.js.map",
+      "bytes": 107410,
+      "sha256": "32ebf12816315c98cce8a90ae2002d7d0ae874ab41450c86bafe3d2b4199a43a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxp.cjs",
+      "bytes": 77528,
+      "sha256": "c83b535419c52bb2868ea4c6a698720b9e0d56cdc6c1bbdec02b3080e5b0d2fb"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxp.d.cts",
+      "bytes": 19711,
+      "sha256": "7239bc0a6efdff93e662ca974248286aab408e0b56328436db220a5b8931e24d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxp.min.js",
+      "bytes": 79090,
+      "sha256": "8d17723383e8b451250e411902a49ab7acbd235a2b56e5264c11040c46995161"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxp.min.js.map",
+      "bytes": 383895,
+      "sha256": "da7bb183201e13726b7f051579e5b2ecdd3fd759eb5d2a0341bc5d24c6da35fa"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxparser.min.js",
+      "bytes": 64839,
+      "sha256": "c76c500f69dc99804ae429524f55e417497e1cef45f6e04089d022a3dc1a6395"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxparser.min.js.map",
+      "bytes": 315213,
+      "sha256": "d736dfc5eea40267c414b3381e3ddab3a5004d449a28ef25244c5944d12e5056"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxvalidator.min.js",
+      "bytes": 6071,
+      "sha256": "df1158c8e35bb82882eb48818f96e717516ad720260e666146971d038f624430"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/lib/fxvalidator.min.js.map",
+      "bytes": 31468,
+      "sha256": "80ef2a27fc52d98899b43554ddcf6cf68a977bb2d6626e2f534492bba6810006"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/LICENSE",
+      "bytes": 1073,
+      "sha256": "7883225d5e84a6bbb9b170c3d891b4bf6d6259cee869c86bd86381a927071745"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/package.json",
+      "bytes": 2217,
+      "sha256": "41c5f7f2ed20d6ab2b54d3f42730246444685a838cf381d5bf3e1eb93e2fa4cb"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/README.md",
+      "bytes": 9561,
+      "sha256": "2b0548e4d819a6b654f3df466728a9f8cedd6767ffaa9b2bec16ee38da69cce5"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/cli/cli.js",
+      "bytes": 2697,
+      "sha256": "8f5e6ebdc7cd90fa77a5e835fec6a57f399f82ec5eb0dd277b26415a83e29c48"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/cli/man.js",
+      "bytes": 577,
+      "sha256": "3780acda8a91a1a0fc4ca789acd50b3e1f22dc86e892ddf02765d3a5c33985fe"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/cli/read.js",
+      "bytes": 816,
+      "sha256": "5276d01f9e03dfe20d13996dc60aaf99d7eb2f9090030a82cd78e5e922b44188"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/fxp.d.ts",
+      "bytes": 19739,
+      "sha256": "b112bfa7e245b7bc336f1c62506539b1e8e08db01d4bdff35af2bcd7223a2d7d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/fxp.js",
+      "bytes": 259,
+      "sha256": "587bee5d27b6dbc99d24f472ea93028659610c3496be7d667e72483483c3f3ba"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/ignoreAttributes.js",
+      "bytes": 586,
+      "sha256": "40bdf3ab37f544b9f8ea7e474114f489a77ed3247e0be597b9e83e01688e8c80"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/util.js",
+      "bytes": 1644,
+      "sha256": "870ccd88a5d51e35ef8cbc59e7f2a35d31defc87aded9c06023ae57838851901"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/CharsSymbol.js",
+      "bytes": 345,
+      "sha256": "e037787fbc37aa0309937b3b41e4a76e118167ba384e83fbc49e04f94740aedb"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/EntitiesParser.js",
+      "bytes": 3640,
+      "sha256": "8705dd25e2d2f6e6457fa491881e1f9eab082b0406cd5dcdc745aa61a2798725"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/inputSource/BufferSource.js",
+      "bytes": 3107,
+      "sha256": "ba2df3ffe9b67d5d37c1729ede6870972207964719fd638eb63b8fdf6a334a57"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/inputSource/StringSource.js",
+      "bytes": 3141,
+      "sha256": "5e9eb312fc320fb87a07424c98e439c4637b80d168879230c21f5435d35cb140"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/OptionsBuilder.js",
+      "bytes": 1861,
+      "sha256": "2102f6735008c449c41728bbd5cf008f53a518cf3dc7ba2794c9d4dc7937f0b7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/BaseOutputBuilder.js",
+      "bytes": 1710,
+      "sha256": "88dafcd928965417b34ece595705827cfdbb9bf639df72a809642e1adbad1160"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/JsArrBuilder.js",
+      "bytes": 2884,
+      "sha256": "6f5b0632d80eb6865124a553451f69b4a8b0c73cdacf21d4597ade0d097fbf20"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/JsMinArrBuilder.js",
+      "bytes": 2955,
+      "sha256": "4a77b68d3ed107c7f5a006f2616b439c4660a14a537c66ff545ba3b68812d6f3"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/JsObjBuilder.js",
+      "bytes": 4020,
+      "sha256": "3db399917d6ecc5541c518a0e7402d11e4023fa745a87eb187b534635e17e239"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/OutputBuilders/ParserOptionsBuilder.js",
+      "bytes": 2274,
+      "sha256": "dacb3a0b8da41e10a9531b2ce0f9939b7db3cb73b8850fc3918a62cb26a2fc3d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/Report.js",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/TagPath.js",
+      "bytes": 2371,
+      "sha256": "c3201f12a399d0c2d6932e0b2ab0ffe11d59b25d8cbfad888139a6f8493c3574"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/TagPathMatcher.js",
+      "bytes": 261,
+      "sha256": "424002a4c4cbaba5b739bc2008fe9c7e4523a63865acabe26f2f46167c236464"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/valueParsers/booleanParser.js",
+      "bytes": 631,
+      "sha256": "5bf8e1b9e11068b3e25b384a217b71c576b344224cb50d90b98ce2e63062aa2d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/valueParsers/booleanParserExt.js",
+      "bytes": 489,
+      "sha256": "ce154fbe652ba2de46b2083e8c99a58c4a0e337558f8c36330a04188cc4a38e1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/valueParsers/currency.js",
+      "bytes": 1249,
+      "sha256": "f653f705032ce04e9d12749a4bc28dada74fff0e24192205e3d8a9d32e88428f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/valueParsers/EntitiesParser.js",
+      "bytes": 3527,
+      "sha256": "2356a65d0256c6658b2d066b82d13d31ca28b39bbd7c75db89d3e939df76a47f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/valueParsers/join.js",
+      "bytes": 182,
+      "sha256": "19d179c90a52654c50e4eea52ce86c5ea4a72f90106d5afdfc86bc3b574e2eae"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/valueParsers/number.js",
+      "bytes": 268,
+      "sha256": "50165c7d0f33534911f7ef9ee3ee7a1531786ee12aba89186e90fb601ab0d2e8"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/valueParsers/trim.js",
+      "bytes": 134,
+      "sha256": "99e6101bbc04ad8882480e2c4c85aafac0dd6d25b42e00033ca8ccd1157a1c7e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/Xml2JsParser.js",
+      "bytes": 8038,
+      "sha256": "f29463c843327731271f8240ed87146704954958ad124f623b7789c056dbabd0"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/XMLParser.js",
+      "bytes": 3092,
+      "sha256": "3ec7a6bcca9bf19de16ef3b019dedc3bf590ecd4b931d62b1e7f39aa988eecac"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/XmlPartReader.js",
+      "bytes": 6276,
+      "sha256": "0b5d19de5039d3fd16c091d5a60a8ccb36335748ea44e55bac5a27e59051aa55"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/v6/XmlSpecialTagsReader.js",
+      "bytes": 3344,
+      "sha256": "9c2b765ad9131a1a1d71d699cdaf69ae547ad4534c6f76169657f06c623e05cd"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/validator.js",
+      "bytes": 18044,
+      "sha256": "e818788b069429443a97756a4c458999d6751461c4ef41c7bfe1cc58bd70dde4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/xmlbuilder/json2xml.js",
+      "bytes": 228,
+      "sha256": "bcc5325758b3b940384c7bf2a7132874421989c2561a59dc49c4ef0b88c352dc"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/xmlparser/DocTypeReader.js",
+      "bytes": 15601,
+      "sha256": "e693e1e1b6b972aa641bd2d3f7e18b653088a1f4af2c89d05b6f1f9897f4d7b8"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/xmlparser/node2json.js",
+      "bytes": 5647,
+      "sha256": "cce0e8a8876bd1d3305a666e70cd556fd1ae57560fbca9f4ff0577d91178a0b1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/xmlparser/OptionsBuilder.js",
+      "bytes": 5422,
+      "sha256": "4f177e43f1ac36dc25b2b6a44970c97918091416bd15722b65ac938256bda687"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/xmlparser/OrderedObjParser.js",
+      "bytes": 30836,
+      "sha256": "d1d5d64ecfb3df9b07ba3bd5ee020d166eaecbf569ebce67be692aa5892a21b5"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/xmlparser/xmlNode.js",
+      "bytes": 1816,
+      "sha256": "758d7a8b80ea22d19872b5219c874b4039ea2725e7af5ef0afe2a3e295b779e7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/fast-xml-parser/src/xmlparser/XMLParser.js",
+      "bytes": 2688,
+      "sha256": "286c659a8f940c313077afe8a00c0dc128d4a138edf6d9a4519f29538b58c94f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/LICENSE",
+      "bytes": 1077,
+      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/package.json",
+      "bytes": 1193,
+      "sha256": "0fb03fbe6e0df6090d778679929c7c34c9fca298bc72190468217171e8154943"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/README.md",
+      "bytes": 22085,
+      "sha256": "037ee459a3870681c47d454eec265ead4822ab25724519b90e047cf2d4b2efad"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/html.js",
+      "bytes": 3327,
+      "sha256": "5f378567e5be461b0850876c91b8f1c8ffdc8d29201d87edd7aa666eecabb9f3"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/log.js",
+      "bytes": 4234,
+      "sha256": "fe1678ab1c98db7387bea6892ec10a90a06a8e2ed01efb1ee577c3d155e4a395"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/nosql.js",
+      "bytes": 4255,
+      "sha256": "e20a132033f105a29db1cfdb3d85bbadbb7206b9a7e3336bcb030a63d66b4ab2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/redos.js",
+      "bytes": 2262,
+      "sha256": "59ceb09d3fd2402e81ed7e5992245f2b398c7ceeb80141138f4eab5da0244586"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/shell.js",
+      "bytes": 2981,
+      "sha256": "c26834ef2c968e8a4223a89b2d0e5653952bbf6f3eed95e5ba45465e1870eb65"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/sql-strict.js",
+      "bytes": 1742,
+      "sha256": "16d6522ee4ecf4a91c4d29357ebc874844c266f2ae89ef2a92ec2d391f3762e9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/sql.js",
+      "bytes": 3063,
+      "sha256": "4de8a60302e6ab22ef5607ee88ab6dd6559221fb8620780fb874a1dcf3000d06"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/svg.js",
+      "bytes": 3053,
+      "sha256": "eb9e106e81226ab9547882079e7fd6a9d885d2c71ba78784f7edaa7db61bb941"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/contexts/xml.js",
+      "bytes": 2532,
+      "sha256": "2ae9cb95ada7140a80c1ad378f2c4c5f7360bc3f3f6480a96247712df8d8ab16"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/index.cjs",
+      "bytes": 809,
+      "sha256": "827e7cc23034bdad2831dac7d8c5da9bcc966f259425107074064a42dff1230a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/index.d.ts",
+      "bytes": 3208,
+      "sha256": "75ecf95b575eaf2c9f84b541452fa9c9f6d97f4d914eedddc306329ce138127c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/is-unsafe/src/index.js",
+      "bytes": 8730,
+      "sha256": "24f5eb575e633b68771328cc12fa6fde751ecc5f2700a6f52ea325938dc94342"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/CHANGELOG.md",
+      "bytes": 4750,
+      "sha256": "6906678ecac84f11300eb0684d85ee71d717c79414cdf77f6922873f5934b863"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm/cn2t.js",
+      "bytes": 1100383,
+      "sha256": "f11354bf1dc5fdc4a53a5cfbf8808fe832bc27640a69d96fb60e547090010214"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm/full.js",
+      "bytes": 1195200,
+      "sha256": "855e5c95f90dbe114649f09359aedfaded676cc4a37f55b075ac10199d0b3561"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm/t2cn.js",
+      "bytes": 109060,
+      "sha256": "b78e83f940e73a022d8d996333e924edf07aa5b6133b8cddd46fbbff1ac339b6"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/core.js",
+      "bytes": 15380,
+      "sha256": "5675706adcebf6a524dc016548b8e61a9b086b4ae4caf8ec4e84d6753024b168"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/CJK_Compatibility_Ideographs.js",
+      "bytes": 8688,
+      "sha256": "b770f457ac89a58bf621aba22baa0a5da2ae46bfc57869aa1e8a8880664683c9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/HKPhrases.js",
+      "bytes": 2655,
+      "sha256": "d0a1e20c5dd94bc434ff9ccc2f5c3865a9700c12384565d754f0cb6ba5607ab7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/HKPhrasesRev.js",
+      "bytes": 2550,
+      "sha256": "25df00b20075c984cb37aecf72e00986d55afc8a35d55d59a2ff3a24fd8e99af"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariants.js",
+      "bytes": 490,
+      "sha256": "dc1547a9d03d32cf6075807c25eb06b7363ee7985c07865ce8111c87f190460e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariantsPhrases.js",
+      "bytes": 6352,
+      "sha256": "bc883752fae231478cf1528f33dd9d585409a18526966e2470d7313287ae86aa"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariantsRev.js",
+      "bytes": 506,
+      "sha256": "c3ccd8ffe34d06a90fea6dbb5c6ce1ad3f09bba5fece3a01e6250250b550b999"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/HKVariantsRevPhrases.js",
+      "bytes": 6038,
+      "sha256": "1353060268182b4ac268425993b9150263199983a807ba880d9ef46b7c6a4bc4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/JPShinjitaiCharacters.js",
+      "bytes": 2698,
+      "sha256": "e481f5643db66c689088bdf0d7e2bbad3c00476e1a06fcd2144961a4a2bed091"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/JPShinjitaiCharactersRev.js",
+      "bytes": 3282,
+      "sha256": "3cf382f345d5c5a0864c2be6b53738182c7d1bbb4ad79c8d8907d964e4ea9c22"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/JPShinjitaiPhrases.js",
+      "bytes": 3578,
+      "sha256": "bf26c5719fde907e4cc79431e14a613017017fcd7a5bd3b565e569563e1f4ebb"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/STCharacters.js",
+      "bytes": 32561,
+      "sha256": "6252e30c5e5d871d77e7f7acfaa5d3697f7fb9ac844752439ceb53e9eeaecbc7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/STPhrases.js",
+      "bytes": 1005417,
+      "sha256": "37f40ed90e91a68730cc3631ea6327307e46364efe4daa3cca0ecf6c96af708b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/STPhrases_GeneratedFromRegionalPhrases.js",
+      "bytes": 15319,
+      "sha256": "4495f36f93cfca00e0c0eed81a519fbe26fd86bb8182b023bc727fb2a9a96c03"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TSCharacters.js",
+      "bytes": 28987,
+      "sha256": "85aee197470c6fa5fce207b4d1fe17b178eb8075b622133cd0eaa3c7d75fe16c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TSPhrases.js",
+      "bytes": 8467,
+      "sha256": "d3cb6c2d1d08f8b1ccd808f4b913877b41ec1905f4c8f04299d0ddfcde623f4e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TWPhrases.js",
+      "bytes": 18783,
+      "sha256": "3d2be425ab11c422a3ce29fa53e4558ea4ff190f27eab45ddce470340715e0a9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TWPhrasesRev.js",
+      "bytes": 18356,
+      "sha256": "68159452847b7c6387822817b845e5b5a69293a8ea0112badf1195e9659a68a1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariants.js",
+      "bytes": 330,
+      "sha256": "dfbfeaef45840a9fe24f582ba8870b13b4c98adcc88d50959e7c76c687e8ce9e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariantsPhrases.js",
+      "bytes": 282,
+      "sha256": "67675a603377832c8875912652e56a96b8451e34d397f5a267814f1ab222014e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariantsRev.js",
+      "bytes": 322,
+      "sha256": "1af525545ae3013361418b3c580317e79e05295775354916b8045c10d870dff2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/dict/TWVariantsRevPhrases.js",
+      "bytes": 22668,
+      "sha256": "34c21b13a81d3cfce3faae4028450a0c2930a8bdc02f450b783bb5e378611ea8"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/from/cn.js",
+      "bytes": 142,
+      "sha256": "4edd11dbc2742a2ad0522813ee3e07fb0c541a293b530b547f577de0fd03eb0a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/from/hk.js",
+      "bytes": 178,
+      "sha256": "633f18fb19d6365ec892f160b6a07158f9a2b2b7ad3e8a6b4f2607929ca0eb86"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/from/hkp.js",
+      "bytes": 244,
+      "sha256": "ed04649440d0ec92ce22d4e08254e42d563e8274ab9943ba5a6c959077400e47"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/from/index.js",
+      "bytes": 196,
+      "sha256": "b44e9c58dd80dcc38920537eed40a50a5bf157fe116eff543b32f266173e977b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/from/jp.js",
+      "bytes": 196,
+      "sha256": "faa626eac080bdbbe1784c25e0c6305d3048fccfb73bfd518f7048ae3f8689a7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/from/tw.js",
+      "bytes": 178,
+      "sha256": "dce422d77f788334ab4a46b07424f6cf4b4ab68093d315b62405ca6ffa10ffb8"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/from/twp.js",
+      "bytes": 244,
+      "sha256": "8c934f736e3c862a771f5d74291092aaee485a16df10db428c73185fbaa4772f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/preset/cn2t.js",
+      "bytes": 2450,
+      "sha256": "b5d78faffcc3c9152cf79a1996f64430dd417918d52494f4d7386906fb6c8d19"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/preset/full.js",
+      "bytes": 5319,
+      "sha256": "e6bd231311affaa7c3a099e2d535617fe5310a3b8a6c11b63b80b8abfb2b7fc5"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/preset/t2cn.js",
+      "bytes": 2026,
+      "sha256": "f31d0644943a8967420cfe7c946fc04dc3d20e5d0c0669b5bcc4dc999dfe8090"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/to/cn.js",
+      "bytes": 142,
+      "sha256": "0dfc73909d20c1e15ef74522f83e0e7c53f78cb8d55fb248ff3ccf6954ddfa23"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/to/hk.js",
+      "bytes": 160,
+      "sha256": "91b959648772b23a2df3da1eb091173810c24ee2a00a0505944761b1fd1cbeac"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/to/hkp.js",
+      "bytes": 217,
+      "sha256": "08d10efa19293d019a2256ddbf67bb9bfb730c72daebcc857a826a719ab475ad"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/to/index.js",
+      "bytes": 196,
+      "sha256": "b44e9c58dd80dcc38920537eed40a50a5bf157fe116eff543b32f266173e977b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/to/jp.js",
+      "bytes": 121,
+      "sha256": "7950e6a206dee07730e607f95ab79ccf3d7399cc920d5104788bf8a7493910a5"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/to/tw.js",
+      "bytes": 160,
+      "sha256": "24761e67af91299c80ee1336f2552c6f4e7bdece77f6e35a3c1a492e2b10cbed"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/esm-lib/to/twp.js",
+      "bytes": 219,
+      "sha256": "c06d155a6c69add0c67c5fcf305159efda6988f9a7725347955a27d5ae5efde1"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/umd/cn2t.js",
+      "bytes": 1100656,
+      "sha256": "d66d920069ab526db08c6f2bc15fcf6feb7d07de3cf98e7e27c0aaf7d136baee"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/umd/full.js",
+      "bytes": 1195473,
+      "sha256": "95b04abf136d9c28263773bb7d357eac80b7954d101efd23c4d09c737d3d379e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/umd/package.json",
+      "bytes": 25,
+      "sha256": "8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/dist/umd/t2cn.js",
+      "bytes": 109333,
+      "sha256": "5009384a6bdc904babee967a8bb9928e3c92288ec8a89ed036d53257e74cd8ab"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/LICENSE",
+      "bytes": 1080,
+      "sha256": "960f7fc16d8baa126802316a7df9078a383af4fb6bc60033adb28e85c08d5e5e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/LICENSES/Apache-2.0.txt",
+      "bytes": 9165,
+      "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/package.json",
+      "bytes": 2511,
+      "sha256": "69e19b15f39d716b4c209ad928e32e8c04084d7d8ee06aac642f89d067308a64"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/README-zh-CN.md",
+      "bytes": 12308,
+      "sha256": "95d8b040964155727eb417f20a107b4f9630e32a6a81e398efeb819443b18520"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/README-zh-TW.md",
+      "bytes": 12311,
+      "sha256": "314871d3fdab87aca49bfe109252559a75a4a400cc3a8165ffb08c03d60a518b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/README.md",
+      "bytes": 13349,
+      "sha256": "f382e67ee8ea689c0fccadf61fe1ef32491928fafb7939ef24d0bfbc527f4834"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/THIRD_PARTY_LICENSES.md",
+      "bytes": 10232,
+      "sha256": "42c7dbe71c178fcca97ba945e9ac9ff360fb69bbfea4cb50556f6c65bfa59806"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/types/core.d.ts",
+      "bytes": 1396,
+      "sha256": "a4844433ec45fdbc5e0ee1b56017c7690a803138569a22523e6a4b5aaa7edb0c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/types/full.d.ts",
+      "bytes": 851,
+      "sha256": "fc65f175bb8fdfce91e1cc8b846682bc9d689e97cf76788da27dcfdc62b4ec40"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/opencc-js/types/preset.d.ts",
+      "bytes": 274,
+      "sha256": "432fad36d6fa7eafffb017f56246c873f8c7cf07db58efc484a089bb1b058b84"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/lib/pem.cjs",
+      "bytes": 9217,
+      "sha256": "aec62344de39f1c7a2c42e31767cd068af933c034837bbceaf5a7a4032b76a0d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/lib/pem.d.cts",
+      "bytes": 19575,
+      "sha256": "d9bcaed1c26d15e944fa95ed2d2129fcf70e0c35b193933ed3210deb546e131a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/lib/pem.min.js",
+      "bytes": 9442,
+      "sha256": "b39340293e75855e6efc54dbd36fc0422360ff78de98a41fe16883adcbcfcf88"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/lib/pem.min.js.map",
+      "bytes": 49927,
+      "sha256": "9e1ee6e6c38de96125700ab1612d30709b6507f1c81932d36feba283ee8edeb7"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/LICENSE",
+      "bytes": 1056,
+      "sha256": "75486ea0af9309140ca6e2c401d7e67bea8f4892344e5707f6394dc5e83dfc44"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/package.json",
+      "bytes": 1852,
+      "sha256": "625ca3a27a289160508a79773ddfd7bf678a6401bd96321cac0bc43ebebe01f8"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/README.md",
+      "bytes": 30029,
+      "sha256": "b3624137327085ee17b4731c3431a56e93b64e1627521cfdc43ab9e20a5c584d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/src/Expression.js",
+      "bytes": 6795,
+      "sha256": "c24531320e7f2a69708fa8127b660bfb0efaa3a26636e6f56209f8cf4e984b9a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/src/ExpressionSet.js",
+      "bytes": 7310,
+      "sha256": "a6250aa83ce7f238614fb7421f31e541c63c415a295e3764687693464918f3c4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/src/index.d.ts",
+      "bytes": 16045,
+      "sha256": "be6fa8af49b89cf35b7e3351e66df1f0c20a7737cde5aa443cacd25f8f899808"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/src/index.js",
+      "bytes": 919,
+      "sha256": "ebbf22c6979f6b2b05c580922e7dd197f4f4a246d504d4c0cc8e64778f12d4ed"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/path-expression-matcher/src/Matcher.js",
+      "bytes": 18459,
+      "sha256": "d3b6ddfa1e9a07d6db63939e55106f4df3e8f2e48119c81e372f60f157914d66"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/strnum/CHANGELOG.md",
+      "bytes": 1239,
+      "sha256": "3aaf642d07a3e737b94acb44ec62121e9672db199d046f1abb745f7ed4e7939b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/strnum/LICENSE",
+      "bytes": 1077,
+      "sha256": "2aa16be0f4fad003a352a955a43314e9d1d8deef7034060a82ac9c49f32b81e2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/strnum/package.json",
+      "bytes": 730,
+      "sha256": "38bf3bf508c5f454549308baf2b4c56ed01c14dfa29bb3efd51308cecb8efd70"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/strnum/README.md",
+      "bytes": 4652,
+      "sha256": "6423769d4556b51fd966ed0cbf5d9bfd7813553560a1849966f48677ed674f83"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/strnum/strnum.js",
+      "bytes": 6853,
+      "sha256": "2d8d2377f8c39b0805c9badf048cb22ffb52033f6db0d50a9576fa8bbd5c3dd0"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/xml-naming/LICENSE",
+      "bytes": 1077,
+      "sha256": "8e75fc0e776c62ccadb8178ece8d3daa9ba7601fb0a49b2dfb0ea9a7a5c0aa07"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/xml-naming/package.json",
+      "bytes": 1160,
+      "sha256": "e6ff1758837bca3ca6877308c0d51f9e3e47efd07497fa62c8291fd88ab8216f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/xml-naming/README.md",
+      "bytes": 9749,
+      "sha256": "aa6f359e935296f26e878a119528daa37b9755391ecb701dd1a1330477440423"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/xml-naming/src/index.d.ts",
+      "bytes": 4039,
+      "sha256": "0f3bd36772edf86964a85459ebe5e910bf85b2fc9e5e871e83785549fc9a9f5d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/node_modules/xml-naming/src/index.js",
+      "bytes": 15370,
+      "sha256": "1a5d9fd32360e2cec4adbee9e56221fb26def66bb9d122e0b5745cebc963d92e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/package-lock.json",
+      "bytes": 5674,
+      "sha256": "95c90e8fa17070f779f121d953809b84591febc9736f35a5eea57b6ce784013f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/package.json",
+      "bytes": 370,
+      "sha256": "fb1cdfcdcf7d9e9d8d0e0723e33d4964b269e37e0a5411cee0432d51b15639e2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/prepare-descriptions.mjs",
+      "bytes": 756,
+      "sha256": "a02f68edf5ca2eb93fb61bd92942a8f9f5fad1fc984ffc5f72765498c4a84884"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/provider.mjs",
+      "bytes": 15080,
+      "sha256": "8f62da7e96ea47abaf38cf0a9d84d4eb2173422f04c14bed34cb8341af3e3c7a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/README.md",
+      "bytes": 13003,
+      "sha256": "7f0be4100cd04e9f2d4c0975a302f237228fcbc48731541b6d225d25ef32885c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/reviewed.csv",
+      "bytes": 5221,
+      "sha256": "890d6577e48742a291b69be0703ac8dd8b2f06d85e69c94260995d5f8ab42ab9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/rich-text.mjs",
+      "bytes": 4284,
+      "sha256": "7989fbdd7970fc0ae7a2ef11b1994753d6fd20fe250f51e167de8c13ce6edcca"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/runtime-queue.mjs",
+      "bytes": 13463,
+      "sha256": "b5b4c1e41a32997e6e4d862afed8705df33cfd17d76f060a4d3eb83c3ee3026c"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/safety.mjs",
+      "bytes": 4201,
+      "sha256": "51225dc6ebe74960c001f6d90df41d9f45f6002bfa97b629a0d02ecca7d04b32"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/server.mjs",
+      "bytes": 19027,
+      "sha256": "50776618f669b9ac00ac24b62b501bbece59c99c79d79ce3aa8a8c330ab86e85"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/Start-Broker.ps1",
+      "bytes": 2727,
+      "sha256": "562c97a449313e3891eae237a2986f0d714b37c3f860a1217e0dcbe7747d7282"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/status.mjs",
+      "bytes": 2493,
+      "sha256": "daeab5316eb3ff22f418596b11ef8fbe3dab6629b9980951f8e58d1b8f23c9a2"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/unit-prewarm.json",
+      "bytes": 107996,
+      "sha256": "de32144e8e668a8eee6f14937c4fe364de229bdd0ee4227e4f504beafb5dc622"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/broker/validate-workshop-package.mjs",
+      "bytes": 4097,
+      "sha256": "b27a0113a08332e979257bf07fc4de269932c3f69e8f86f19ca0faaab402d563"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/DFI18N-DATA-ZH-HANS-LICENSE.md",
+      "bytes": 1198,
+      "sha256": "16e94750eff34db1262d7585a0eb6eed63f0fa5b2eccdee8d7b434734a2013da"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/info.txt",
+      "bytes": 981,
+      "sha256": "fea817577d212f4518c46168436a67c0f6a7d5bc545c76c0628dc4d2bab0fa11"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/PACKAGE-MANIFEST.json",
+      "bytes": 56710,
+      "sha256": "a3432de709de76e425b262758a01b7067cebc67bd52b9c32c725cc8a2abcd863"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/preview.png",
+      "bytes": 270580,
+      "sha256": "7a36253106f582c873a27d97131ae3176ad96726f9425a037b567870cd57ce2e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/README.md",
+      "bytes": 1822,
+      "sha256": "4660eba871b3e220598472a883b9f00e518f4ed8ac1da18429df6cc388671057"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-arena-corrections-test.lua",
+      "bytes": 2827,
+      "sha256": "0c15adc6e894881f0c5c89c3d2304e1d1312ecf16dfa28dd8fb88e168ee73f1b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-arena-test.lua",
+      "bytes": 11722,
+      "sha256": "7d8753b80407bb8c9030a3683fd7d95b0afab128a801e4bb989ba8e3dd04b793"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-audit.lua",
+      "bytes": 15429,
+      "sha256": "03c83a939b7dbb037ca20d0d0fe0995da0ed59a62fb3336d5a5656b8149879d9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-core.lua",
+      "bytes": 147,
+      "sha256": "6848265f0cb5144a6f8fa6afe4d791a5b45c116dbb1e3a04dbb6e21cf9756bde"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-creature-names.lua",
+      "bytes": 524,
+      "sha256": "54a5bcb17e476c7c04e1128a067c561739352c222b4b1a5b3e99dcfbd67352ea"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-creature-test.lua",
+      "bytes": 2373,
+      "sha256": "ef352bf8064f7e842a209a2cdea53e73b95042f6e4bf536f304b746f6f2349b9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-embark.lua",
+      "bytes": 5791,
+      "sha256": "be322504b573416800f0946959ccc8533d7844e5c3c652af167d06a5defdf16d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-equipment-test.lua",
+      "bytes": 845,
+      "sha256": "51d548b3fecf56faeaf04fd339f94b8002ae3d3f68137b5ec26d5501315223f9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-hover-text.lua",
+      "bytes": 3789,
+      "sha256": "7ae3ab4a1a78a7df543808ff5ee7a71f3b5bd3b2e277522518607f4cb4a5a449"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends-filter-core.lua",
+      "bytes": 858,
+      "sha256": "6a94730aaf803fe15e40f804df62a98a3f48204c8d04f7cf969cde67ce89406b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends-filter.lua",
+      "bytes": 3518,
+      "sha256": "0fb1b3032bddc4f8a92f9962dd6304e4ea4d26b70576c90601ea864403d39128"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends-list.lua",
+      "bytes": 6389,
+      "sha256": "1e955741f7a1ccee48e8eed915ad527f12b3e750c2ad47f0b9b13cafa7e54e8f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends.lua",
+      "bytes": 7172,
+      "sha256": "e7439954c5a560814adeaca326d82e85a3bd1896bfba94d77bb61634cf1ea124"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-list-overlay.lua",
+      "bytes": 1211,
+      "sha256": "0663d4468a6ce092eb81071a33495f2c0be23010342df646167a41c3a00c08b0"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-names-worker.lua",
+      "bytes": 8379,
+      "sha256": "ba817f9d05581d5a6b9d8fda41298361d71dfacbcaec81c37919261c726f4734"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-names.lua",
+      "bytes": 68,
+      "sha256": "334db03fb397df48236b4a0c137d8effcbe76cf146e947366f91cd03c2e60bb4"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-narrative-overlay.lua",
+      "bytes": 3613,
+      "sha256": "a3078cc16f179045e7a319209d27fb538d373c08a7de8b33633d89626edcf5d6"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-narrative.lua",
+      "bytes": 9810,
+      "sha256": "f0f37059526b404960eb1901cbc09666450e7a26d5df3c07ce7f07483af26064"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-native-prewarm-test.lua",
+      "bytes": 5370,
+      "sha256": "39aa3760ea8ba049ff2189ecfbc863230fe5e426bd2b6ccf4c3ea5b4e466a36f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-native-prewarm.lua",
+      "bytes": 1209,
+      "sha256": "0350190b185bcdf990d0715b680d92e0aaf869cff3093ba23695e27e7bd9df19"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-paths.lua",
+      "bytes": 2112,
+      "sha256": "e70436c29dc4878d5f2f49e214d4e922d479fb05d959ecf19b92383aa30f3284"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-prefetch.lua",
+      "bytes": 9384,
+      "sha256": "5c788f9a6775e6b025c016847a9d0acffb3b16967b787b9c32b0335416dec67f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-reports.lua",
+      "bytes": 9726,
+      "sha256": "f9ee5b359f21c4d4080bc383ee5699e2ccc0d634f7b3cf3745c6f17adb7c509b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-reviewed-text.lua",
+      "bytes": 368,
+      "sha256": "9da17bbe7a2b8314df35c8c8f617320c9e50aaa171cfe164350e0f860f8e4be3"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-runtime.lua",
+      "bytes": 38323,
+      "sha256": "4ec971754c14efe8e27530b0084c8f88c6b6ca970353f3f669f07297d2c1a243"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-search-editor.lua",
+      "bytes": 2029,
+      "sha256": "bdd8fc64113cf55448379e16f7bb3c4327a14e8fb7b7fbbd09b90261d9d32cfb"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-search-test.lua",
+      "bytes": 4496,
+      "sha256": "581bacc7e9143bccf692fb722118fd7f73f964480e754405778f2178b228636e"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-search.lua",
+      "bytes": 12829,
+      "sha256": "a0ebfe2417abfd036527ff913e2c3838bc0aca8606cc32c67456639ab30d3492"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings-test.lua",
+      "bytes": 10547,
+      "sha256": "c11c357cfc781bd29507a3de7d0424a2edfa81d8b1793b10cf0293acc80ab2ca"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings-ui.lua",
+      "bytes": 39539,
+      "sha256": "f12f4b56f0fc134618ec31e74b2490a2e26a3063d44bd111f85d6907f74bd987"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings.lua",
+      "bytes": 5629,
+      "sha256": "617e938a604c9494512211a5400de8ef638eb15f461500da523c001dcd967c96"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-status-ui.lua",
+      "bytes": 6769,
+      "sha256": "69c85b7b5416bd9ffed7812bf4ac860b2f11ecb7b4cb061831fb2a9957834639"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-status.lua",
+      "bytes": 3499,
+      "sha256": "81672e1e54d397c022caf382ad3ce24d99e4b32f64454afb6b118267f481c3f0"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-text-overlay.lua",
+      "bytes": 4431,
+      "sha256": "ec7f986c35249fdfcadc892c4d1e5df21e9515f5b751b9c55e06b9675432156f"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-title-overlay.lua",
+      "bytes": 3573,
+      "sha256": "b98994afb35b5d5f9110c37a27e9c9cb3ac07c0ef23e12409abd92fdcdc810dd"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-unit-prewarm.lua",
+      "bytes": 4689,
+      "sha256": "473ab282109d550312fb4ea37f5ff22252dedec38314fa467140c25a144a6d75"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-unit-text.lua",
+      "bytes": 15160,
+      "sha256": "dc6cf2a928fa61946407cc9286f8e7dd1bf8a8af070a0f3c5b3a6aea88d53307"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-visible-text.lua",
+      "bytes": 10152,
+      "sha256": "00644c85d10a0002225e16dedd30457e2e0d6a46b1dc2b9ddcc1de064485bea9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-workbook-test.lua",
+      "bytes": 2444,
+      "sha256": "97fec5c7744a19322d10d7bc937e5c4c52fafde2b4289772c4edff870923323b"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh.lua",
+      "bytes": 5335,
+      "sha256": "7668ef6f0b554d264516cad572e7aedf2e9d186a31b9701b28502ddbcaea284a"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/WORKSHOP-PUBLISHING.md",
+      "bytes": 4667,
+      "sha256": "6d2b5f7360e332f665868dd92a3e0c4f63a80ef45b754bafd09fe16d578403a8"
+    },
+    {
+      "path": "docs/license-authorization-20261001.json",
+      "bytes": 576,
+      "sha256": "dbbd698ae9d77d665d5aa5ada8f9e4b59e082a11c41ff65952c5d53b38a59b1e"
+    },
+    {
+      "path": "docs/phase2-completion-report.md",
+      "bytes": 9852,
+      "sha256": "2ec85eb3f0ea0f720244637608e1f608f493f884995f4f986bf15be05ac4f570"
+    },
+    {
+      "path": "LICENSE.md",
+      "bytes": 457,
+      "sha256": "d5c2345c0cf7c3d6cee79c7d266efb5b22997028cff70d07aeccc6ce08ce30ee"
+    },
+    {
+      "path": "NOTICE.md",
+      "bytes": 1320,
+      "sha256": "76ef2fb0b2ba897d80214aca3ba667d8e1eeb7d92c8344903ad089bd24753696"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1137,
+      "sha256": "ca5e51e9c907e904019a42959872816313dce879bd76844d6145697e73c78708"
+    },
+    {
+      "path": "src/broker/apply-fortress-ui.mjs",
+      "bytes": 3562,
+      "sha256": "240c1a1cec8ddd632b907c1c0510677748c56769344388a3a989eda89f20be16"
+    },
+    {
+      "path": "src/broker/assess-community-xlsx.mjs",
+      "bytes": 3399,
+      "sha256": "65a1ac5c61cbc661a5aeeb5498b7a3ea10e7439c23e2e1558fe8da35e144b505"
+    },
+    {
+      "path": "src/broker/audit-fortress-gaps.mjs",
+      "bytes": 5708,
+      "sha256": "567e666120d2481c6fe6fc14c7c8bd40a1445070f63a020eb1320357fe902000"
+    },
+    {
+      "path": "src/broker/audit-raw-coverage.mjs",
+      "bytes": 2985,
+      "sha256": "f8dbb6cdb8848c3fa06ac137c4d30936d4f28220e07fcfe06d15740fd7e91723"
+    },
+    {
+      "path": "src/broker/audit-unit-display.mjs",
+      "bytes": 2279,
+      "sha256": "7ce8a65c76d0a0fe3d6bdf15a109b037073721bf3bf195dccb75c48f4777e5af"
+    },
+    {
+      "path": "src/broker/broker.mjs",
+      "bytes": 13368,
+      "sha256": "d8c33169144e150428042b51522788d33ac22be286832bd75e64df9940a5ebb9"
+    },
+    {
+      "path": "src/broker/build-arena-corrections.mjs",
+      "bytes": 5482,
+      "sha256": "abb2d2e8b8e08c03ce523ba21a58c9cf3b8ca9cf9bd9dd3e2472da5cd054d82b"
+    },
+    {
+      "path": "src/broker/build-creature-dictionaries.mjs",
+      "bytes": 3940,
+      "sha256": "411432032d170ab50e87583a59f5a99e99073cb3f077ab092913ee26ef9de09a"
+    },
+    {
+      "path": "src/broker/build-language-data.mjs",
+      "bytes": 2949,
+      "sha256": "96cc327906c5c349b5954abb81c7d676926cf8ddaa175f67b20c2c32f1e718d3"
+    },
+    {
+      "path": "src/broker/build-official-library.mjs",
+      "bytes": 4997,
+      "sha256": "30715bde7a51ea1c77ef79d9772152ce48dca94e99d25b2eb86324a86ff96052"
+    },
+    {
+      "path": "src/broker/build-race-map.mjs",
+      "bytes": 2469,
+      "sha256": "c22012778f1edccbe4cf106f97920a682276dca89a0c1cd91f4d26d5e399c4bd"
+    },
+    {
+      "path": "src/broker/build-workbook-context.mjs",
+      "bytes": 1529,
+      "sha256": "cf619f82e8065b5e18a0d94499a508a62cee0687b17c97af8765e9326ec3d761"
+    },
+    {
+      "path": "src/broker/canonical-name-variants.json",
+      "bytes": 85,
+      "sha256": "4ad0803d7465c03513063a05968503f64bcbfec8d6485d00240362df245d2fdc"
+    },
+    {
+      "path": "src/broker/clipboard.mjs",
+      "bytes": 692,
+      "sha256": "a95f6ec82b9130b8d648cc0d81144d025625805be692fff4d1c76cd94080559a"
+    },
+    {
+      "path": "src/broker/compile-data.mjs",
+      "bytes": 11210,
+      "sha256": "807c7b0f0c0be3e4b3300533b94c03ca5f0067e6987a8b29c677b229c2b5c3ea"
+    },
+    {
+      "path": "src/broker/compose-legends.mjs",
+      "bytes": 3600,
+      "sha256": "fd5a3f4b464611e458be3f9eec4e137800df536f47bb4cc2a0c9c1a0078d13f4"
+    },
+    {
+      "path": "src/broker/config.json",
+      "bytes": 954,
+      "sha256": "35b28b0e7e32d64549095eeec5c0a0b54767620043a50c08c2a28c0f8076c35b"
+    },
+    {
+      "path": "src/broker/corrections.csv",
+      "bytes": 1129,
+      "sha256": "057535d6b81e7454275ede84baeb73b02ba6428b4e2cb3a91d68093ded0179a0"
+    },
+    {
+      "path": "src/broker/data/announcement-rules/announcement_date.toml",
+      "bytes": 646,
+      "sha256": "27a3ba6f4d7812e4f9af48b2cb3d1d1a6c9aaa33a2da89368388f5633771ed65"
+    },
+    {
+      "path": "src/broker/data/announcement-rules/index.toml",
+      "bytes": 76,
+      "sha256": "8a2ce22f64362f09a8543b6dec56fda28f49f9f89318488919f04b1e781e6e73"
+    },
+    {
+      "path": "src/broker/data/community-reviewed.csv",
+      "bytes": 3174,
+      "sha256": "2a91a73016d945c2fb21aff8e2e52bf49ee3f81b40d2f38dec1bc01a497c1273"
+    },
+    {
+      "path": "src/broker/data/community-workbook-corrections.json",
+      "bytes": 4946,
+      "sha256": "5b843fe541982bcaedfc201366b7acace7ccd91aa27a2b53a8412682254b8984"
+    },
+    {
+      "path": "src/broker/data/community-workbook-zh-Hans.csv",
+      "bytes": 213415,
+      "sha256": "b675682b84d28d6ccf9f353da4ead02a0be190280796c36b2a6aea437e5fefa8"
+    },
+    {
+      "path": "src/broker/data/community-workbook-zh-Hant.csv",
+      "bytes": 100069,
+      "sha256": "4433a8463ac1c4fb41d783f1a82a07842cf79d001e4a31c161bb657ab415f657"
+    },
+    {
+      "path": "src/broker/data/fortress-hover.json",
+      "bytes": 48097,
+      "sha256": "d6a9dd7458c481c3aee260e69011fab0451e96194b19cb991782951289b5db80"
+    },
+    {
+      "path": "src/broker/data/fortress-ui.csv",
+      "bytes": 47116,
+      "sha256": "50443877a2b80431eb2c1e71ce55080961fced1253f882852f2905f3b03ebc46"
+    },
+    {
+      "path": "src/broker/data/prewarmed-case-variants.csv",
+      "bytes": 3584,
+      "sha256": "aa0135ffcb04a99e161de48f218e171602f07b7a9b5c2aa7f9eb1958904c03cd"
+    },
+    {
+      "path": "src/broker/data/prewarmed-raw-states.csv",
+      "bytes": 10960,
+      "sha256": "b7c572b02e2a323aed52d354e7e52c9dd8a579f2fb43f907da1a82942f6c5fd4"
+    },
+    {
+      "path": "src/broker/data/prewarmed-reaction-names.csv",
+      "bytes": 3029,
+      "sha256": "cee0335b94b72bbf5cba94e8d46d9aa472775ffda8811af86a35ad540d4b49df"
+    },
+    {
+      "path": "src/broker/data/prewarmed-unresolved.csv",
+      "bytes": 4310,
+      "sha256": "ea4a892c1ce40f45705de5c52947c8e7a7493b58983a9777c80112ffb4772157"
+    },
+    {
+      "path": "src/broker/data/race-map.json",
+      "bytes": 74508,
+      "sha256": "6596b4b4c7e90cff0680cdf25c0a1284d0c5b3cf2c7486d1e4e5546e44865d71"
+    },
+    {
+      "path": "src/broker/data/reviewed-raw-names.csv",
+      "bytes": 3819,
+      "sha256": "2a3b5f1c5623d96a32a7a6e4fd9783571695ba04ca4c58764c0e6d5990bdde1d"
+    },
+    {
+      "path": "src/broker/data.mjs",
+      "bytes": 4394,
+      "sha256": "19a18ae0627d28415a9a378ba2ad017c2225a623177924c18f9977fb93aa30cf"
+    },
+    {
+      "path": "src/broker/description-terms.mjs",
+      "bytes": 1528,
+      "sha256": "876c164c02d798e1c628c54e1afa6335e45c513a35d8f7069e0cf6b2cffc8627"
+    },
+    {
+      "path": "src/broker/dynamic.mjs",
+      "bytes": 2791,
+      "sha256": "5150e9330c7f37f18076018567340b9b6309c411666305fd50d51e3804e1e676"
+    },
+    {
+      "path": "src/broker/equipment-names.mjs",
+      "bytes": 3209,
+      "sha256": "9fd0206ea7369c2824205ae6f8fdf2ef3b9b012ba9f48887d4474a950657bded"
+    },
+    {
+      "path": "src/broker/generate-fortress-hover.mjs",
+      "bytes": 579,
+      "sha256": "363020440b108f7b0ea1c4a111f7d80159249421501979050502b91f9d790683"
+    },
+    {
+      "path": "src/broker/generate-raw-states.mjs",
+      "bytes": 3161,
+      "sha256": "e043d10a8aed1939f26ad5bcc4e38cd75ea4825ae5d9e0772b45385128043ca8"
+    },
+    {
+      "path": "src/broker/generate-reaction-names.mjs",
+      "bytes": 2029,
+      "sha256": "1e6a02ce28344a9ed252acee244d826747c5a277423f1d0855cfce6bb9688bfd"
+    },
+    {
+      "path": "src/broker/glossary-zh-Hans.json",
+      "bytes": 2161,
+      "sha256": "4d8cbd4139a4840995d9364f48e4ac4cabb0b218a49ccdb9346dfa22deba5d53"
+    },
+    {
+      "path": "src/broker/glossary.json",
+      "bytes": 2161,
+      "sha256": "cc55a6295c11556825f66ed1148b956513c8632faf0951348f7ca8cc78ccdbdb"
+    },
+    {
+      "path": "src/broker/import-workbook-supplement.mjs",
+      "bytes": 7665,
+      "sha256": "cbbc3151e058b5128b779a3ba5da917ab728fd87ccb6476dee9306c7c23f230f"
+    },
+    {
+      "path": "src/broker/language-data.mjs",
+      "bytes": 436,
+      "sha256": "9f6952dad42779d37777373b2ca82020b9f1b2c5ae89628682bd7894eeb7d460"
+    },
+    {
+      "path": "src/broker/launcher.cpp",
+      "bytes": 2329,
+      "sha256": "e36f1c937ea5d44abefb6b35d862e3a740daa48ecbfdd6ae2cb57b5328c9c86e"
+    },
+    {
+      "path": "src/broker/legends-captions.mjs",
+      "bytes": 3081,
+      "sha256": "075c1230d07611a8cef761af2e5142c12d394707a922c7ff447ea9944021a0bc"
+    },
+    {
+      "path": "src/broker/LICENSE-STATUS.json",
+      "bytes": 2153,
+      "sha256": "2744d695a1033df29aa5aaa302f32bc348e678416eb63493cf4db09509a0bd40"
+    },
+    {
+      "path": "src/broker/literal-lookup.mjs",
+      "bytes": 1168,
+      "sha256": "243ce0c5ea35f8eb940cb2689cfe886c350392316e51c0f472e2a46fbe2affd5"
+    },
+    {
+      "path": "src/broker/live-check.mjs",
+      "bytes": 2931,
+      "sha256": "222ea503ff7c9b78a74c46c5b78e17b1badea7f6e2047116b070211735331bbc"
+    },
+    {
+      "path": "src/broker/migrate-legends-registry.mjs",
+      "bytes": 1769,
+      "sha256": "08fc108dc94894df2e3d33c8cf8244fd796df4f105a7f2a6d279b480f2c34a86"
+    },
+    {
+      "path": "src/broker/migrate-native-figure-registry.mjs",
+      "bytes": 1058,
+      "sha256": "2ffaacda9fb081c547f43dc34beb60c4a1b389653759c3dcd8a9ecec0654d965"
+    },
+    {
+      "path": "src/broker/name-dictionary.json",
+      "bytes": 34164,
+      "sha256": "7437f5a16de7fed0234cc51c5ea80d34d451c93a39a2dbf08224adede35efaaa"
+    },
+    {
+      "path": "src/broker/names.mjs",
+      "bytes": 6862,
+      "sha256": "b7ee065c15f7c74565f69adbd5c286edee7404a3d7b90ad47b409f93df0e25ae"
+    },
+    {
+      "path": "src/broker/native-prewarm.mjs",
+      "bytes": 8163,
+      "sha256": "a8bd9552678d18b4aab8bbd142b37dd94e2ddc54a4a239bc618343202f40d976"
+    },
+    {
+      "path": "src/broker/official-library.mjs",
+      "bytes": 17322,
+      "sha256": "b440e22cf69f99a24c7126b28a4a8ed325fae3fa9f43d06b5c0dde39969c916a"
+    },
+    {
+      "path": "src/broker/official-owned.mjs",
+      "bytes": 5906,
+      "sha256": "5a1a63f9d4873356df40aedbe34175afbdee36c7727f5572d667e51578e15876"
+    },
+    {
+      "path": "src/broker/official-trust.mjs",
+      "bytes": 514,
+      "sha256": "ba97ea79739e509137457a403a52ec5d505fd2e1c302c879653886587076703e"
+    },
+    {
+      "path": "src/broker/package-lock.json",
+      "bytes": 5674,
+      "sha256": "95c90e8fa17070f779f121d953809b84591febc9736f35a5eea57b6ce784013f"
+    },
+    {
+      "path": "src/broker/package.json",
+      "bytes": 370,
+      "sha256": "fb1cdfcdcf7d9e9d8d0e0723e33d4964b269e37e0a5411cee0432d51b15639e2"
+    },
+    {
+      "path": "src/broker/prepare-descriptions.mjs",
+      "bytes": 756,
+      "sha256": "a02f68edf5ca2eb93fb61bd92942a8f9f5fad1fc984ffc5f72765498c4a84884"
+    },
+    {
+      "path": "src/broker/prepare-workshop-package.mjs",
+      "bytes": 10652,
+      "sha256": "8c883916c4a2b5098f65c55a7b0ab10f9cf2b03f44c96cb06a8542846c5b2a32"
+    },
+    {
+      "path": "src/broker/prewarm.mjs",
+      "bytes": 5067,
+      "sha256": "43ae3090b1f32b5d654d22b11e7ba2df3e09671b5e8aef049a680d70a541731e"
+    },
+    {
+      "path": "src/broker/probe-native-prime.mjs",
+      "bytes": 992,
+      "sha256": "24147eaa377de5babf9c62bd2b83f766b37e434e3bf185e565d737fdfc576192"
+    },
+    {
+      "path": "src/broker/prompts.mjs",
+      "bytes": 2302,
+      "sha256": "1b294cde579e9ae3088389d1171f9bf57c341d3cf16a917699bef0b6cd582e52"
+    },
+    {
+      "path": "src/broker/provider-pool.mjs",
+      "bytes": 4141,
+      "sha256": "3701d1396c948efa81f7f39c6042d6792e81a060208e6ffa9cd4871ffed4a833"
+    },
+    {
+      "path": "src/broker/provider.mjs",
+      "bytes": 15080,
+      "sha256": "8f62da7e96ea47abaf38cf0a9d84d4eb2173422f04c14bed34cb8341af3e3c7a"
+    },
+    {
+      "path": "src/broker/raw-state-terms.csv",
+      "bytes": 1411,
+      "sha256": "81141b8bf2b3ecad7ad899673f99be6192f2371fb46cad83fced1cfd94cd8818"
+    },
+    {
+      "path": "src/broker/raw-states.mjs",
+      "bytes": 1869,
+      "sha256": "e4582368eee3c30a8ec9b0746c1008fd12aec4895ff4af7b5c800b080a56eee3"
+    },
+    {
+      "path": "src/broker/reaction-names.mjs",
+      "bytes": 933,
+      "sha256": "964df744456e8fb7d0c0f2e1b396368b78b7e3ec0f6dded1a9d5666f86c3ab92"
+    },
+    {
+      "path": "src/broker/reaction-plant-terms.csv",
+      "bytes": 321,
+      "sha256": "bc0e797ae185361ba1905364c2dedc2675cc5de443d7f49ab30b01ed162de02e"
+    },
+    {
+      "path": "src/broker/README.md",
+      "bytes": 13003,
+      "sha256": "7f0be4100cd04e9f2d4c0975a302f237228fcbc48731541b6d225d25ef32885c"
+    },
+    {
+      "path": "src/broker/review-case-variants.mjs",
+      "bytes": 3273,
+      "sha256": "03f88ea3250fb93e0990aec49195ed864c4523cb69ca476ed6a502381f271b8c"
+    },
+    {
+      "path": "src/broker/reviewed.csv",
+      "bytes": 5221,
+      "sha256": "890d6577e48742a291b69be0703ac8dd8b2f06d85e69c94260995d5f8ab42ab9"
+    },
+    {
+      "path": "src/broker/rich-text.mjs",
+      "bytes": 4284,
+      "sha256": "7989fbdd7970fc0ae7a2ef11b1994753d6fd20fe250f51e167de8c13ce6edcca"
+    },
+    {
+      "path": "src/broker/safety.mjs",
+      "bytes": 4201,
+      "sha256": "51225dc6ebe74960c001f6d90df41d9f45f6002bfa97b629a0d02ecca7d04b32"
+    },
+    {
+      "path": "src/broker/scan-mods.mjs",
+      "bytes": 1682,
+      "sha256": "5827994122bf25ee405a40978096b3ae2f83d249219eb8d4f2a7f13c28059a4d"
+    },
+    {
+      "path": "src/broker/settings.mjs",
+      "bytes": 16154,
+      "sha256": "7bd96bb651ee547c434f762b84c78cef77fd1a8354b9ff752128f3ac58017e8a"
+    },
+    {
+      "path": "src/broker/shared-outbox.mjs",
+      "bytes": 7486,
+      "sha256": "1acdf695ad37f9b662f499ab22d240711133dc5acd63b6c310b52ad3dbf50274"
+    },
+    {
+      "path": "src/broker/shared-policy.mjs",
+      "bytes": 3473,
+      "sha256": "dd9f6ef228866eba4df48a0d3d4e39b63ba16e70ea6dea33395ee9192a9c6f6e"
+    },
+    {
+      "path": "src/broker/Start-Broker.ps1",
+      "bytes": 2727,
+      "sha256": "562c97a449313e3891eae237a2986f0d714b37c3f860a1217e0dcbe7747d7282"
+    },
+    {
+      "path": "src/broker/status.mjs",
+      "bytes": 2493,
+      "sha256": "daeab5316eb3ff22f418596b11ef8fbe3dab6629b9980951f8e58d1b8f23c9a2"
+    },
+    {
+      "path": "src/broker/unit-prewarm.json",
+      "bytes": 107996,
+      "sha256": "de32144e8e668a8eee6f14937c4fe364de229bdd0ee4227e4f504beafb5dc622"
+    },
+    {
+      "path": "src/broker/unit-prewarm.mjs",
+      "bytes": 5468,
+      "sha256": "0efdff2aee58d3d0cc93c7388c74f98a658832aed447f48b8825c149e33ffcef"
+    },
+    {
+      "path": "src/broker/validate-workshop-package.mjs",
+      "bytes": 4097,
+      "sha256": "b27a0113a08332e979257bf07fc4de269932c3f69e8f86f19ca0faaab402d563"
+    },
+    {
+      "path": "src/broker/verify-descriptions.mjs",
+      "bytes": 1497,
+      "sha256": "821317ca692d9a5d747bc9056d90c567f2c75ae39466d9d2577f39c9e4ef9ed6"
+    },
+    {
+      "path": "src/broker/verify-fortress-live.mjs",
+      "bytes": 2542,
+      "sha256": "74e9a51091908158407220c8ba74a44f8f56ddbc98677d5b166f6c86166ed417"
+    },
+    {
+      "path": "src/broker/verify-official-live.mjs",
+      "bytes": 2897,
+      "sha256": "eb9244d6511e1def6e89ef60df3f231b01350beec20a32fd957f2ef182aaeaa0"
+    },
+    {
+      "path": "src/broker/workbook-expansion.mjs",
+      "bytes": 757,
+      "sha256": "4d039e4b8cff2280b8fe22bd5736b5b848ca38f1ee14677f51f3b33760abe8a8"
+    },
+    {
+      "path": "src/broker/workbook-supplement.mjs",
+      "bytes": 4256,
+      "sha256": "0fb777d7905a274e9b95c9249750d9a86643e040a611e76e5dc6ed7f7df468ac"
+    },
+    {
+      "path": "src/community-cloud/bootstrap.jsonc",
+      "bytes": 109,
+      "sha256": "f3a1c36d82be5b681c55f2acd3e56f3e5da1b2ed0d2158293ff3943f735e0301"
+    },
+    {
+      "path": "src/community-cloud/migrations/0001-consensus.sql",
+      "bytes": 1696,
+      "sha256": "36aa3deaf4c4a5e444fdf7e4d8c69cdc1d8be49ff91093f4a7fd0d28bd70a5cb"
+    },
+    {
+      "path": "src/community-cloud/operator.mjs",
+      "bytes": 1398,
+      "sha256": "53f33a5332b7e21128b4d6c3510ae0f9ff1119cf6d382e490022b15938977a0a"
+    },
+    {
+      "path": "src/community-cloud/package-lock.json",
+      "bytes": 63529,
+      "sha256": "c4ecc0496cb28aca2d36a9703671e95057658b011d3891551439e8efb76a8eed"
+    },
+    {
+      "path": "src/community-cloud/package.json",
+      "bytes": 256,
+      "sha256": "704c944bebb1fea4c663d878061e2b54971a8d862084e5924ccadc272c562f16"
+    },
+    {
+      "path": "src/community-cloud/prepare-keys.mjs",
+      "bytes": 3262,
+      "sha256": "7643874ad81e20ab0fc5cb63737413322810b826943b93c6349594f2f1c338f2"
+    },
+    {
+      "path": "src/community-cloud/public-keys.json",
+      "bytes": 305,
+      "sha256": "d40d6bbb184e5c274a722f0d5a481c0fbd6d3cad235399e00c86efa8e7c3055e"
+    },
+    {
+      "path": "src/community-cloud/README.md",
+      "bytes": 3840,
+      "sha256": "b514c982fc3ee82db7c29f38e24a0e189be01f06d403a6da1f0995eb52bdee59"
+    },
+    {
+      "path": "src/community-cloud/seed-staging.mjs",
+      "bytes": 2105,
+      "sha256": "44b1fd729396cb929cf5ddf44f68231cb85585697cdad17d7ed798e5e6ea374b"
+    },
+    {
+      "path": "src/community-cloud/src/index.mjs",
+      "bytes": 6909,
+      "sha256": "f93f73cac174dccb715ca6f035d9ee3beadb8bb1f70d937d945457bb234ce99a"
+    },
+    {
+      "path": "src/community-cloud/src/publisher.mjs",
+      "bytes": 7604,
+      "sha256": "4014550ffc51641985b6b3e3fc70c0f71b3a83252e98135ba9ebd67ecbf94c30"
+    },
+    {
+      "path": "src/community-cloud/src/reviewer.mjs",
+      "bytes": 4383,
+      "sha256": "f8d949d58909096289306c3afdf2312087506369b7c6f0f9d77bd773278f92ad"
+    },
+    {
+      "path": "src/community-cloud/src/store.mjs",
+      "bytes": 7681,
+      "sha256": "e78194e922e6a7032d9079a3c9b4f3b070a238df0d67140663402a20bf6225ca"
+    },
+    {
+      "path": "src/community-cloud/src/type-contract.ts",
+      "bytes": 806,
+      "sha256": "c29efc119fbb30f6fb8de98c236292b54b908626adfef1bde167c7406034f908"
+    },
+    {
+      "path": "src/community-cloud/staging-synthetic.sql",
+      "bytes": 7507,
+      "sha256": "a7524dca76a96994dccc3bf3ca9354a4d3f2153c9393234362af832cb91eb1df"
+    },
+    {
+      "path": "src/community-cloud/tail-safe.mjs",
+      "bytes": 1127,
+      "sha256": "6a6c9facadf0cad7a3a571fa240b5b1ba40193cf47fef5de0627d73b741c8bce"
+    },
+    {
+      "path": "src/community-cloud/test/consensus.test.mjs",
+      "bytes": 3986,
+      "sha256": "14745fd4cc69da5d4963cdb65d58695f90a6a38c00e7291c88656d847964ce52"
+    },
+    {
+      "path": "src/community-cloud/test/helpers.mjs",
+      "bytes": 2447,
+      "sha256": "0d4f0fb1e98843621dfc0ab2c9592a5fed10cc0bd7942d1759fa14d25ce5e19f"
+    },
+    {
+      "path": "src/community-cloud/test/publisher.test.mjs",
+      "bytes": 5201,
+      "sha256": "f9c042bf7212b20bbdd4c96cd3f23363ca20cb9407bbbc3e40893222487cb8cb"
+    },
+    {
+      "path": "src/community-cloud/test/worker.test.mjs",
+      "bytes": 3679,
+      "sha256": "368134d3ccdf40d3d4c63afc99caf3a698bae15bf05782232a586f38a44c296a"
+    },
+    {
+      "path": "src/community-cloud/verify-production.mjs",
+      "bytes": 1969,
+      "sha256": "7ba09658f63a2b3601a496aa44a27eafc0193c163678db988be7a00d3af01839"
+    },
+    {
+      "path": "src/community-cloud/verify-staging.mjs",
+      "bytes": 3110,
+      "sha256": "b79a8d0bebe35f7b232f5b1fd9e7a8f17722faae1e90c44a87339dc22be1b035"
+    },
+    {
+      "path": "src/community-cloud/verify-upload.mjs",
+      "bytes": 1219,
+      "sha256": "f777f8d304d545f97ae173720d61f709a56bc1844ab8a6418325e967b320cd38"
+    },
+    {
+      "path": "src/community-cloud/verify-withdrawal.mjs",
+      "bytes": 3052,
+      "sha256": "72a987782fc3ebd085d0d1eb46b82d4ef86c62bbe2692686f9ae84b180523392"
+    },
+    {
+      "path": "src/community-cloud/worker-configuration.d.ts",
+      "bytes": 624801,
+      "sha256": "5a91376c02a2397a37053cecdc0e7aebf26a22633686a9023e1b89e273ccb536"
+    },
+    {
+      "path": "src/community-cloud/wrangler.jsonc",
+      "bytes": 2849,
+      "sha256": "2bdd21470d77bdae194e3742315c694e50cb41f28e92dc3605629c022ea40dac"
+    },
+    {
+      "path": "src/df-local-zh-native/.gitignore",
+      "bytes": 203,
+      "sha256": "d16b6ec4b394847e703fdc639f3233348cd297c8bc34864006a18ae6103f74f8"
+    },
+    {
+      "path": "src/df-local-zh-native/assemble-local-package.mjs",
+      "bytes": 11113,
+      "sha256": "717730c07ad8595504b794af502868ee7a128918e232b4a9ec4b4963cd3375ed"
+    },
+    {
+      "path": "src/df-local-zh-native/ATTRIBUTION.md",
+      "bytes": 1010,
+      "sha256": "f7cc3a4d70e81fe731ab232f8db26bac2d4df0fea9f097ae7bd10bb2e90e25a2"
+    },
+    {
+      "path": "src/df-local-zh-native/Cargo.lock",
+      "bytes": 57884,
+      "sha256": "0350833eb791dd3dc37c4e234cd93128894fb0713c0b25b1c9e4236299c1f35d"
+    },
+    {
+      "path": "src/df-local-zh-native/Cargo.toml",
+      "bytes": 1317,
+      "sha256": "3692297d6608808e4506abe6471c228b9875a3d1b8ee5d70a0a532a4dda69ab0"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cp437_string/build.rs",
+      "bytes": 133,
+      "sha256": "af6c922cd4b411e4eeee13002895521b5c47eb20e65402c0be5e2dec61a6c8c7"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cp437_string/Cargo.toml",
+      "bytes": 103,
+      "sha256": "45c7f43c4094e91eb2c65eb2fdedf5e71c8f0fffa70158ae953d2bb535f56bd2"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cp437_string/src/lib.cpp",
+      "bytes": 19925,
+      "sha256": "515e4e2eb73699506265cd7e0f2fe678dd9924be7c2a96eaf3a6c37bce65b23d"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cp437_string/src/lib.rs",
+      "bytes": 3452,
+      "sha256": "011c1105c731d22ded92f1e6c4f89e476fd506de340b8c382416a9a3a85e7ec7"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/build.rs",
+      "bytes": 281,
+      "sha256": "923b1feb872e718c10a3460cdfd9af9246ce50779ed4aa36e26dd91db88cfd18"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/Cargo.toml",
+      "bytes": 94,
+      "sha256": "877439bf51e0d94d9d74cf799f96042441d95d9c56e3bdd87bcc37daeae63d5b"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/src/lib.rs",
+      "bytes": 206,
+      "sha256": "f70b890f2baf13a97d8fd697f00dd5435e81f928e7ca0421dedd642d638f5d12"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/src/search_callback.cpp",
+      "bytes": 279,
+      "sha256": "57641afb63ef4eb876b6fbf00933e3d9b1f38be333ee803b9d88b3dca18ca025"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/src/string.cpp",
+      "bytes": 674,
+      "sha256": "f355a606773c2f3e71d3ed9806aa3b7afbdccc33f5dde982d7092e510daf7ee9"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/src/string.rs",
+      "bytes": 2242,
+      "sha256": "dce66e375543340d1564eb479ff6a924c42525130a17756e972773f7df280cfc"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/src/vector.cpp",
+      "bytes": 1008,
+      "sha256": "f7fb338ea686bcb78d30b98dd4eed823ccdbc874bdda7a57e49a023814f4118f"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/cpp/src/vector.rs",
+      "bytes": 2887,
+      "sha256": "2300a353fbff91a88a982127fec8c052be0e7bd9ae6488edb8adb0931bb23fc5"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/executable/Cargo.toml",
+      "bytes": 132,
+      "sha256": "81630911d2c20c41ad169dd817f88bd70077c5ee153af2ba9568df08fd71d51b"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/executable/src/elf.rs",
+      "bytes": 1147,
+      "sha256": "e78b7279fc45d870f35cfffebb14eb817c689b46b9fe1736b022d242df900bff"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/executable/src/globals.rs",
+      "bytes": 641,
+      "sha256": "d4c18e62ae1cff67bec4978121a859193af771abdeb48859dcc5fdba161ae948"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/executable/src/lib.rs",
+      "bytes": 329,
+      "sha256": "986206cc36afbc57c0b0fe8781b9bc21f3ef7d128ef2b1d9e47b8df210169063"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/executable/src/pe.rs",
+      "bytes": 1371,
+      "sha256": "9a2b76936388889028ff122f33b73db216fea562fe0e4666e31f009c4f33856a"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/lua53-sys/build.rs",
+      "bytes": 203,
+      "sha256": "50ef797250d8fa8908498951d727daaad861d92d5593f3a9a6eaeb22c08c4c70"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/lua53-sys/Cargo.toml",
+      "bytes": 191,
+      "sha256": "4a45cdbd4cf9acd3bde69b06531585efcf31c3ec75768a167dee77b281004a1c"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/lua53-sys/prebuild/liblua53.so",
+      "bytes": 331296,
+      "sha256": "1eae4d62f8a15874602bc9b0115d0886bfe85233a85976627ba86e306420553c"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/lua53-sys/prebuild/lua53.dll",
+      "bytes": 268800,
+      "sha256": "edd1bf697de6f0e2ef4f6b68fdb6a1353e7afb6b60ab77eb56334cde22e029ff"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/lua53-sys/prebuild/README.md",
+      "bytes": 130,
+      "sha256": "9525cbb381a157c8cd09d84329376caca2495515718e060579b169717f2cbbdb"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/lua53-sys/src/lib.rs",
+      "bytes": 3351,
+      "sha256": "65ec8a077215432a38d67f610a431e4abe09729e63c3957342406c402d770bb7"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/macros/Cargo.toml",
+      "bytes": 64,
+      "sha256": "e85592469e150c16e2f1f47852ccdaf9ac8aded0a84905e3af8ab316d24e56fb"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/macros/src/hook.rs",
+      "bytes": 2101,
+      "sha256": "540f041407f128799d187c6c3e97631bbd7e56e29dcd88232450a63534921db6"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/macros/src/lib.rs",
+      "bytes": 53,
+      "sha256": "744ec1b626e1d13c28ab06013598c0a6506533d83b6d1a673f052493f6a2d225"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/rule_based_translator/Cargo.toml",
+      "bytes": 260,
+      "sha256": "2d204146f27fe904ff95c1e227d0130b0f84f899a3117d6b4fee2a2a8b676534"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/rule_based_translator/src/lib.rs",
+      "bytes": 25661,
+      "sha256": "310e67ee953b49f957b15883b0f7e1975b4a95d8079a7e0062fb7e9b3c4a322e"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/rule_based_translator/src/replacer/any.rs",
+      "bytes": 1025,
+      "sha256": "052585fd93bb469ce57421818f31ae12a475ca9a6fa22284afd0ef33c7846f17"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/rule_based_translator/src/replacer/item_designation.rs",
+      "bytes": 6093,
+      "sha256": "d1feb1fa78266f9e8496d725dc95e57541ae1acee4f3ef3ade40b2644e434943"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/rule_based_translator/src/replacer/mod.rs",
+      "bytes": 1578,
+      "sha256": "429e868d26671975205c833cf97501f8d05dc5dc62a329d47295c4fda1adc1fc"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/rule_based_translator/src/replacer/number.rs",
+      "bytes": 1136,
+      "sha256": "32e54cff69a2ca2ae7c7b48645db7e20e792fa7d7c2b97e33a65166f71987b44"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/Cargo.toml",
+      "bytes": 212,
+      "sha256": "11e8c7008fcc3c1b77156ba1eacb81871a7268dc51286eb75a897b85f0960784"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/prebuild/README.md",
+      "bytes": 408,
+      "sha256": "a8e6c37c929aa3f02167af2c22a11795e6e75e74264af6b467116d9037b44eb9"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/prebuild/SDL2.dll",
+      "bytes": 2508288,
+      "sha256": "9603fdfd2b4bd75b3574bb993e25332bae820a66f18e7ffb6f8c82cb4f6c004a"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/prebuild/SDL2_image.dll",
+      "bytes": 165888,
+      "sha256": "cbfaa83c138455844fff19f6cc320e28f217e0cfba35d717a827275c48a49c4b"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/src/lib.rs",
+      "bytes": 3408,
+      "sha256": "1a548a70ed0f09599739e9aa8e8416a669fcea0bde9ae244833681aa5d391254"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/src/rect.rs",
+      "bytes": 231,
+      "sha256": "14d733fd993a74e75240615d7c30eced68e5c5f4c39a28ef14115241c432f889"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/src/renderer.rs",
+      "bytes": 4924,
+      "sha256": "20e5f47e83a250c578690dd75894bf86935dd455796c560e30064b1a3442009a"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/src/surface.rs",
+      "bytes": 5273,
+      "sha256": "ea49f8054aed3168a9addaca5d6f28969e6ffd29e5d9a7dde547e6b43b5cf112"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/src/texture.rs",
+      "bytes": 3801,
+      "sha256": "bffe932e8da2f41d09c20119bc3e183b94f0fbd689321849217ee5a6c9710aa5"
+    },
+    {
+      "path": "src/df-local-zh-native/crates/sdl2-sys/src/window.rs",
+      "bytes": 3509,
+      "sha256": "40fbdc36e13766b01e77b234de1402b4eb313c01d8f2f258eac67b2ea1ac41e0"
+    },
+    {
+      "path": "src/df-local-zh-native/Cross.toml",
+      "bytes": 96,
+      "sha256": "0e8204c15af9c86224130ed5d2f9a4031e39fc88509c00298f09c04710b0a00c"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/Cargo.toml",
+      "bytes": 1270,
+      "sha256": "ef12cb1a805754ea4ee4b1287f92f5dfd8366952bfdd01db8aa9757eb324cc0e"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/backtrace.rs",
+      "bytes": 1029,
+      "sha256": "74072771b59dd3b246ca1b1b2c34faf3a1072c199e45b54481aa551e23197643"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/broker_client.rs",
+      "bytes": 5406,
+      "sha256": "bc700f517042f25bb0c156637bffce2f4640520cb0dbdf68f6a608496bf8e093"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/chinese.rs",
+      "bytes": 2192,
+      "sha256": "b5ae3dffe1539e584bba1c055b102e33016b868e860fcbc172d4417586b95bce"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/cjk.rs",
+      "bytes": 388,
+      "sha256": "1d163ac4e3ae0d0d9cfcc3e18f5c6e44d827663d49881b19770884439d33a75e"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/control.rs",
+      "bytes": 4083,
+      "sha256": "d6e3dd6bba2c71ae97e6b550ea95d1a53b0fac0006b28e84daf1bf6a50208d54"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/df/enabler.rs",
+      "bytes": 1654,
+      "sha256": "115b192dc41c1fc68c759a46c73583e49b7617dbdfc4ece3c07def9ff5325c5d"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/df/game/main_interface.rs",
+      "bytes": 752,
+      "sha256": "e9cf2e586ed04ff735fae6e3dbb8783db70fc2ba76fa3fd825ad3c3b3e324244"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/df/game/mod.rs",
+      "bytes": 438,
+      "sha256": "2f92a488ee6786dcc7f4b23bbb09483d41c770e6cd8f8015a8e66383a3a84bc3"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/df/gps.rs",
+      "bytes": 4765,
+      "sha256": "c2926a7e66519702e9eb9ac50c426ba597248ba47e9a20315e8d5c6b9f9d80f3"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/df/mod.rs",
+      "bytes": 88,
+      "sha256": "b8913053ee031425497027c39adb3129a1879763453a7fa89c558b6c368892ee"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/df/renderer.rs",
+      "bytes": 2271,
+      "sha256": "d92667122547fb01232ff7aacc85897c74e37b4537cee8eacc059c26838c3cbe"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/df/view_screen.rs",
+      "bytes": 707,
+      "sha256": "886980063670afb31da3d80b51df1dcb3c193d5b610dfda3e89c88e52bb3e369"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/display_rows.rs",
+      "bytes": 6644,
+      "sha256": "be553df637d22a3e89a62e381b5896ac384570a422007ecee5326fe7e78e1a23"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/game.rs",
+      "bytes": 1091,
+      "sha256": "0345cb07d2192abc5d9cf89e3adf7d62f76412aa2e2c32e5db144c124025f5bf"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/glyph.rs",
+      "bytes": 10493,
+      "sha256": "bb6ca75419d1da8fb3673165935be4fd18c6fb61c69c2493c14414f83c6f9da6"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/hooks.rs",
+      "bytes": 19105,
+      "sha256": "4c03b0e7a4bee80495ac47ed825789eec8aa7b95a946d8948842613081cde02d"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/lang.rs",
+      "bytes": 815,
+      "sha256": "c3eb1b82d3a71dcb32c7ec9c0f33ef8290f0811c2136775b8376746133426306"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/lib.rs",
+      "bytes": 3131,
+      "sha256": "4c2f88336a2beaac5cf73b11eade922a4ae8789e028fcd6dcc4d0546a1c04a87"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/logger.rs",
+      "bytes": 1227,
+      "sha256": "80e37186529d0631a7f17b2767c59e2f7f862d2bba26d5fadd00108f3ab5408e"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/logging.rs",
+      "bytes": 4372,
+      "sha256": "5f8a78e52150a76b6647d7de49896abddaf810f9ab7efa23b3ee4bebc94180fd"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/logo.png",
+      "bytes": 69303,
+      "sha256": "22345c5c91eaa21c73e579a7d38d7c89e83a967133447aaba235bf83de7ceb04"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/logo.rs",
+      "bytes": 2662,
+      "sha256": "dd66ad7df8863b34022b21b67107debc0e771ad028c64005cc2225ccfb2f4a25"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/markup.rs",
+      "bytes": 28872,
+      "sha256": "dd535281121fe5c10302187c200a3463dd2e8490bf5cb0a1cddb2ae18591450e"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/memory.rs",
+      "bytes": 8733,
+      "sha256": "a91775d80e97ac7eb103aa57b3980fdd3bdb074d1b8b9907e0bff4ee0aaafc64"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/native_cache.rs",
+      "bytes": 17764,
+      "sha256": "e2ee0d3af412ee7c70f75b3c611e7a62c60cf672d8357f276ee370dc8dc81f27"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/official.rs",
+      "bytes": 8174,
+      "sha256": "b39877bc9c5af6d14c1afdf775e4bfb13c5f46691faf0c54ad5089dded7f0cab"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/prewarm.rs",
+      "bytes": 20448,
+      "sha256": "9f96884b35e11f366cd9e6d700b47c829979b34659665d745adb8365ddd94c9c"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/screen.rs",
+      "bytes": 9197,
+      "sha256": "39677381101fcfab16460eacda1e70e5c9f4cc17cd53b56134d034603adb0c34"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/search.rs",
+      "bytes": 18776,
+      "sha256": "e024a633f024f82412c83d42197d926d7294cf20cf94725617aa062f3f028894"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/search_input.rs",
+      "bytes": 7113,
+      "sha256": "9dd8b1f828d67f28a17eb4bef60424e86d89106b68d42abe9ff37095d383a8c4"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/search_text.rs",
+      "bytes": 4294,
+      "sha256": "079e9773b91cf75959ed5298387b2f9f56178f3542c79a96c6da2f6740aa95a5"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/tasks.rs",
+      "bytes": 4434,
+      "sha256": "fec637973259a326ad015a4cebd4e2b9a9724e960eb42e068c09dab40e3ab97d"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/text.rs",
+      "bytes": 16023,
+      "sha256": "477bc8381ef182c2332cadf420fd08db671418ba51ff0e5f608226caa10ad67b"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/translation/mod.rs",
+      "bytes": 31,
+      "sha256": "05737751a64d5d06709585ef84aa13943e0fb8bd6c39a627e7eb5495ca13c30f"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/translation/types.rs",
+      "bytes": 12763,
+      "sha256": "0996671ddf50c45ec365529cc6c220bb14e890516f96e3a14c2634e1b02484d9"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/translator/mod.rs",
+      "bytes": 10209,
+      "sha256": "30a1e026e4c530d1e8f49cd2848ea83e36593ade0742965781e621dbfda2791c"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/translator/rulesets.rs",
+      "bytes": 10574,
+      "sha256": "9cc958e709ba9a27fdf10d8ebea958489c61a7f2d9768b30ce352da030d1ebc1"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/translator/simple.rs",
+      "bytes": 10357,
+      "sha256": "af1a7e22a2fabe98d79d1851872d2419dc972afc7b3fd88789a4b0e7cc36dd65"
+    },
+    {
+      "path": "src/df-local-zh-native/dfi18n/src/types.rs",
+      "bytes": 6269,
+      "sha256": "04f9a63e1b0073e95736ad9728b5543c6c58d1e66bde387dd22b1c7e488ea954"
+    },
+    {
+      "path": "src/df-local-zh-native/DFI18N-DATA-ZH-HANS-LICENSE.md",
+      "bytes": 1198,
+      "sha256": "16e94750eff34db1262d7585a0eb6eed63f0fa5b2eccdee8d7b434734a2013da"
+    },
+    {
+      "path": "src/df-local-zh-native/docs/superpowers/plans/2026-10-01-native-prewarm.md",
+      "bytes": 3017,
+      "sha256": "c02d6dc770cb07e41c43b22c9100db3b571d88bf65743c534209ef42ae061cd4"
+    },
+    {
+      "path": "src/df-local-zh-native/docs/superpowers/plans/2026-10-01-official-library.md",
+      "bytes": 1986,
+      "sha256": "8c7f0293750919878fbc7156f339ccbb3c8d022973717e62abe7866e268c12ed"
+    },
+    {
+      "path": "src/df-local-zh-native/LICENSE",
+      "bytes": 1086,
+      "sha256": "d0ed1b9c751738d671f4e856792824903ef0db5df26c6ffe5bdb4c0d8a1f95e7"
+    },
+    {
+      "path": "src/df-local-zh-native/mise.toml",
+      "bytes": 435,
+      "sha256": "c11ef5d6aa8547d34827b128bcc06b33901add1181e1fa2fae479aade18448f6"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-arena-corrections-test.lua",
+      "bytes": 2827,
+      "sha256": "0c15adc6e894881f0c5c89c3d2304e1d1312ecf16dfa28dd8fb88e168ee73f1b"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-arena-test.lua",
+      "bytes": 11722,
+      "sha256": "7d8753b80407bb8c9030a3683fd7d95b0afab128a801e4bb989ba8e3dd04b793"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-audit.lua",
+      "bytes": 15429,
+      "sha256": "03c83a939b7dbb037ca20d0d0fe0995da0ed59a62fb3336d5a5656b8149879d9"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-core/functions.lua",
+      "bytes": 7789,
+      "sha256": "688502945f60cd6c7708f0ff995d89fcf6ad847644cde0b59f15d712fbe3319d"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-core/globals.lua",
+      "bytes": 301,
+      "sha256": "dbfe90db136c2609fc3db2a274c816549433260d4d5a163ef66352e4004fa256"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-core/helpers.lua",
+      "bytes": 1344,
+      "sha256": "ac93734bd244ae332f5ba4f230320100ce6ec5a3d7480f80827c5d793c077664"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-core/mod.lua",
+      "bytes": 11677,
+      "sha256": "ad577e67348e1a4bc2d0c84cdf2365309d19062b7fced8f215b300c59d646444"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-core/native.lua",
+      "bytes": 4687,
+      "sha256": "d246121e7ea518c7b4ff73f2e552f1813668881d5ac5034cbe2cdfc861b76f76"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-core.lua",
+      "bytes": 147,
+      "sha256": "6848265f0cb5144a6f8fa6afe4d791a5b45c116dbb1e3a04dbb6e21cf9756bde"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-creature-names.lua",
+      "bytes": 524,
+      "sha256": "54a5bcb17e476c7c04e1128a067c561739352c222b4b1a5b3e99dcfbd67352ea"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-creature-test.lua",
+      "bytes": 2373,
+      "sha256": "ef352bf8064f7e842a209a2cdea53e73b95042f6e4bf536f304b746f6f2349b9"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-embark.lua",
+      "bytes": 5791,
+      "sha256": "be322504b573416800f0946959ccc8533d7844e5c3c652af167d06a5defdf16d"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-equipment-test.lua",
+      "bytes": 845,
+      "sha256": "51d548b3fecf56faeaf04fd339f94b8002ae3d3f68137b5ec26d5501315223f9"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-hover-text.lua",
+      "bytes": 3789,
+      "sha256": "7ae3ab4a1a78a7df543808ff5ee7a71f3b5bd3b2e277522518607f4cb4a5a449"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends-filter-core.lua",
+      "bytes": 858,
+      "sha256": "6a94730aaf803fe15e40f804df62a98a3f48204c8d04f7cf969cde67ce89406b"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends-filter.lua",
+      "bytes": 3518,
+      "sha256": "0fb1b3032bddc4f8a92f9962dd6304e4ea4d26b70576c90601ea864403d39128"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends-list.lua",
+      "bytes": 6389,
+      "sha256": "1e955741f7a1ccee48e8eed915ad527f12b3e750c2ad47f0b9b13cafa7e54e8f"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-legends.lua",
+      "bytes": 7172,
+      "sha256": "e7439954c5a560814adeaca326d82e85a3bd1896bfba94d77bb61634cf1ea124"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-list-overlay.lua",
+      "bytes": 1211,
+      "sha256": "0663d4468a6ce092eb81071a33495f2c0be23010342df646167a41c3a00c08b0"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-names-worker.lua",
+      "bytes": 8379,
+      "sha256": "ba817f9d05581d5a6b9d8fda41298361d71dfacbcaec81c37919261c726f4734"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-names.lua",
+      "bytes": 68,
+      "sha256": "334db03fb397df48236b4a0c137d8effcbe76cf146e947366f91cd03c2e60bb4"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-narrative-overlay.lua",
+      "bytes": 3613,
+      "sha256": "a3078cc16f179045e7a319209d27fb538d373c08a7de8b33633d89626edcf5d6"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-narrative.lua",
+      "bytes": 9810,
+      "sha256": "f0f37059526b404960eb1901cbc09666450e7a26d5df3c07ce7f07483af26064"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-native-prewarm-test.lua",
+      "bytes": 5370,
+      "sha256": "39aa3760ea8ba049ff2189ecfbc863230fe5e426bd2b6ccf4c3ea5b4e466a36f"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-native-prewarm.lua",
+      "bytes": 1209,
+      "sha256": "0350190b185bcdf990d0715b680d92e0aaf869cff3093ba23695e27e7bd9df19"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-paths.lua",
+      "bytes": 2112,
+      "sha256": "e70436c29dc4878d5f2f49e214d4e922d479fb05d959ecf19b92383aa30f3284"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-prefetch.lua",
+      "bytes": 9384,
+      "sha256": "5c788f9a6775e6b025c016847a9d0acffb3b16967b787b9c32b0335416dec67f"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-reports.lua",
+      "bytes": 9726,
+      "sha256": "f9ee5b359f21c4d4080bc383ee5699e2ccc0d634f7b3cf3745c6f17adb7c509b"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-reviewed-text.lua",
+      "bytes": 368,
+      "sha256": "9da17bbe7a2b8314df35c8c8f617320c9e50aaa171cfe164350e0f860f8e4be3"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-runtime.lua",
+      "bytes": 38323,
+      "sha256": "4ec971754c14efe8e27530b0084c8f88c6b6ca970353f3f669f07297d2c1a243"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-search-editor.lua",
+      "bytes": 2029,
+      "sha256": "bdd8fc64113cf55448379e16f7bb3c4327a14e8fb7b7fbbd09b90261d9d32cfb"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-search-test.lua",
+      "bytes": 4496,
+      "sha256": "581bacc7e9143bccf692fb722118fd7f73f964480e754405778f2178b228636e"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-search.lua",
+      "bytes": 12829,
+      "sha256": "a0ebfe2417abfd036527ff913e2c3838bc0aca8606cc32c67456639ab30d3492"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings-test.lua",
+      "bytes": 10547,
+      "sha256": "c11c357cfc781bd29507a3de7d0424a2edfa81d8b1793b10cf0293acc80ab2ca"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings-ui.lua",
+      "bytes": 39539,
+      "sha256": "f12f4b56f0fc134618ec31e74b2490a2e26a3063d44bd111f85d6907f74bd987"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings.lua",
+      "bytes": 5629,
+      "sha256": "617e938a604c9494512211a5400de8ef638eb15f461500da523c001dcd967c96"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-status-ui.lua",
+      "bytes": 6769,
+      "sha256": "69c85b7b5416bd9ffed7812bf4ac860b2f11ecb7b4cb061831fb2a9957834639"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-status.lua",
+      "bytes": 3499,
+      "sha256": "81672e1e54d397c022caf382ad3ce24d99e4b32f64454afb6b118267f481c3f0"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-test.lua",
+      "bytes": 6302,
+      "sha256": "caacbfef1534f5e3ba06aae50ec13a72761d88a6cfb3ea91462cf62a026866b2"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-text-overlay.lua",
+      "bytes": 4431,
+      "sha256": "ec7f986c35249fdfcadc892c4d1e5df21e9515f5b751b9c55e06b9675432156f"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-title-overlay.lua",
+      "bytes": 3573,
+      "sha256": "b98994afb35b5d5f9110c37a27e9c9cb3ac07c0ef23e12409abd92fdcdc810dd"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-unit-prewarm.lua",
+      "bytes": 4689,
+      "sha256": "473ab282109d550312fb4ea37f5ff22252dedec38314fa467140c25a144a6d75"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-unit-text.lua",
+      "bytes": 15160,
+      "sha256": "dc6cf2a928fa61946407cc9286f8e7dd1bf8a8af070a0f3c5b3a6aea88d53307"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-visible-text.lua",
+      "bytes": 10152,
+      "sha256": "00644c85d10a0002225e16dedd30457e2e0d6a46b1dc2b9ddcc1de064485bea9"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-workbook-test.lua",
+      "bytes": 2444,
+      "sha256": "97fec5c7744a19322d10d7bc937e5c4c52fafde2b4289772c4edff870923323b"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh.lua",
+      "bytes": 5335,
+      "sha256": "7668ef6f0b554d264516cad572e7aedf2e9d186a31b9701b28502ddbcaea284a"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/dfi18n_loader.lua",
+      "bytes": 175,
+      "sha256": "b994c23a08d0ec82b0ac7994f7595f12d30ef5283bc12612a1f064f832f27931"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/info.txt",
+      "bytes": 375,
+      "sha256": "f3dd74c5a5b2779b9b5048eea7cdfca4e7cb240434da9acc2ffa6e8c052dee9d"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/libs/.gitkeep",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/preview.png",
+      "bytes": 351893,
+      "sha256": "e37dfc02f7efae17290843fb7b448784c267df806fb27479dd06bf78175cd055"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/scripts_modinstalled/configs/functions.lua",
+      "bytes": 7459,
+      "sha256": "2dd2d279f47925e0759efe8a10f7a38ebfa1e48a807ec42ba3efcc038b7d9d03"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/scripts_modinstalled/configs/globals.lua",
+      "bytes": 301,
+      "sha256": "dbfe90db136c2609fc3db2a274c816549433260d4d5a163ef66352e4004fa256"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/scripts_modinstalled/dfi18n.lua",
+      "bytes": 1010,
+      "sha256": "de56c76814b3436776ef1ee14d92ef21115fabf4bcf32d16f27d300e55c7d293"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/scripts_modinstalled/dfi18n_loader.lua",
+      "bytes": 443,
+      "sha256": "67bf03887f6a9f3596d9460edbed0d01f7e61490b7b852d870ebd24dd8bd7d01"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/scripts_modinstalled/internal/helpers.lua",
+      "bytes": 1518,
+      "sha256": "9e1eb6accbe014ce3863939edf8977f76b11811d3c287b61b2e584312865623a"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/scripts_modinstalled/internal/mod.lua",
+      "bytes": 9196,
+      "sha256": "6ed25440f493b259d7f5a202d4f879448600a9f05a53246f85907be6d2b0414b"
+    },
+    {
+      "path": "src/df-local-zh-native/mod/dfi18n/scripts_modinstalled/internal/native.lua",
+      "bytes": 1664,
+      "sha256": "ea98cfcfe1c6c304758b962fd9e22e0f8069d199b8d187c47b9deaddbff1ddd0"
+    },
+    {
+      "path": "src/df-local-zh-native/NOTICE.md",
+      "bytes": 1320,
+      "sha256": "76ef2fb0b2ba897d80214aca3ba667d8e1eeb7d92c8344903ad089bd24753696"
+    },
+    {
+      "path": "src/df-local-zh-native/OWNED-CORE.md",
+      "bytes": 10074,
+      "sha256": "dfdeb649a3f06bccb4083434e6489b6cd4da98f500ab517cc307140e30f24c67"
+    },
+    {
+      "path": "src/df-local-zh-native/README.md",
+      "bytes": 3199,
+      "sha256": "f67b5000b882a1091dcf9baf53ab59bb4fb718ec3926b77533160cff496fdd89"
+    },
+    {
+      "path": "src/df-local-zh-native/resources/input.csv",
+      "bytes": 296,
+      "sha256": "ace5e2780a7923fb1e4679f42ae102dfcb6d6825ddedbfe7e4dfdb86980744e1"
+    },
+    {
+      "path": "src/df-local-zh-native/resources/logo-original.png",
+      "bytes": 4956128,
+      "sha256": "05a63d41ce4b58e888f8faf0ddf888291a04b096d22420504ca6ba66c0a8a74b"
+    },
+    {
+      "path": "src/df-local-zh-native/resources/test.csv",
+      "bytes": 152,
+      "sha256": "e1b70bb4084e63dff9bcb942a8767b73c796a0454b8be1f188a4a0ef55280e1b"
+    },
+    {
+      "path": "src/df-local-zh-native/rust-toolchain.toml",
+      "bytes": 34,
+      "sha256": "f657a2eed810e752df8dc3db2aa7dc0efae71b56e9de36be6b1364f9dad9ee95"
+    },
+    {
+      "path": "src/df-local-zh-native/rustfmt.toml",
+      "bytes": 76,
+      "sha256": "53dd2fe419c3f85878681631dc69f6a5889df0cadb620038a7d101f7b2314238"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/live-chinese-dfhack.lua",
+      "bytes": 4426,
+      "sha256": "58a7dde718c74b94b0196e94ba71b8dd582312defff5c6db4ea2468e132fd41c"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/live-chinese-stocks.lua",
+      "bytes": 4445,
+      "sha256": "6fbe95fa1ad15154bb3bf8c969a34a2857eed768d1c60079337e142a60e04b74"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/live-chinese-widget.lua",
+      "bytes": 2470,
+      "sha256": "4d83b648ea728dcff0873ee88e0a1a71ede4ad4636a533c6f0feda2be5087103"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/runtime-rebind.lua",
+      "bytes": 2017,
+      "sha256": "e59eb94b8195a4186eff047932e0021ae3bd5ba197de3cf72efefd5723443e25"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-announcement-display.lua",
+      "bytes": 4370,
+      "sha256": "1cd55fa7ffaf9f4ade1a08e7db8938ec6e10e35499af7d929c9c13c5be65e681"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-cache-immediate.lua",
+      "bytes": 5635,
+      "sha256": "71f424f582f77bbbb7bdd5d8462b9f29d2fa21c3a54ff9f6c08241c440119266"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-chinese-search.lua",
+      "bytes": 1134,
+      "sha256": "75b5babcfc705b7e1bdf1d280c91e47e1bfaac2e5f4676fa7d32ac0574295e0e"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-display-color-persistence.lua",
+      "bytes": 10928,
+      "sha256": "dd0a344bf37983dacc3ec72e806be677da08130d1a31e01b54d1acd055e5307f"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-fortress-reports.lua",
+      "bytes": 6863,
+      "sha256": "148085a109615559a39e858e8546b1a7d9414b823536358659b4f265e7ffe7cc"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-fortress-sources.lua",
+      "bytes": 5512,
+      "sha256": "07c5b59ec82b0d834044ce98c600dd7376c53fc320af0b6a40c552aa904aa336"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-fortress-text-audit.lua",
+      "bytes": 5543,
+      "sha256": "e457fc6e279583936268a5acd71722bcdb49888fce195a00482568555e67874e"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-fortress-ui.lua",
+      "bytes": 1210,
+      "sha256": "043d555143ce728ee2a75127b833928f55e20bc97c98146ed2b5c9511d7c43e3"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-hover-text.lua",
+      "bytes": 3188,
+      "sha256": "2bc1105509db3fc6039ff55bafcc76de8e2d3155f896b3b62ca947f8db2bcddf"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-native-prewarm-bridge.lua",
+      "bytes": 2164,
+      "sha256": "e1dcd48df4ddf0013561148149c78b5cf3beced041b7e54b7b01e22b844ef13d"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-native-prewarm.lua",
+      "bytes": 3285,
+      "sha256": "c15c832e82bdbf6de2a12eaf33f0bb28de613b81ca5d0da98d2626d3c27fa062"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-paths-performance.lua",
+      "bytes": 1141,
+      "sha256": "acb394d0a378dd531f52d8439d006ca3bccd920077b231dcafee054c7bbc1fb0"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-pinyin-routing.lua",
+      "bytes": 2305,
+      "sha256": "a2e7c160f3a84458dcf031e6a47ae8c21aa0d70720efc538d569aa0c72af2319"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-runtime-callback.lua",
+      "bytes": 3506,
+      "sha256": "543abbb384b9b4417f488b058527720385db1a21cc246398a6ea1355ed7301d3"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-runtime-language.lua",
+      "bytes": 3551,
+      "sha256": "e58a73ed68f33203a71f5a0b61e8c88577adc7a34469fddf8cba0b6d75e7b9c9"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-runtime-poll-cost.lua",
+      "bytes": 9028,
+      "sha256": "478fc9bed5e3a9158adf5b6977910739100ed9ab1e1f85ebc313210aa50de868"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-runtime-queue-io.lua",
+      "bytes": 10515,
+      "sha256": "b4d86a5a96fdefeb28649707804967c889627446bbc0f935fcc8c149e8cdde08"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-runtime-rebind.lua",
+      "bytes": 1061,
+      "sha256": "449a7816a5946604848a97a5f19efce5a172c2a40f5ff41fe6ba43114edf3be1"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-runtime-reviewed-priority.lua",
+      "bytes": 1377,
+      "sha256": "bb538d468ea774b9dd9f58bbad841f818aa7aba369327585615b288547e35e8d"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-runtime-rich.lua",
+      "bytes": 5589,
+      "sha256": "54e07a3b915d9933137b09526de5b4778b1553143e3b33e36713de5d4fcc3ecf"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-settings-ui.lua",
+      "bytes": 21860,
+      "sha256": "0fab01d8776e05dff35999fc0baf9ec9f56067b2b82313c9809d7a08da57d816"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-startup-events.lua",
+      "bytes": 1376,
+      "sha256": "e1b30e363561b862059f371d5b411d6d426e2324acc081d4bab1492c528b5c05"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-status-ui.lua",
+      "bytes": 7812,
+      "sha256": "0ce13617a62654feba768547249ca1befd2cd95923bc59756f6ac30f42f3de94"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-text-viewer-color.lua",
+      "bytes": 1373,
+      "sha256": "abbd1f146f5b648b0c01574e2d68f407c48619e8c45ba383ad6f0494015c5750"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-unit-prewarm.lua",
+      "bytes": 3366,
+      "sha256": "3a03973db53e2130287d9032a53922f659bed18b6cd06df6490acc01d194b046"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-unit-restart-cache.lua",
+      "bytes": 6526,
+      "sha256": "24da0b35fce5a657e60d87917be9d4c621d8556a6bb26dffea13814ddb136553"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-unit-sheet-text.lua",
+      "bytes": 15334,
+      "sha256": "59fb6802d4a0962a01cd3a82020cfe31399f4408e8b8176175b9f4cea7c277d0"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-visible-fortress-text.lua",
+      "bytes": 10154,
+      "sha256": "636be78438f4d80a26e89237703117c8c55928255a9209204c1a038aa9e02781"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-work-name-registry.lua",
+      "bytes": 2539,
+      "sha256": "9ea1b854e31d629fea0a991dd2f4f6380011801524e5cfef47dcf290e39eeeb7"
+    },
+    {
+      "path": "src/df-local-zh-native/third-party-licenses/ferrous-opencc-OpenCC-Apache-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "src/df-local-zh-native/third-party-licenses/pinyin-MIT.txt",
+      "bytes": 1077,
+      "sha256": "dbee1336f5286b3b26fb6b4a71ab1e8d89f80b4073d9c8d2b2b33c06abc3bcbe"
+    },
+    {
+      "path": "src/df-local-zh-native/translation-tool/Cargo.toml",
+      "bytes": 416,
+      "sha256": "0324b71ef67c4325affae4cdf21dd0d26ec6f87c2c66da587e8bc882f3d9e767"
+    },
+    {
+      "path": "src/df-local-zh-native/translation-tool/src/main.rs",
+      "bytes": 12488,
+      "sha256": "788ab3f3e7da03449e02069aa1d8869e6ce95f57cb4e4cae7e155003f312363f"
+    }
+  ]
+}

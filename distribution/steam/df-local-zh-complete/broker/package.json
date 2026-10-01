@@ -1,0 +1,17 @@
+{
+  "name": "df-local-translation-broker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@iarna/toml": "^2.2.5",
+    "csv-parse": "^6.1.0",
+    "csv-stringify": "^6.6.0",
+    "fast-xml-parser": "^5.3.8",
+    "opencc-js": "^1.0.5"
+  }
+}

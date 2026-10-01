@@ -1,0 +1,224 @@
+use lua53_sys as lua;
+
+use crate::{broker_client, game, lang, native_cache, tasks, translation};
+
+mod rulesets;
+mod simple;
+
+// Pure local lookup: safe on the preload thread, without Lua or DF state.
+pub(crate) fn static_lookup(language:&str,source:&str)->Option<translation::TranslationResponse> {
+  rulesets::translate_equipment(language,source)
+    .or_else(||simple::translate(language,translation::TranslationRequest::lookup(source).context()))
+}
+#[cfg(test)]
+pub(crate) fn fixture_static(source:&str,translation:&str) {simple::fixture_insert(source,translation,"LEFT");}
+
+// Reset the translators and translation caches
+pub fn reset() {
+  rulesets::reset();
+  simple::reset();
+}
+
+// Check if the content should skip translation
+pub fn should_skip_translation(original: &str) -> bool {
+  // don't skip game version strings
+  if Some(original) == game::try_version() {
+    return false;
+  }
+
+  original.len() < 2
+    || original.starts_with("FPS: ")
+    || !original.chars().any(|c| c.is_ascii_alphabetic())
+}
+
+// Translate the given TranslationRequest
+pub fn translate(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
+  if let Some(response)=crate::search::display_query(request.original()) { return Some(response); }
+  let lang_tag = lang::current_lang_tag();
+  if let Some(response)=crate::official::fixed(&lang_tag,request.original()) {return Some(response)}
+  if let Some(response)=crate::chinese::direct(request.original(),&lang_tag) { return Some(response); }
+
+  if let Some(response) = rulesets::translate_equipment(&lang_tag, request.original()) {
+    return Some(response);
+  }
+  // Exact dictionary lookups must not depend on worker readiness or old misses.
+  if let Some(response) = simple::translate(&lang_tag, request.context()) {
+    return Some(response);
+  }
+
+  let stable_key = native_cache::key(&lang_tag, request);
+  if let Some(response)=static_lookup(&lang_tag,request.original()) {return Some(response)}
+  if let Some(response)=crate::official::lookup(&lang_tag,request.original()) {return Some(response)}
+  if let Some(response) = native_cache::lookup(&stable_key) { return Some(response); }
+
+  if should_skip_translation(request.original()) || !native_cache::begin(&stable_key) { return None; }
+
+  // spawn a task to perform the translation
+  let request = request.clone();
+  tasks::spawn(async move {
+    let _permit = tasks::translation_permit().await;
+    let response = std::panic::catch_unwind(|| do_translate_for_language(&request, &lang_tag)).ok().flatten()
+      .filter(|response| native_cache::valid_translation(request.original(), &response.translated));
+    let response = match response {
+      Some(response) => Some(response),
+      None => broker_client::translate_for(request.original(),&lang_tag,&stable_key.world).await,
+    };
+    let response = if stable_key.world == native_cache::current_world() && lang_tag == lang::current_lang_tag() {
+      response
+    } else { None };
+    // The world/language key is captured before dispatch, so completions cannot leak.
+    native_cache::complete(stable_key, response);
+  });
+
+  // return no translation for now
+  None
+}
+
+// The translation task that performs the actual translation
+pub async fn translate_task(request: translation::TranslationRequest) {
+  let _ = translate(&request);
+}
+
+pub fn known(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
+  if let Some(response)=crate::search::display_query(request.original()) { return Some(response); }
+  let language = lang::current_lang_tag();
+  crate::official::fixed(&language,request.original())
+    .or_else(||crate::chinese::direct(request.original(),&language))
+    .or_else(|| rulesets::translate_equipment(&language, request.original()))
+    .or_else(|| simple::translate(&language, request.context()))
+    .or_else(||static_lookup(&language,request.original()))
+    .or_else(||crate::official::lookup(&language,request.original()))
+    .or_else(|| native_cache::lookup(&native_cache::key(&language, request)))
+}
+
+// Perform the actual translation using different methods
+pub fn do_translate(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
+  do_translate_for_language(request, &lang::current_lang_tag())
+}
+
+fn do_translate_for_language(request: &translation::TranslationRequest, lang_tag: &str) -> Option<translation::TranslationResponse> {
+  // add MOD info to game version strings
+  if Some(request.original()) == game::try_version() {
+    let translated = format!(
+      "{} + {}-{} v{}",
+      game::version(),
+      crate::MOD_NAME,
+      game::os_platform(),
+      game::mod_version()
+    );
+
+    return Some(translation::TranslationResponse {
+      translated,
+      alignment: translation::TextAlignment::default(),
+    });
+  }
+
+  // chain translation methods
+  None
+    .or_else(|| simple::translate(lang_tag, request.context()))
+    .or_else(|| if request.original().len() <= 160 { rulesets::translate(lang_tag, request.context()) } else { None })
+}
+
+// Synchronous translation function called from Lua (will not use cache)
+#[unsafe(no_mangle)]
+extern "C" fn sync_translate(lua_state: *mut std::ffi::c_void) -> i32 {
+  let content = lua::check_string(lua_state, 1);
+  let request = translation::TranslationRequest::lookup(&content);
+  let response = known(&request).or_else(|| do_translate(&request));
+  if let Some(response) = response {
+    lua::push_string(lua_state, &response.translated.as_str());
+  } else {
+    lua::push_nil(lua_state);
+  }
+  return 1;
+}
+
+// Asynchronous translation function called from Lua
+#[unsafe(no_mangle)]
+extern "C" fn async_translate(lua_state: *mut std::ffi::c_void) -> i32 {
+  let content = lua::check_string(lua_state, 1);
+  let request = translation::TranslationRequest::lookup(&content);
+  let response = translate(&request);
+  if let Some(response) = response {
+    lua::push_string(lua_state, &response.translated.as_str());
+  } else {
+    lua::push_nil(lua_state);
+  }
+  return 1;
+}
+
+#[unsafe(no_mangle)]
+extern "C" fn cache_lookup(state: *mut std::ffi::c_void) -> i32 {
+  let content = lua::check_string(state, 1);
+  if let Some(response) = known(&translation::TranslationRequest::lookup(&content)) {
+    lua::push_string(state, &response.translated);
+  } else { lua::push_nil(state); }
+  1
+}
+
+#[cfg(test)]
+mod immediate_tests {
+  use super::*;
+  use std::sync::atomic::Ordering;
+
+  #[test]
+  fn exact_dictionary_returns_on_first_hook_call_without_a_worker() {
+    simple::fixture_insert("Native exact hit", "原生當幀命中", "CENTER");
+    let request = translation::TranslationRequest::fixture("Native exact hit", false, 0);
+    let before = tasks::SUBMISSIONS.load(Ordering::SeqCst);
+    let response = translate(&request).expect("Exact dictionary hit must return on the first Hook call");
+    assert_eq!(response.translated, "原生當幀命中");
+    assert!(matches!(response.alignment, translation::TextAlignment::Center));
+    assert_eq!(tasks::SUBMISSIONS.load(Ordering::SeqCst), before);
+  }
+
+  #[test]
+  fn a_pending_miss_cannot_hide_a_new_dictionary_entry() {
+    let request = translation::TranslationRequest::fixture("Known after miss", false, 0);
+    assert!(native_cache::begin(&native_cache::key("en", &request)));
+    simple::fixture_insert("Known after miss", "未命中後發布的中文", "LEFT");
+    let response = translate(&request).expect("A pending placeholder must not shadow known Chinese");
+    assert_eq!(response.translated, "未命中後發布的中文");
+  }
+
+  #[test]
+  fn exact_colored_markup_keeps_palette_and_paragraph_tags() {
+    let source = "[C:6:1:1]Colored announcement[B][C:7:0:0]Second line";
+    let translated = "[C:6:1:1]彩色公告[B][C:7:0:0]第二行";
+    simple::fixture_insert(source, translated, "LEFT");
+    let request = translation::TranslationRequest::fixture(source, true, 0);
+    assert_eq!(translate(&request).expect("Known markup must be synchronous").translated, translated);
+  }
+
+  #[test]
+  fn completed_memory_result_is_shared_across_repaints_without_a_worker() {
+    let request = translation::TranslationRequest::fixture("Completed native memory", false, 0);
+    let expected = translation::TranslationResponse { translated: "完成的原生記憶體譯文".into(), alignment: translation::TextAlignment::Left };
+    native_cache::fixture_complete(native_cache::key("en", &request), expected.clone());
+    let before = tasks::SUBMISSIONS.load(Ordering::SeqCst);
+    for flag in [0, 8, 0x80000000] {
+      let repaint = translation::TranslationRequest::fixture("Completed native memory", false, flag);
+      assert_eq!(translate(&repaint), Some(expected.clone()));
+    }
+    assert_eq!(tasks::SUBMISSIONS.load(Ordering::SeqCst), before);
+  }
+
+  #[test]
+  fn equipment_noun_precedes_a_poisoned_persistent_cache() {
+    rulesets::fixture_equipment("en", &[ ("iron", "鐵"), ("steel", "鋼") ],
+      &[ ("pick", "十字鎬"), ("picks", "十字鎬"), ("battle axes", "戰斧") ]);
+    let request = translation::TranslationRequest::fixture("Iron picks [3]", false, 0);
+    simple::fixture_insert("Iron picks [3]", "鐵 拾取了 [3]", "LEFT");
+    native_cache::fixture_complete(native_cache::key("en", &request),
+      translation::TranslationResponse { translated: "鐵 拾取了 [3]".into(), alignment: translation::TextAlignment::Left });
+    let before = tasks::SUBMISSIONS.load(Ordering::SeqCst);
+    assert_eq!(translate(&request).unwrap().translated, "鐵十字鎬 [3]");
+    assert_eq!(translate(&translation::TranslationRequest::fixture("Steel pick", false, 0)).unwrap().translated,
+      "鋼十字鎬");
+    assert_eq!(translate(&translation::TranslationRequest::fixture("Steel battle axes [2]", false, 0)).unwrap().translated,
+      "鋼戰斧 [2]");
+    assert!(rulesets::translate_equipment("en", "He picks up a stone.").is_none());
+    assert!(rulesets::translate_equipment("en", "Pick").is_none());
+    assert_eq!(tasks::SUBMISSIONS.load(Ordering::SeqCst), before);
+  }
+}

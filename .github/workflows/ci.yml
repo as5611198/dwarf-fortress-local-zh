@@ -1,0 +1,32 @@
+name: validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  broker:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: src/broker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: src/broker/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - run: node ../../distribution/steam/df-local-zh-complete/broker/validate-workshop-package.mjs ../../distribution/steam/df-local-zh-complete
+
+  native:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: src/df-local-zh-native
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - run: cargo test --workspace

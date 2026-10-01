@@ -1,0 +1,90 @@
+{
+  "name": "df-zh-consensus",
+  "account_id": "f2dbbfd612c50e30e08872e40aeb247d",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-10-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": true,
+  "ai": {
+    "binding": "AI"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "df-zh-consensus",
+      "database_id": "58f7a85b-4bf3-4f1a-bc67-7c742e8e20f8",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "OFFICIAL",
+      "bucket_name": "df-zh-official-library"
+    }
+  ],
+  "vars": {
+    "COLLECTION_ENABLED": "true",
+    "REVIEW_ENABLED": "true",
+    "PUBLISH_ENABLED": "true",
+    "DISTRIBUTION_READ": "false",
+    "STAGING": "false",
+    "SIGNING_KEY_ID": "df-consensus-20261001",
+    "TRUST_JSON": "{\"df-official-20261001\":\"-----BEGIN PUBLIC KEY-----\\nMCowBQYDK2VwAyEA8zVT2uHOkHng+IB68VGPJe5TqtoNGRe0/SgmaOmfUHI=\\n-----END PUBLIC KEY-----\\n\",\"df-consensus-20261001\":\"-----BEGIN PUBLIC KEY-----\\nMCowBQYDK2VwAyEAPFoKX7eAHMUeiDTfQCLhvbLHzPkXMxSI1vxAm5mHvRg=\\n-----END PUBLIC KEY-----\\n\"}"
+  },
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 0.1,
+    "logs": {
+      "enabled": true,
+      "persist": true,
+      "head_sampling_rate": 0.1,
+      "invocation_logs": false
+    }
+  },
+  "triggers": {
+    "crons": [
+      "*/15 * * * *"
+    ]
+  },
+  "limits": {
+    "cpu_ms": 10000
+  },
+  "env": {
+    "staging": {
+      "name": "df-zh-consensus-staging",
+      "ai": {
+        "binding": "AI"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "df-zh-consensus-staging",
+          "database_id": "f381abcc-e656-4781-b478-38925e5bffca",
+          "migrations_dir": "migrations"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "OFFICIAL",
+          "bucket_name": "df-zh-consensus-staging"
+        }
+      ],
+      "vars": {
+        "COLLECTION_ENABLED": "true",
+        "REVIEW_ENABLED": "true",
+        "PUBLISH_ENABLED": "true",
+        "DISTRIBUTION_READ": "true",
+        "STAGING": "true",
+        "SIGNING_KEY_ID": "df-consensus-staging-20261001",
+        "TRUST_JSON": "{\"df-official-20261001\":\"-----BEGIN PUBLIC KEY-----\\nMCowBQYDK2VwAyEA8zVT2uHOkHng+IB68VGPJe5TqtoNGRe0/SgmaOmfUHI=\\n-----END PUBLIC KEY-----\\n\",\"df-consensus-20261001\":\"-----BEGIN PUBLIC KEY-----\\nMCowBQYDK2VwAyEAPFoKX7eAHMUeiDTfQCLhvbLHzPkXMxSI1vxAm5mHvRg=\\n-----END PUBLIC KEY-----\\n\",\"df-consensus-staging-20261001\":\"-----BEGIN PUBLIC KEY-----\\nMCowBQYDK2VwAyEAZ2lbJG/OwlcaXogTFvbd7io/s0NSo/LuEMtXWZBegFI=\\n-----END PUBLIC KEY-----\\n\"}"
+      },
+      "triggers": {
+        "crons": []
+      },
+      "preview_urls": false
+    }
+  },
+  "preview_urls": false
+}

@@ -1,0 +1,20 @@
+{
+  "language": "zh-Hant",
+  "releaseMode": "adapter-only",
+  "requiresUpstreamChineseWorkshopData": true,
+  "port": 19753,
+  "dataDirectory": "data",
+  "descriptionInventory": "data/descriptions.jsonl",
+  "raceMap": "data/race-map.json",
+  "timeoutMs": 25000,
+  "reviewedDictionary": "reviewed.csv",
+  "staticDictionaries": [
+    "data/prewarmed-raw-states.csv",
+    "data/reviewed-raw-names.csv",
+    "data/prewarmed-reaction-names.csv",
+    "data/prewarmed-case-variants.csv",
+    "data/fortress-ui.csv"
+  ],
+  "glossaryPath": "glossary.json",
+  "rimworldConfig": ""
+}

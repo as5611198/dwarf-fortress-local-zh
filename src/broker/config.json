@@ -1,0 +1,20 @@
+{
+  "language": "zh-Hant",
+  "port": 19753,
+  "dataDirectory": "data",
+  "descriptionInventory": "data/descriptions.jsonl",
+  "raceMap": "data/race-map.json",
+  "timeoutMs": 25000,
+  "reviewedDictionary": "reviewed.csv",
+  "staticDictionaries": ["data/prewarmed-raw-states.csv", "data/reviewed-raw-names.csv", "data/prewarmed-reaction-names.csv", "data/prewarmed-case-variants.csv", "data/community-reviewed.csv", "data/fortress-ui.csv"],
+  "staticDictionaryLanguage": "zh-Hant",
+  "staticDictionariesByLanguage": {
+    "zh-Hant": ["data/community-workbook-zh-Hant.csv"],
+    "zh-Hans": ["data/community-workbook-zh-Hans.csv"]
+  },
+  "literalDictionaries": ["data/community-workbook-zh-Hant.csv", "data/community-workbook-zh-Hans.csv"],
+  "glossaryPath": "glossary.json",
+  "equipmentRulesDirectory": "../standalone/df-local-zh-complete/dfi18n-data/rulesets",
+  "glossaryPathsByLanguage": { "zh-Hans": "glossary-zh-Hans.json" },
+  "rimworldConfig": ""
+}

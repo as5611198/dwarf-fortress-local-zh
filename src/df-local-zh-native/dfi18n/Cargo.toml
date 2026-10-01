@@ -1,0 +1,42 @@
+[package]
+name = "df_local_zh_core"
+edition = "2024"
+
+[lib]
+name = "df_local_zh_core"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+cp437_string = { workspace = true }
+cpp = { workspace = true }
+executable = { workspace = true }
+rule_based_translator = { workspace = true }
+
+lua53-sys = { workspace = true }
+sdl2-sys = { workspace = true }
+
+macros = { workspace = true }
+
+anyhow = { workspace = true }
+backtrace = { workspace = true }
+base16ct = { workspace = true }
+csv = { workspace = true }
+flexi_logger = { workspace = true }
+fontdue = { workspace = true }
+indexmap = { workspace = true }
+libloading = { workspace = true }
+log = { workspace = true }
+regex = { workspace = true }
+retour = { workspace = true }
+serde = { workspace = true }
+serde_json = "1.0.145"
+pinyin = { version = "0.11.0", default-features = false, features = ["plain", "heteronym"] }
+ferrous-opencc = { version = "0.4.0", default-features = false, features = ["t2s-conversion"] }
+reqwest = { version = "0.12", default-features = false, features = ["json"] }
+sha2 = { workspace = true }
+tokio = { workspace = true }
+with_builtin_macros = { workspace = true }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = { workspace = true }

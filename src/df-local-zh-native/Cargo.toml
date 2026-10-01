@@ -1,0 +1,50 @@
+[workspace]
+members = [
+  "dfi18n",
+  "crates/cp437_string",
+  "crates/cpp",
+  "crates/executable",
+  "crates/lua53-sys",
+  "crates/macros",
+  "crates/rule_based_translator",
+  "crates/sdl2-sys",
+  "translation-tool",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+authors = ["Wenxuan Zhao <viz@linux.com>"]
+
+[workspace.dependencies]
+cp437_string = { path = "crates/cp437_string" }
+cpp = { path = "crates/cpp" }
+executable = { path = "crates/executable" }
+rule_based_translator = { path = "crates/rule_based_translator" }
+
+lua53-sys = { path = "crates/lua53-sys" }
+sdl2-sys = { path = "crates/sdl2-sys" }
+
+macros = { path = "crates/macros" }
+
+cc = "1.2.59"
+
+anyhow = "1.0.102"
+backtrace = "0.3.76"
+base16ct = "1.0.0"
+csv = "1.4.0"
+flexi_logger = { version = "0.31.8", features = ["async", "json"] }
+fontdue = "0.9.3"
+goblin = "0.10.5"
+indexmap = { version = "2.13.1", features = ["serde"] }
+libloading = "0.9.0"
+log = "0.4.29"
+regex = "1.12.3"
+retour = { version = "0.4.0-alpha.4", features = ["static-detour"] }
+serde = { version = "1.0.228", features = ["derive"] }
+sha2 = "0.11.0"
+tokio = { version = "1.51.0", features = ["full"] }
+toml = "1.1.2"
+with_builtin_macros = "0.1.0"
+winapi = { version = "0.3.9", features = ["libloaderapi"] }

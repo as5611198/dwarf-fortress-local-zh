@@ -1,0 +1,46 @@
+{
+  "upstreamChineseWorkshopData": {
+    "workshopId": "3635900931",
+    "redistributionApproved": false,
+    "author": "wan1694",
+    "authorProfile": "https://steamcommunity.com/profiles/76561198336311506",
+    "lastChecked": "2026-09-28",
+    "licenseMentionedOnWorkshopPage": false,
+    "note": "The Workshop page describes this as Simplified Chinese translation data and names the contributors, but does not grant redistribution permission. Ask the upstream author before uploading converted or merged data."
+  },
+  "upstreamChineseDataRepositories": [
+    {
+      "repository": "https://github.com/DFI18n/dfi18n-data-zh-hans",
+      "commit": "2ed0ac42a43375ce1d3d3fcd1403f825be58b3e6",
+      "branch": "main",
+      "license": "CC BY-NC 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/",
+      "copyright": "矮人要塞中文維基翻譯組翻譯人員",
+      "attribution": ["矮人要塞中文維基翻譯組翻譯人員", "WAN1694", "anln666"],
+      "permissionGrantedBy": "anln666",
+      "permissionConfirmedAt": "2026-10-01",
+      "permissionEvidence": "Maintainer confirmation recorded in the project authorization log; this is an additional permission record and does not replace the upstream CC BY-NC 4.0 license.",
+      "redistributionApproved": true,
+      "permissions": {
+        "modify": true,
+        "traditionalSimplifiedConversion": true,
+        "freeModuleRedistribution": true,
+        "cloudLibraryRedistribution": true
+      },
+      "conditions": [
+        "Give appropriate credit and link the CC BY-NC 4.0 license.",
+        "Indicate changes, including Traditional/Simplified conversion and local corrections.",
+        "Do not use this upstream data for commercial redistribution."
+      ],
+      "packagePolicy": "The current official R2 release contains project-authored CC0 rows only; this approved upstream source is tracked separately and is not silently merged into that release."
+    }
+  ],
+  "dfi18n": {
+    "license": "MIT",
+    "source": "https://github.com/dfi18n/dfi18n"
+  },
+  "font": {
+    "license": "OFL-1.1",
+    "source": "https://github.com/notofonts/noto-cjk"
+  }
+}

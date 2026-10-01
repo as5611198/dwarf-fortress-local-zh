@@ -1,0 +1,12 @@
+{
+  "identityConfirmed": "anln666",
+  "source": "https://github.com/DFI18n/dfi18n-data-zh-hans",
+  "commit": "2ed0ac42a43375ce1d3d3fcd1403f825be58b3e6",
+  "license": "CC BY-NC 4.0",
+  "permissions": ["modify", "traditionalSimplifiedConversion", "freeModuleRedistribution", "cloudLibraryRedistribution"],
+  "attribution": ["矮人要塞中文維基翻譯組翻譯人員", "WAN1694", "anln666"],
+  "conditions": ["attribution", "licenseLink", "markChanges", "nonCommercial"],
+  "officialR2Unchanged": true,
+  "officialR2Version": "2026.10.01.1",
+  "recordedAt": "2026-10-01"
+}
