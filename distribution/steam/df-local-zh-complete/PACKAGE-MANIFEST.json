@@ -1,7 +1,7 @@
 {
   "package": "df-local-zh-complete",
-  "version": "0.4.0",
-  "generatedAt": "2026-10-01T15:01:35.366Z",
+  "version": "0.4.1",
+  "generatedAt": "2026-10-01T15:29:01.122Z",
   "releaseMode": "standalone-bilingual",
   "runtime": "rust",
   "requiresNode": false,
@@ -27,12 +27,11 @@
       "copyright": "矮人要塞中文維基翻譯組翻譯人員",
       "attribution": [
         "矮人要塞中文維基翻譯組翻譯人員",
-        "WAN1694",
-        "anln666"
+        "WAN1694"
       ],
-      "permissionGrantedBy": "anln666",
+      "permissionGrantedBy": "Upstream maintainers of the Chinese wiki translation team",
       "permissionConfirmedAt": "2026-10-01",
-      "permissionEvidence": "Maintainer confirmation recorded in the project authorization log; this is an additional permission record and does not replace the upstream CC BY-NC 4.0 license.",
+      "permissionEvidence": "Downstream developer anln666 reports receiving permission from upstream Chinese wiki translation team maintainers in a group conversation. No individual grantor is identified here. This record does not replace the upstream CC BY-NC 4.0 license.",
       "redistributionApproved": true,
       "permissions": {
         "modify": true,
@@ -45,7 +44,13 @@
         "Indicate changes, including Traditional/Simplified conversion and local corrections.",
         "Do not use this upstream data for commercial redistribution."
       ],
-      "packagePolicy": "The current official R2 release contains project-authored CC0 rows only; this approved upstream source is tracked separately and is not silently merged into that release."
+      "packagePolicy": "The current official R2 release contains project-authored CC0 rows only; this approved upstream source is tracked separately and is not silently merged into that release.",
+      "permissionGrantedTo": "anln666",
+      "permissionRecipientRole": "downstream adapter/integrator",
+      "upstreamMaintainerAcknowledgements": [
+        "WAN1694",
+        "Misery"
+      ]
     }
   ],
   "sourceMetadata": {
@@ -673,11 +678,11 @@
   "files": [
     {
       "path": "ATTRIBUTION.md",
-      "sha256": "72d51bbd6224a8f84cecc9c8af38f9ded14fde3ad6e51bc2ffdb02d71c30c343"
+      "sha256": "acde78b889b56eec535a08d2a710d8bd69c471641bc7a17926b147ce6cf43070"
     },
     {
       "path": "DFI18N-DATA-ZH-HANS-LICENSE.md",
-      "sha256": "16e94750eff34db1262d7585a0eb6eed63f0fa5b2eccdee8d7b434734a2013da"
+      "sha256": "a8ce4162a9a3b77fd01d8cc245170417fe2b911c3446996443b25628cb455e39"
     },
     {
       "path": "LICENSE.md",
@@ -689,7 +694,7 @@
     },
     {
       "path": "NOTICE.md",
-      "sha256": "76ef2fb0b2ba897d80214aca3ba667d8e1eeb7d92c8344903ad089bd24753696"
+      "sha256": "a19b8f274ec728b6940287f25d4479b9938b395636f42134b063b71d94312589"
     },
     {
       "path": "README.md",
@@ -697,11 +702,11 @@
     },
     {
       "path": "WORKSHOP-PUBLISHING.md",
-      "sha256": "865a59e68066c3f276fe04971f63b33d2f7bc5b7e6d8d876e1a23cc73ecd1658"
+      "sha256": "9edda46d20a708f90328ed29f90d5ede1dade18386b6beae908872d9a632b61a"
     },
     {
       "path": "broker/LICENSE-STATUS.json",
-      "sha256": "2744d695a1033df29aa5aaa302f32bc348e678416eb63493cf4db09509a0bd40"
+      "sha256": "9ca052a2ca584f5357ca130c005a690c1aa1dce74d76691b3de87f754e16a80b"
     },
     {
       "path": "broker/config.json",
@@ -2157,7 +2162,7 @@
     },
     {
       "path": "info.txt",
-      "sha256": "f18720cc9938d2f74e70dbe6d50f14595e306dc2b54d9d96c44cfaa89d67748f"
+      "sha256": "89fc8880271acae72fc336504444c5adf7474d97e3f3ab89d1b62a58ea37b1f4"
     },
     {
       "path": "libs/df_local_zh_core.dll",

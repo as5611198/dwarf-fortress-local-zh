@@ -19,6 +19,8 @@ third-party-licenses. The local Broker also retains opencc-js and its licenses.
 
 The upstream DFI18n Simplified Chinese data repository is tracked separately in
 `DFI18N-DATA-ZH-HANS-LICENSE.md` and `ATTRIBUTION.md`. It is CC BY-NC 4.0, with
-permission from `anln666` for modification, Traditional/Simplified conversion,
-and redistribution in free modules and cloud translation libraries. This does
+permission granted by upstream maintainers TO `anln666`, as reported by this
+downstream adapter/integrator, for use, modification, Traditional/Simplified
+conversion, and redistribution in free modules and cloud translation libraries.
+`anln666` is the permission recipient, not an upstream maintainer. This does
 not relicense the source or authorize commercial redistribution.

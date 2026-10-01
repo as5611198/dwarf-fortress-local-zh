@@ -36,3 +36,7 @@ Steam 0.4.0 update committed successfully to item 3811313433. Independent SteamC
 GitHub v0.4.0 is published with the player ZIP and SHA256 at https://github.com/as5611198/dwarf-fortress-local-zh/releases/tag/v0.4.0. Source/runtime release commit: e3ddbd3099f6ce12cc4a97196da9f8e94cd218d0. The Git index export was independently checked against all 818 manifest file hashes; release-file line endings are preserved across Git checkouts.
 
 GitHub validation run 36881923767 passed both broker and native jobs. An earlier run hit an existing JS cursor fixture that depended on NTFS back-to-back mtime changes; the fixture now sets the changed mtime explicitly. Player binaries are unaffected. The full local developer suite passed 200/200 non-optional tests after this fixture adjustment.
+
+## 0.4.1 authorization correction
+
+The license records identify anln666 as the downstream adapter/integrator and permission recipient. Permission was granted by upstream Chinese wiki translation team maintainers to anln666, as reported by the downstream developer. Upstream copyright attribution is kept separate; maintenance acknowledgements include WAN1694 and Misery. No individual grantor is claimed without a recorded identity. This packaging/documentation correction retains the 0.4.0 native runtime binaries byte-for-byte and leaves CC BY-NC 4.0 and the separately published official CC0 corpus unchanged.

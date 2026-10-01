@@ -16,10 +16,13 @@
       "license": "CC BY-NC 4.0",
       "licenseUrl": "https://creativecommons.org/licenses/by-nc/4.0/",
       "copyright": "矮人要塞中文維基翻譯組翻譯人員",
-      "attribution": ["矮人要塞中文維基翻譯組翻譯人員", "WAN1694", "anln666"],
-      "permissionGrantedBy": "anln666",
+      "attribution": [
+        "矮人要塞中文維基翻譯組翻譯人員",
+        "WAN1694"
+      ],
+      "permissionGrantedBy": "Upstream maintainers of the Chinese wiki translation team",
       "permissionConfirmedAt": "2026-10-01",
-      "permissionEvidence": "Maintainer confirmation recorded in the project authorization log; this is an additional permission record and does not replace the upstream CC BY-NC 4.0 license.",
+      "permissionEvidence": "Downstream developer anln666 reports receiving permission from upstream Chinese wiki translation team maintainers in a group conversation. No individual grantor is identified here. This record does not replace the upstream CC BY-NC 4.0 license.",
       "redistributionApproved": true,
       "permissions": {
         "modify": true,
@@ -32,7 +35,13 @@
         "Indicate changes, including Traditional/Simplified conversion and local corrections.",
         "Do not use this upstream data for commercial redistribution."
       ],
-      "packagePolicy": "The current official R2 release contains project-authored CC0 rows only; this approved upstream source is tracked separately and is not silently merged into that release."
+      "packagePolicy": "The current official R2 release contains project-authored CC0 rows only; this approved upstream source is tracked separately and is not silently merged into that release.",
+      "permissionGrantedTo": "anln666",
+      "permissionRecipientRole": "downstream adapter/integrator",
+      "upstreamMaintainerAcknowledgements": [
+        "WAN1694",
+        "Misery"
+      ]
     }
   ],
   "dfi18n": {

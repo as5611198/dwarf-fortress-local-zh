@@ -17,7 +17,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(value => {
   if (split < 3 || !value.startsWith('--')) throw new Error(`Expected --name=value: ${value}`);
   return [value.slice(2, split), value.slice(split + 1)];
 }));
-const version = args.version ?? '0.4.0';
+const version = args.version ?? '0.4.1';
 if (!/^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(version)) throw new Error('Invalid version');
 const output = resolve(args.output ?? join(root, 'distribution/steam/df-local-zh-complete'));
 const core = resolve(args['native-dll'] ?? join(root, 'src/df-local-zh-native/target/release/df_local_zh_core.dll'));
@@ -149,7 +149,7 @@ for(const language of ['zh-Hant','zh-Hans']) {
   await writeFile(join(output,'broker/config.json'),JSON.stringify(current,null,2)+'\n');
 }
 const creatureCounts=await buildCreatureDictionaries(output);
-await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與 Rust 本機服務。需要 DFHack；不需要 Node.js 或另外訂閱中文資料包。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料、原生核心與 Rust 背景服務，於設定切換。玩家無須安裝 Node.js；網路請求、AI 補譯及官方譯庫同步由隨包元件處理。靜態與已安裝譯庫可離線使用。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：改用 Rust 背景服務，移除玩家端 Node.js 依賴；保留繁簡、API 設定與本機快取。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
+await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與 Rust 本機服務。需要 DFHack；不需要 Node.js 或另外訂閱中文資料包。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料、原生核心與 Rust 背景服務，於設定切換。玩家無須安裝 Node.js；網路請求、AI 補譯及官方譯庫同步由隨包元件處理。靜態與已安裝譯庫可離線使用。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：更正授權方向與下游開發者身分；繁簡與 Rust 執行功能保留。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
 await cp(join(root,'docs/PLAYER-INSTALL.md'),join(output,'README.md'));
 const counts={};
 for(const language of ['zh-Hant','zh-Hans']) {

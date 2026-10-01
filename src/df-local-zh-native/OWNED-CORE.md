@@ -144,7 +144,8 @@ Native source is based on DFI18n commit
 The complete buildable native source is included in `native-source`.
 Fonts retain their OFL notice. The separate DFI18n Simplified Chinese data
 repository is recorded in `DFI18N-DATA-ZH-HANS-LICENSE.md` and `ATTRIBUTION.md`:
-it is CC BY-NC 4.0, and `anln666` confirmed permission to modify it, convert
+it is CC BY-NC 4.0. Downstream adapter/integrator `anln666` reports receiving
+permission from upstream maintainers to use and modify it, convert
 between Traditional and Simplified Chinese, and redistribute it in free modules
 and cloud translation libraries. Attribution, change notices and the
 non-commercial condition remain required.

@@ -11,9 +11,11 @@ full package includes upstream data only after redistribution is authorized;
 `--allow-unverified-upstream` is only for a local test package.
 
 The pinned GitHub data source `DFI18n/dfi18n-data-zh-hans` is tracked separately
-in `LICENSE-STATUS.json`. It is CC BY-NC 4.0, with maintainer confirmation from
-`anln666` for modification, Traditional/Simplified conversion, and redistribution
-in free modules and cloud translation libraries. Attribution, change notices and
+in `LICENSE-STATUS.json`. It is CC BY-NC 4.0. Downstream developer `anln666`
+reports permission granted by upstream maintainers TO `anln666` for use,
+modification, Traditional/Simplified conversion, and redistribution in free
+modules and cloud translation libraries. `anln666` is the adapter/integrator and
+permission recipient, not an upstream maintainer. Attribution, change notices and
 the non-commercial condition remain required. The official R2 package currently
 contains only project-authored CC0 rows; it does not silently merge this source.
 
