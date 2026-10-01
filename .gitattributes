@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+# Preserve release artifacts byte-for-byte across Windows and Linux runners.
+*.dll binary
+*.exe binary
+*.node binary
+*.otf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.so binary
+*.dylib binary
+*.zip binary
+*.7z binary
+*.bin binary

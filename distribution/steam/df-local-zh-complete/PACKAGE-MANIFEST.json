@@ -164,7 +164,7 @@
     },
     {
       "path": "broker/node_modules/.bin/fxparser.cmd",
-      "sha256": "a9e7bd29b703e4639adc05296b9e911ec7bbaf9fafe7d6e781e6e1ded053a543"
+      "sha256": "6e92bbb34b3d88ec3654a866a86d57cd0a7607f57d8e5af8d4d8e591bfc0aa17"
     },
     {
       "path": "broker/node_modules/.bin/fxparser.ps1",
@@ -1308,11 +1308,11 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-native-prewarm-test.lua",
-      "sha256": "39aa3760ea8ba049ff2189ecfbc863230fe5e426bd2b6ccf4c3ea5b4e466a36f"
+      "sha256": "6388a7a4c3d072212c309ead20661e2217870ed8ce7f295b60ef48c14db82b8c"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-native-prewarm.lua",
-      "sha256": "0350190b185bcdf990d0715b680d92e0aaf869cff3093ba23695e27e7bd9df19"
+      "sha256": "1876a49c77a9719da8f8f08d729a85205b08efe7d92453126f01e0883e0fdf22"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-paths.lua",
@@ -1332,7 +1332,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-runtime.lua",
-      "sha256": "4ec971754c14efe8e27530b0084c8f88c6b6ca970353f3f669f07297d2c1a243"
+      "sha256": "ed905c005fdf50c2fa6e61cf69ff3f96f35da7508aed3d452490b7e1af28f902"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-search-editor.lua",
