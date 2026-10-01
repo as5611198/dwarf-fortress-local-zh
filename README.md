@@ -12,6 +12,8 @@
 
 ## 安裝
 
+Steam Workshop：[矮人要塞中文化（繁體／簡體整合）](https://steamcommunity.com/sharedfiles/filedetails/?id=3811313433)。
+
 只需本模組與 DFHack，不需要另訂 DFI18n 本體或簡體中文資料包。繁簡都在模組設定頁切換，包內靜態翻譯離線可用、不需 API Key。啟用方式與選用 Node.js 功能見 [玩家安裝說明](docs/PLAYER-INSTALL.md)。不要同時啟用其他 DFI18n 原生核心。
 
 重建與 Steam 上傳流程見 [發布說明](docs/WORKSHOP-PUBLISHING.md)。0.3.0 使用舊適配器封裝且缺少原生載入必需檔案；請改用 0.3.1 繁簡整合包。

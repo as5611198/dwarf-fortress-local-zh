@@ -19,8 +19,14 @@ npm test
 
 ## Steam
 
+已發布的項目：[3811313433](https://steamcommunity.com/sharedfiles/filedetails/?id=3811313433)。後續更新必須使用這個 publishedfileid，避免重複建立項目。
+
 更新 VDF 的 contentfolder、previewfile、版本與描述；初次建立時 publishedfileid 為 0。上傳成功後以 Steam 回傳的 ID 作後續更新。
+
+SteamCMD VDF 使用官方文件列出的純量鍵值欄位：appid、publishedfileid、contentfolder、previewfile、visibility、title、description、changenote。不可把只含值的 tags 陣列直接寫成 KeyValues 區塊；該格式會在區塊結尾發生解析錯誤。模組 info.txt 的 STEAM_TAG 與 SteamCMD VDF 是不同介面。
 
 Workshop 的 Required Items 不應加入 DFI18n 本體或外部中文資料包。DFHack 是執行環境，玩家仍須安裝它。保留署名、非商用條件、修改說明，不宣稱上游對本專案背書。
 
 必須另外記錄 Steam 上傳成功、乾淨訂閱與遊戲載入結果；validator、Broker 或 Rust 測試通過不能代替實際遊戲驗證。上傳登入應由玩家自己輸入 Steam 密碼與 Steam Guard，工具不得讀取或記錄。
+
+2026-10-01：SteamCMD 上傳 0.3.1 成功，並在獨立 SteamCMD 目錄重新下載（56,383,177 bytes）。下載包 validator 驗證 743 檔，manifest 及全部列出檔案 SHA256 與發布包一致；繁簡離線重載／使用者修正及缺 DLL 拒收測試 3/3 通過。公開頁面沒有外部 Required Items。尚未完成 Steam 客戶端訂閱後的遊戲畫面實測。

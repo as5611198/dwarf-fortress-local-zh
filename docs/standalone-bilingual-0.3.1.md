@@ -22,4 +22,6 @@
 
 ZIP：36,426,455 bytes，SHA256 `9e79a1ef4ade400071dac64cfa28ceae1bbc4d064f51c094710cb547ab97e687`。
 
-Steam 上傳、乾淨訂閱後的遊戲畫面、兩世界／新世界、所有冒險與第三方模組仍未在本次實際驗證。0.3.0 Release 保留歷史；回復時關閉遊戲並換回舊包，保留 dfhack-config/mods/df-local-zh-complete。0.3.0 是有缺漏的適配器版，不建議玩家使用。
+Steam 上傳已成功：[Workshop 3811313433](https://steamcommunity.com/sharedfiles/filedetails/?id=3811313433)。SteamCMD 獨立目錄重新下載 56,383,177 bytes，743 檔 SHA256 與發布包一致，離線繁簡重载與固定修正等 3 項測試通過。兩份本機 VDF 都已記錄相同項目 ID，避免再次建立新項目。
+
+Steam 客戶端訂閱後的遊戲畫面、兩世界／新世界、所有冒險與第三方模組仍未在本次實際驗證。0.3.0 Release 保留歷史；回復時關閉遊戲並換回舊包，保留 dfhack-config/mods/df-local-zh-complete。0.3.0 是有缺漏的適配器版，不建議玩家使用。
