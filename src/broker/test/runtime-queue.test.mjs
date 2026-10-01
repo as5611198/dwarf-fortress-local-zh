@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { appendFile, mkdtemp, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { appendFile, mkdtemp, readFile, rename, rm, writeFile, utimes } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { RuntimeQueue } from '../runtime-queue.mjs';
@@ -183,6 +183,10 @@ test('request cursor resets after truncation, same-size rewrite, and replacement
   const sameSize = row('Other');
   assert.equal(sameSize.length, row('Short').length);
   await writeFile(queue.requests, sameSize);
+  // This branch detects a changed mtime. NTFS can coalesce back-to-back writes
+  // into the same clock tick; make the fixture's observed change explicit.
+  const changedTime = new Date(queue.requestMtimeMs + 1000);
+  await utimes(queue.requests, changedTime, changedTime);
   await queue.ingest();
   assert.equal(queue.jobs.size, 3, 'A same-size rewrite must reset the cursor');
 
