@@ -1,0 +1,43 @@
+base = "items::corpsepiece"
+
+[[rulesets]]
+[rulesets.rules]
+"{^0}{main}" = "{^0}{main}"
+
+[[rulesets]]
+name = "^0"
+optional = true
+
+  [rulesets.rules]
+  "rotten " = "腐爛的"
+
+[[rulesets]]
+name = "main"
+
+  [rulesets.rules]
+  "body part" = "身體部分"
+  "body parts" = "身體部分"
+  "wooden body part" = "木製身體部分"
+  "wooden body parts" = "木製身體部分"
+  "plant part" = "植物身體部分"
+  "plant parts" = "植物身體部分"
+  "silk body part" = "絲綢身體部分"
+  "silk body parts" = "絲綢身體部分"
+  "leather body part" = "皮革身體部分"
+  "leather body parts" = "皮革身體部分"
+  bone = "骨頭"
+  bones = "骨頭"
+  shell = "殼"
+  shells = "殼"
+  "soap body part" = "肥皂身體部分"
+  "soap body parts" = "肥皂身體部分"
+  tooth = "牙齒"
+  teeth = "牙齒"
+  horn = "角"
+  horns = "角"
+  pearl = "珍珠"
+  pearls = "珍珠"
+  "yarn body part" = "絲綢身體部分"
+  "yarn body parts" = "絲綢身體部分"
+  "strand body part" = "絲狀身體部分"
+  "strand body parts" = "絲狀身體部分"

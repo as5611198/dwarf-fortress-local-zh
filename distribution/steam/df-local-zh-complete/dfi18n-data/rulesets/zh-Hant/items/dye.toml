@@ -1,0 +1,47 @@
+base = "items::dye"
+
+[[rulesets]]
+[rulesets.rules]
+"{^0} {prefix} {name}" = "{^0}{prefix}{name}"
+"{none} {prefix} {name}" = "{none}{prefix}{name}"
+"{::color} {name}" = "{::color}{name}"
+
+[[rulesets]]
+name = "name"
+
+  [rulesets.rules]
+  dye = "染料"
+
+[[rulesets]]
+name = "^0"
+
+  [rulesets.rules]
+  "{::plants::growth::singular}" = "{::plants::growth::singular}"
+  "{::plants::name::singular}" = "{::plants::name::singular}"
+
+[[rulesets]]
+name = "none"
+
+  [rulesets.rules]
+  "sweet potato" = "甘薯"
+  turnip = "蕪菁"
+  hazel = "榛"
+  carrot = "胡蘿蔔"
+  potato = "馬鈴薯"
+  radish = "小蘿蔔"
+  "rice husk" = "稻殼"
+
+[[rulesets]]
+name = "prefix"
+optional = true
+
+  [rulesets.rules]
+  bark = "樹皮"
+  cone = "球果"
+  leaf = "葉"
+  skin = "皮"
+  rind = "皮"
+  peel = "皮"
+  husk = "殼"
+  hull = "殼"
+  shell = "殼"

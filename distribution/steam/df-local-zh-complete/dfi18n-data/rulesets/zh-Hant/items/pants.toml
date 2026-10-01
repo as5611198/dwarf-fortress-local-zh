@@ -1,0 +1,91 @@
+base = "items::pants"
+
+[[rulesets]]
+[rulesets.rules]
+"{default}" = "{default}"
+"{singular}" = "{singular}"
+"{plural}" = "{plural}"
+
+[[rulesets]]
+name = "default"
+
+  [rulesets.rules]
+  "{::items::prefix::maybe_equipment_size}{default::^0}{default::main}" = "{::items::prefix::maybe_equipment_size}{default::^0}{default::main}"
+
+[[rulesets]]
+name = "default::^0"
+optional = true
+
+  [rulesets.rules]
+  "{::materials::adjective} " = "{::materials::adjective}"
+
+[[rulesets]]
+name = "default::main"
+
+  [rulesets.rules]
+  legwear = "腿裝"
+
+[[rulesets]]
+name = "singular"
+
+  [rulesets.rules]
+  "{^prefix}{::items::prefix::maybe_equipment_size}{^length}{^material}{^chain}{singular::main}" = "{^prefix}{::items::prefix::maybe_equipment_size}{^length}{^material}{^chain}{singular::main}"
+
+[[rulesets]]
+name = "plural"
+
+  [rulesets.rules]
+  "{^prefix}{::items::prefix::maybe_equipment_size}{^length}{^material}{^chain}{plural::main}" = "{^prefix}{::items::prefix::maybe_equipment_size}{^length}{^material}{^chain}{plural::main}"
+
+[[rulesets]]
+name = "^prefix"
+optional = true
+
+  [rulesets.rules]
+  "pairs of " = ""
+
+[[rulesets]]
+name = "^length"
+optional = true
+
+  [rulesets.rules]
+  "short " = "短"
+  "long " = "長"
+
+[[rulesets]]
+name = "^material"
+optional = true
+
+  [rulesets.rules]
+  "{::materials::adjective} " = "{::materials::adjective}"
+
+[[rulesets]]
+name = "^chain"
+optional = true
+
+  [rulesets.rules]
+  "chain " = "鎖鏈"
+
+[[rulesets]]
+name = "singular::main"
+
+  [rulesets.rules]
+  trousers = "長褲"
+  greaves = "脛甲"
+  leggings = "護腿"
+  loincloth = "纏腰布"
+  thong = "內褲"
+  skirt = "裙"
+  braies = "短褲"
+
+[[rulesets]]
+name = "plural::main"
+
+  [rulesets.rules]
+  trousers = "長褲"
+  greaves = "脛甲"
+  leggings = "護腿"
+  loincloths = "纏腰布"
+  thongs = "內褲"
+  skirts = "裙"
+  braies = "短褲"

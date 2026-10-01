@@ -1,0 +1,19 @@
+base = "tasks"
+
+[[rulesets]]
+[rulesets.rules]
+"{^0}{main}" = "{^0}{main}"
+
+[[rulesets]]
+name = "^0"
+
+  [rulesets.rules]
+  Assemble = "組裝"
+  Forge = "打造"
+  Make = "製作"
+
+[[rulesets]]
+name = "main"
+
+  [rulesets.rules]
+  "{::items}" = "{::items}"

@@ -1,0 +1,29 @@
+base = "materials::job"
+
+[[rulesets]]
+[rulesets.rules]
+wood = "木頭"
+"{shared}" = "{shared}"
+
+[[rulesets]]
+name = "adjective"
+
+  [rulesets.rules]
+  wooden = "木製"
+  "{shared}" = "{shared}"
+
+[[rulesets]]
+name = "shared"
+
+  [rulesets.rules]
+  plant = "植物"
+  cloth = "布匹"
+  silk = "絲綢"
+  leather = "皮革"
+  bone = "骨頭"
+  shell = "殼"
+  soap = "肥皂"
+  "ivory/tooth" = "長牙/牙齒"
+  horn = "角"
+  pearl = "珍珠"
+  yarn = "紗線"

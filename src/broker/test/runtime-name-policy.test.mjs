@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {appendFile,mkdtemp,readFile,rm} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {RuntimeQueue} from '../runtime-queue.mjs';
+test('caption policy change keeps old cache but creates and restores a separate response',async t=> {
+  const directory=await mkdtemp(join(tmpdir(),'df-caption-policy-'));
+  t.after(()=>rm(directory,{recursive:true,force:true}));
+  const row={world:'region1',figureId:0,text:'Imust Native, "Imust English", female hydra'};
+  let calls=0;
+  const create=()=>new RuntimeQueue({directory,currentWorld:()=>row.world,translate:async()=>{calls++;return '伊穆斯特，女性七頭蛇';}});
+  const q=create();await q.load();
+  await appendFile(q.requests,JSON.stringify(row)+'\n');await q.drain();
+  await appendFile(q.requests,JSON.stringify({...row,namePolicy:'native-v2'})+'\n');await q.drain();
+  const results=(await readFile(q.responses,'utf8')).trim().split('\n').map(JSON.parse);
+  assert.equal(results.length,2);assert.notEqual(results[0].key,results[1].key);
+  assert.equal(results[1].namePolicy,'native-v2');
+  const restarted=create();await restarted.load();await restarted.drain();assert.equal(calls,2);
+});

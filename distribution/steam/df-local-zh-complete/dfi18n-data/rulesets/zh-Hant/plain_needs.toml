@@ -1,0 +1,61 @@
+base = "plain_needs"
+
+[[rulesets]]
+[rulesets.rules]
+"Overall, {lower_subject} is untroubled by unmet needs." = "總體而言，{lower_subject}沒有受到未滿足需求的困擾。"
+"{subject} is unfettered {reason}." = "{subject}沒有因為{reason}而感到受束縛。"
+"{subject} is level-headed {reason}." = "{subject}沒有因為{reason}而失去冷靜。"
+"{subject} is untroubled {reason}." = "{subject}沒有因為{reason}而感到困擾。"
+"{subject} is not distracted {reason}." = "{subject}沒有因為{reason}而分心。"
+"{subject} is unfocused {reason}." = "{subject}因為{reason}而有些心不在焉。"
+"{subject} is distracted {reason}." = "{subject}因為{reason}而難以專注。"
+"{subject} is badly distracted {reason}." = "{subject}因為{reason}而嚴重分心。"
+
+[[rulesets]]
+name = "subject"
+
+  [rulesets.rules]
+  He = "他"
+  She = "她"
+
+[[rulesets]]
+name = "lower_subject"
+
+  [rulesets.rules]
+  he = "他"
+  she = "她"
+
+[[rulesets]]
+name = "reason"
+
+  [rulesets.rules]
+  "after being away from people" = "遠離人群"
+  "after spending time with people" = "與人共度時光"
+  "after doing nothing creative" = "沒有進行創作"
+  "after doing something creative" = "進行創作"
+  "after drinking" = "喝酒"
+  "after staying occupied" = "保持忙碌"
+  "after doing something exciting" = "做了令人興奮的事情"
+  "after being with family" = "與家人共度時光"
+  "after being with friends" = "與朋友共度時光"
+  "after being unoccupied" = "無所事事"
+  "after leading an unexciting life" = "生活平淡無奇"
+  "after being unable to acquire something" = "無法獲得某些東西"
+  "after being kept from alcohol" = "沒有酒喝"
+  "after a lack of decent meals" = "缺少像樣的飯菜"
+  "after being unable to fight" = "無法戰鬥"
+  "after a lack of trouble-making" = "沒能製造麻煩"
+  "after being unable to argue" = "無法與人爭論"
+  "after being unable to be extravagant" = "無法奢侈揮霍"
+  "after not learning anything" = "沒有學到任何東西"
+  "after being unable to help anybody" = "無法幫助任何人"
+  "after a lack of abstract thinking" = "缺少抽象思考"
+  "after being unable to make merry" = "無法盡情娛樂"
+  "after being unable to admire art" = "無法欣賞藝術"
+  "after being unable to practice a craft" = "無法練習工藝"
+  "after being away from family" = "遠離家人"
+  "after being away from friends" = "遠離朋友"
+  "after being unable to practice a martial art" = "無法練習武術"
+  "after being unable to practice a skill" = "無法練習技能"
+  "after being unable to take it easy" = "無法放鬆休息"
+  "after being unable to pray to Racon" = "無法向拉孔祈禱"

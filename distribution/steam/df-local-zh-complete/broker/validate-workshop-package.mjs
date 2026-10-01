@@ -9,6 +9,7 @@ const manifestPath = join(packageRoot, 'PACKAGE-MANIFEST.json');
 const manifest = JSON.parse(await readFile(manifestPath, 'utf8'));
 const adapterOnly = manifest.releaseMode === 'adapter-only';
 const upstreamDataBundled = manifest.upstreamDataBundled !== false;
+const standalone = manifest.releaseMode === 'standalone-bilingual';
 const errors = [];
 const expected = new Map(manifest.files.map(entry => [entry.path, entry.sha256]));
 const binaryExtensions = new Set(['.dll', '.exe', '.node', '.otf', '.png', '.so']);
@@ -59,6 +60,30 @@ if (adapterOnly) {
   catch { /* expected: upstream data is supplied by the subscribed dependency */ }
 }
 if (!manifest.privateRuntimeExcluded) errors.push('manifest does not confirm private runtime exclusion');
+const config=JSON.parse(await readFile(join(packageRoot,'broker/config.json'),'utf8'));
+if (standalone) {
+  if (manifest.requiresOriginalEngine !== false || manifest.requiresOriginalDataSubscription !== false ||
+      config.requiresUpstreamChineseWorkshopData !== false) errors.push('standalone package declares an upstream dependency');
+  if (JSON.stringify(manifest.languages) !== JSON.stringify(['zh-Hant','zh-Hans'])) errors.push('standalone package must include both languages');
+  if (manifest.requiredWorkshopItems?.length !== 0) errors.push('standalone package has external Workshop dependencies');
+  for(const name of ['libs/df_local_zh_core.dll','broker/server.mjs','broker/runtime-queue.mjs',
+    'scripts_modinstalled/df-local-zh-core/native.lua','scripts_modinstalled/df-local-zh-core/mod.lua',
+    'third-party-licenses/dfi18n-data-CC-BY-NC-4.0.md']) {
+    if(!actual.has(name)) errors.push(`missing standalone runtime file: ${name}`);
+  }
+  if(manifest.nativeCoreSha256 !== actual.get('libs/df_local_zh_core.dll')) errors.push('standalone native core identity mismatch');
+  const approved=manifest.upstreamLicenseMetadata?.some(row=>row.redistributionApproved===true &&
+    row.repository===manifest.sourceMetadata?.repository && row.commit===manifest.sourceMetadata?.commit);
+  if(!approved) errors.push('standalone source does not match an approved pinned repository');
+  if(/3613958631|3635900931/.test(info)) errors.push('standalone info requires obsolete Workshop subscriptions');
+  for(const language of ['zh-Hant','zh-Hans']) {
+    for(const path of [`dfi18n-data/simple/${language}/00-upstream.csv`,`dfi18n-data/rulesets/${language}/index.toml`,
+      `dfi18n-data/fonts/${language}/NotoSansMonoCJKsc-Bold.otf`]) {
+      if(!actual.has(path))errors.push(`missing bundled language file: ${path}`);
+    }
+    if(!config.staticDictionariesByLanguage?.[language]?.length) errors.push(`missing Broker language dictionaries: ${language}`);
+  }
+}
 try { await stat(join(packageRoot, 'broker', 'node_modules', 'fast-xml-parser')); }
 catch { errors.push('missing bundled broker dependency: fast-xml-parser'); }
 try { await stat(join(packageRoot, 'broker', 'node_modules', 'opencc-js')); }

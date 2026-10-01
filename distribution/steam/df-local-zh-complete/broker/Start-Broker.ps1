@@ -22,7 +22,7 @@ try {
     try { $health = Invoke-RestMethod -Uri 'http://127.0.0.1:19753/health' -TimeoutSec 2 }
     catch { }
     if ($health) {
-        if ($health.service -ne 'df-local-zh' -or $health.language -ne 'zh-Hant') {
+        if ($health.service -ne 'df-local-zh' -or $health.language -notin @('zh-Hant', 'zh-Hans')) {
             throw 'Port 19753 belongs to another service.'
         }
         Write-Output 'Translation broker is ready.'

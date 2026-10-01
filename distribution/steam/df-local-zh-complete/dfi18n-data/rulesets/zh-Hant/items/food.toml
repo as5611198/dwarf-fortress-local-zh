@@ -1,0 +1,10 @@
+base = "items::food"
+
+[[rulesets]]
+[rulesets.rules]
+"prepared meal" = "預備的餐點"
+"prepared meals" = "預備的餐點"
+food = "食物"
+biscuits = "餅乾"
+stew = "燉菜"
+roast = "烤肉"

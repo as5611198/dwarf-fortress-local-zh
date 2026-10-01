@@ -1,0 +1,7 @@
+base = "items::seeds"
+
+[[rulesets]]
+[rulesets.rules]
+seeds = "種子"
+"{::materials::adjective}" = "{::materials::adjective}"
+"{::plants::seed::plural}" = "{::plants::seed::plural}"

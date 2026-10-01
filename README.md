@@ -7,11 +7,14 @@
 - `src/df-local-zh-native`：可建置的 Rust native core 與 DFHack 模組原始碼。
 - `src/broker`：本機 Broker、官方譯庫驗證與資料建置工具。
 - `src/community-cloud`：獨立的 Dwarf Fortress 投稿／Workers AI 審核 Worker。
-- `distribution/steam/df-local-zh-complete`：已通過 validator 的 Steam Workshop 適配器包。
+- `distribution/steam/df-local-zh-complete`：內含自有原生核心、字型及繁簡資料的整合包。
+- `vendor/dfi18n-data-zh-hans`：固定已授權 GitHub 來源及逐檔 SHA256。
 
 ## 安裝
 
-Steam 使用者請安裝 `distribution/steam/df-local-zh-complete`；它依賴 DFI18n 與相容的中文資料 Workshop 項目。離線使用已安裝官方譯庫時不需要 AI API。
+只需本模組與 DFHack，不需要另訂 DFI18n 本體或簡體中文資料包。繁簡都在模組設定頁切換，包內靜態翻譯離線可用、不需 API Key。啟用方式與選用 Node.js 功能見 [玩家安裝說明](docs/PLAYER-INSTALL.md)。不要同時啟用其他 DFI18n 原生核心。
+
+重建與 Steam 上傳流程見 [發布說明](docs/WORKSHOP-PUBLISHING.md)。0.3.0 使用舊適配器封裝且缺少原生載入必需檔案；請改用 0.3.1 繁簡整合包。
 
 ## 授權
 

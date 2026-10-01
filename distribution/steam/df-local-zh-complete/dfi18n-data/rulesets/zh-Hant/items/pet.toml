@@ -1,0 +1,7 @@
+base = "items::pet"
+
+[[rulesets]]
+[rulesets.rules]
+"small tame animal" = "馴化小動物"
+"small tame animals" = "馴化小動物"
+"tame {::creatures::caste::singular}" = "馴化{::creatures::caste::singular}"

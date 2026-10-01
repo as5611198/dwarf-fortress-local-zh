@@ -1,5 +1,9 @@
 * text=auto eol=lf
 
+# Pinned upstream source is checked against byte-level provenance hashes.
+vendor/** -text -whitespace
+distribution/steam/df-local-zh-complete/third-party-licenses/** -whitespace
+
 # Preserve release artifacts byte-for-byte across Windows and Linux runners.
 *.dll binary
 *.exe binary

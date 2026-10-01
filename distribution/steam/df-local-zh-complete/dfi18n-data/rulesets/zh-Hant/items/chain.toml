@@ -1,0 +1,21 @@
+base = "items::chain"
+
+[[rulesets]]
+[rulesets.rules]
+"{^0}{main}" = "{^0}{main}"
+
+[[rulesets]]
+name = "^0"
+optional = true
+
+  [rulesets.rules]
+  "{::materials::adjective} " = "{::materials::adjective}"
+
+[[rulesets]]
+name = "main"
+
+  [rulesets.rules]
+  chain = "鏈條"
+  chains = "鏈條"
+  rope = "繩索"
+  ropes = "繩索"

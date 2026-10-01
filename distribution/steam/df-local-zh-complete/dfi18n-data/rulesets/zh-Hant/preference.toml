@@ -1,0 +1,27 @@
+base = "preference"
+
+[[rulesets]]
+[rulesets.rules]
+# Name-bearing paragraphs are handled by the save-scoped adapter. The pinned
+# upstream source has no ::name group; do not import another world's aliases.
+likes = "喜歡"
+"When possible" = "條件允許時"
+"he prefers to consume" = "他更喜歡食用"
+"she prefers to consume" = "她更喜歡食用"
+"it prefers to consume" = "它更喜歡食用"
+"they prefer to consume" = "他們更喜歡食用"
+"He absolutely detests" = "他極其厭惡"
+"She absolutely detests" = "她極其厭惡"
+"It absolutely detests" = "它極其厭惡"
+"They absolutely detest" = "他們極其厭惡"
+"{entity}" = "{entity}"
+
+[[rulesets]]
+name = "entity"
+[rulesets.rules]
+"{::materials}" = "{::materials}"
+"{::plants::name}" = "{::plants::name}"
+"{::plants::growth}" = "{::plants::growth}"
+"{::creatures::name}" = "{::creatures::name}"
+"{::color}" = "{::color}"
+"{::items}" = "{::items}"

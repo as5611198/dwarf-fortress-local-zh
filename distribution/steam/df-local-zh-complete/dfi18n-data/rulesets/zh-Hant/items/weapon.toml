@@ -1,0 +1,117 @@
+base = "items::weapon"
+
+[[rulesets]]
+[rulesets.rules]
+"{default}" = "{default}"
+"{singular}" = "{singular}"
+"{plural}" = "{plural}"
+
+[[rulesets]]
+name = "default"
+
+  [rulesets.rules]
+  "{default::^0}{default::main}" = "{default::^0}{default::main}"
+
+[[rulesets]]
+name = "default::^0"
+optional = true
+
+  [rulesets.rules]
+  "{::materials::adjective} " = "{::materials::adjective}"
+
+[[rulesets]]
+name = "default::main"
+
+  [rulesets.rules]
+  weapon = "武器"
+  weapons = "武器"
+
+[[rulesets]]
+name = "prefix"
+
+  [rulesets.rules]
+  "large " = "大"
+
+[[rulesets]]
+name = "singular"
+
+  [rulesets.rules]
+  "{^0}{^1}{singular::main}" = "{^0}{^1}{singular::main}"
+
+[[rulesets]]
+name = "plural"
+
+  [rulesets.rules]
+  "{^0}{^1}{plural::main}" = "{^0}{^1}{plural::main}"
+
+[[rulesets]]
+name = "^0"
+optional = true
+
+  [rulesets.rules]
+  "{prefix} " = "{prefix}"
+
+[[rulesets]]
+name = "^1"
+optional = true
+
+  [rulesets.rules]
+  "{::materials::adjective} " = "{::materials::adjective}"
+
+[[rulesets]]
+name = "singular::main"
+
+  [rulesets.rules]
+  whip = "長鞭"
+  "battle axe" = "戰斧"
+  "war hammer" = "戰錘"
+  "short sword" = "短劍"
+  spear = "矛"
+  mace = "頁錘"
+  crossbow = "十字弩"
+  pick = "鶴嘴鋤"
+  bow = "弓"
+  blowgun = "吹管"
+  pike = "長槍"
+  halberd = "斧槍"
+  "two-handed sword" = "雙手劍"
+  "long sword" = "長劍"
+  maul = "大錘"
+  "great axe" = "巨斧"
+  dagger = "刺劍"
+  scourge = "散鞭"
+  flail = "連枷"
+  morningstar = "釘頭錘"
+  scimitar = "短彎刀"
+  "training axe" = "訓練斧"
+  "training sword" = "訓練劍"
+  "training spear" = "訓練矛"
+
+[[rulesets]]
+name = "plural::main"
+
+  [rulesets.rules]
+  whips = "長鞭"
+  "battle axes" = "戰斧"
+  "war hammers" = "戰錘"
+  "short swords" = "短劍"
+  spears = "矛"
+  maces = "頁錘"
+  crossbows = "十字弩"
+  picks = "鶴嘴鋤"
+  bows = "弓"
+  blowguns = "吹管"
+  pikes = "長槍"
+  halberds = "斧槍"
+  "two-handed swords" = "雙手劍"
+  "long swords" = "長劍"
+  mauls = "大錘"
+  "great axes" = "巨斧"
+  daggers = "刺劍"
+  scourges = "散鞭"
+  flails = "連枷"
+  morningstars = "釘頭錘"
+  scimitars = "短彎刀"
+  "training axes" = "訓練斧"
+  "training swords" = "訓練劍"
+  "training spears" = "訓練矛"

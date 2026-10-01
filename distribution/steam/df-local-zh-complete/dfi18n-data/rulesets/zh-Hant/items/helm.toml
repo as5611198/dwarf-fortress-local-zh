@@ -1,0 +1,84 @@
+base = "items::helm"
+
+[[rulesets]]
+[rulesets.rules]
+"{::items::prefix::maybe_equipment_size}{main}" = "{::items::prefix::maybe_equipment_size}{main}"
+
+[[rulesets]]
+name = "main"
+
+  [rulesets.rules]
+  "{default}" = "{default}"
+  "{singular}" = "{singular}"
+  "{plural}" = "{plural}"
+
+[[rulesets]]
+name = "default"
+
+  [rulesets.rules]
+  "{default::^0}{default::main}" = "{default::^0}{default::main}"
+
+[[rulesets]]
+name = "default::^0"
+optional = true
+
+  [rulesets.rules]
+  "{::materials::adjective} " = "{::materials::adjective}"
+
+[[rulesets]]
+name = "default::main"
+
+  [rulesets.rules]
+  headwear = "頭裝"
+
+[[rulesets]]
+name = "singular"
+
+  [rulesets.rules]
+  "{^material}{^chain}{singular::main}" = "{^material}{^chain}{singular::main}"
+
+[[rulesets]]
+name = "plural"
+
+  [rulesets.rules]
+  "{^material}{^chain}{plural::main}" = "{^material}{^chain}{plural::main}"
+
+[[rulesets]]
+name = "^material"
+optional = true
+
+  [rulesets.rules]
+  "{::materials::adjective} " = "{::materials::adjective}"
+
+[[rulesets]]
+name = "^chain"
+optional = true
+
+  [rulesets.rules]
+  "chain " = "鎖鏈"
+
+[[rulesets]]
+name = "singular::main"
+
+  [rulesets.rules]
+  helm = "頭盔"
+  cap = "帽子"
+  hood = "兜帽"
+  turban = "頭巾"
+  mask = "面罩"
+  "head veil" = "頭紗"
+  "face veil" = "面紗"
+  headscarf = "絲巾"
+
+[[rulesets]]
+name = "plural::main"
+
+  [rulesets.rules]
+  helms = "頭盔"
+  caps = "帽子"
+  hoods = "兜帽"
+  turbans = "頭巾"
+  masks = "面罩"
+  "head veils" = "頭紗"
+  "face veils" = "面紗"
+  headscarves = "絲巾"

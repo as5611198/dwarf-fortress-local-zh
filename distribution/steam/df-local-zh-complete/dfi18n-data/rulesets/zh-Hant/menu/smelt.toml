@@ -1,0 +1,7 @@
+base = "menu::smelt"
+
+[[rulesets]]
+[rulesets.rules]
+"Make coke from bituminous coal" = "使用煙煤製作焦炭"
+"Make coke from lignite" = "使用褐煤製作焦炭"
+"Melt a metal object" = "融煉一件金屬物品"

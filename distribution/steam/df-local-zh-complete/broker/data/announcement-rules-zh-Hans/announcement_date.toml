@@ -1,0 +1,37 @@
+base = "announcement_date"
+
+[[rulesets]]
+[rulesets.rules]
+"Date: {day}, {%number}" = "日期：{%number}年{day}"
+
+[[rulesets]]
+name = "day"
+
+  [rulesets.rules]
+  "{%number}{suffix} {month}" = "{month}{%number}{suffix}"
+
+[[rulesets]]
+name = "suffix"
+
+  [rulesets.rules]
+  st = "日"
+  nd = "日"
+  rd = "日"
+  th = "日"
+
+[[rulesets]]
+name = "month"
+
+  [rulesets.rules]
+  Granite = "花岗岩月"
+  Slate = "板岩月"
+  Felsite = "霏细岩月"
+  Hematite = "赤铁矿月"
+  Malachite = "孔雀石月"
+  Galena = "方铅矿月"
+  Limestone = "石灰岩月"
+  Sandstone = "砂岩月"
+  Timber = "林木月"
+  Moonstone = "月光石月"
+  Opal = "蛋白石月"
+  Obsidian = "黑曜石月"

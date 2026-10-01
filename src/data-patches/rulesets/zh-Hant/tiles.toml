@@ -1,0 +1,20 @@
+base = "tiles"
+
+[[rulesets]]
+name = "stairways"
+[rulesets.rules]
+"{::materials} {prefix::updownboth} Stairway" = "{::materials}{prefix::updownboth}樓梯"
+"{constructed} {prefix::updownboth} Stairway" = "{constructed}{prefix::updownboth}樓梯"
+"{::materials} {prefix::updownboth} stairway" = "{::materials}{prefix::updownboth}樓梯"
+"{constructed} {prefix::updownboth} stairway" = "{constructed}{prefix::updownboth}樓梯"
+
+[[rulesets]]
+name = "prefix::updownboth"
+[rulesets.rules]
+"up/down" = "上/下行"
+
+[[rulesets]]
+name = "prefix::updown"
+[rulesets.rules]
+upward = "上行"
+downward = "下行"

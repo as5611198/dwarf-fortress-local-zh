@@ -1,0 +1,31 @@
+base = "menu::make"
+
+[[rulesets]]
+[rulesets.rules]
+"{kind}{^0}{main}" = "{kind}{^0}{main}"
+
+[[rulesets]]
+name = "kind"
+
+  [rulesets.rules]
+  Make = "製作"
+  Forge = "鍛造"
+  Smelt = "熔煉"
+  Assemble = "組裝"
+
+[[rulesets]]
+name = "^0"
+optional = true
+
+  [rulesets.rules]
+  " {::materials::state}" = "{::materials::state}"
+  " wooden" = "木製"
+
+[[rulesets]]
+name = "main"
+
+  [rulesets.rules]
+  " {::items::main}" = "{::items::main}"
+  " crafts" = "工藝品"
+  " ore" = "礦石"
+  " ash" = "灰"

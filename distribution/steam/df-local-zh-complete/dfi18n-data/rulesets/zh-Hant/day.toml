@@ -1,0 +1,51 @@
+base = "day"
+
+[[rulesets]]
+[rulesets.rules]
+"{%number}{number} {month}" = "{%number}{number} {month}"
+"Year {%number}" = "{%number}年"
+"{^0} {season}" = "{^0}{season}"
+"{month} {%number}" = "{%number}年 {month}"
+
+[[rulesets]]
+name = "number"
+
+  [rulesets.rules]
+  st = "號"
+  nd = "號"
+  rd = "號"
+  th = "號"
+
+[[rulesets]]
+name = "season"
+
+  [rulesets.rules]
+  spring = "春天"
+  summer = "夏天"
+  autumn = "秋天"
+  winter = "冬天"
+
+[[rulesets]]
+name = "^0"
+
+  [rulesets.rules]
+  Early = "孟"
+  Mid = "仲"
+  Late = "季"
+
+[[rulesets]]
+name = "month"
+
+  [rulesets.rules]
+  Granite = "花崗岩月"
+  Slate = "板岩月"
+  Felsite = "霏細巖月"
+  Hematite = "赤鐵礦月"
+  Malachite = "孔雀石月"
+  Galena = "方鉛礦月"
+  Limestone = "石灰岩月"
+  Sandstone = "砂岩月"
+  Timber = "林木月"
+  Moonstone = "月光石月"
+  Opal = "蛋白石月"
+  Obsidian = "黑曜石月"

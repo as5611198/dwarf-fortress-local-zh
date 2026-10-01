@@ -1,0 +1,11 @@
+Load fonts from "fonts" directory
+[FONT:fonts]
+
+Load logo from "logos" directory
+[LOGO:logos]
+
+Load "simple" translator data from "simple" directory
+[DATA:simple:simple]
+
+Load "rulesets" translator data from "rulesets" directory
+[DATA:rulesets:rulesets]

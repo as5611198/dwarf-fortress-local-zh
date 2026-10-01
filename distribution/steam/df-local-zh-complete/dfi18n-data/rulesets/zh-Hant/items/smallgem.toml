@@ -1,0 +1,11 @@
+base = "items::smallgem"
+
+[[rulesets]]
+[rulesets.rules]
+gems = "寶石"
+"cut gems" = "切割寶石"
+"cut green glass gems" = "切割綠玻璃寶石"
+"cut clear glass gems" = "切割透明玻璃寶石"
+"cut crystal glass gems" = "切割水晶玻璃寶石"
+"{::gems::plural}" = "{::gems::plural}"
+"{::gems::details::plural}" = "{::gems::details::plural}"

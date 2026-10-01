@@ -1,0 +1,603 @@
+{
+  "repository": "https://github.com/DFI18n/dfi18n-data-zh-hans",
+  "commit": "2ed0ac42a43375ce1d3d3fcd1403f825be58b3e6",
+  "license": "CC BY-NC 4.0; fonts OFL-1.1",
+  "files": [
+    {
+      "path": "dfi18n-data/dfi18n.txt",
+      "sha256": "834b821476d3a9969aaa493c8fa0bf7d52d65e64bbb0c18524f7baa36d32eaff"
+    },
+    {
+      "path": "dfi18n-data/fonts/zh-Hans/LICENSE.txt",
+      "sha256": "88f117575237307bdd86a17ef15e21790fc9a662fe4dfb103ca1ca077f0d9982"
+    },
+    {
+      "path": "dfi18n-data/fonts/zh-Hans/NotoSansMonoCJKsc-Bold.otf",
+      "sha256": "a452fedfc0619e43e080b7b861ce34cbd3ec4fbcea495bf8c402a5a02a5dcbdc"
+    },
+    {
+      "path": "dfi18n-data/logos/zh-Hans.png",
+      "sha256": "13ece10940c35511bcdc29bc9149f9a6d66f4fa4d3e5d294becccfd058b2e87e"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/color.toml",
+      "sha256": "d62dbec8f431447a27d85f3edc7b254b08527235b22176114ea12d7858280079"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/construction_menu.toml",
+      "sha256": "a676898e209c9f024385cccd6d29ad9e748e60889d0e619f06a6cedb2aa0d5b3"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/creatures/caste.toml",
+      "sha256": "9232d3fd47271a5b026779b12636e2a1b928edef9af40c2ea84a4bc6067df7aa"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/creatures/index.toml",
+      "sha256": "dd2a36750ee1d10a6f7c99497653be1c8936b87b7088a05a2ef04eb7a3c9511f"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/creatures/name.toml",
+      "sha256": "a0de43ef524bf4088b1d968c63b9e7d1fc014461f313daf84742904609bdb1d6"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/day.toml",
+      "sha256": "3f938c5e6a361f483f73da33ac0b882646040e1b4fb21c70eb4a143ddf9265dc"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/gems/details.toml",
+      "sha256": "92ede3da0fc9624c5a40c10a40aeb5a2978acd197e5fd6afeb68a86c6e6dd2d4"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/gems/index.toml",
+      "sha256": "fb2a6cb8ad643d160744f49aeb39273bc56cae7475c5a0052bcf56dc3c17b515"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/health.toml",
+      "sha256": "43b90c03c6b9e6431a0cce38d8127c6f452404dd12a416b9ce8ea329af9fd653"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/index.toml",
+      "sha256": "4dfc6b2cdb300702cdd430be183e9e4110fb9aa73f5d99c2ecae43f5943ca626"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/altar.toml",
+      "sha256": "4b3a3b56b0dfc83f33cc17cfeba643e6617913b142a339252fc4ffc1b5a98c28"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/ammo.toml",
+      "sha256": "c0678d128cd15bbae962a1aed36a954eb55087090f01ee78abd1127313d3f5f2"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/amulet.toml",
+      "sha256": "508ee11b23c9945726a1fe007f1a2c3d40d36cf64638e79e9c79c1d13a8e9758"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/animaltrap.toml",
+      "sha256": "ce8e437a2af683a0beeffcbc0eab9419702202e182e24529554f591c70006edc"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/anvil.toml",
+      "sha256": "b8cb316c7d1944935c2e2f1b4898541980cbdbee094819e9557706f8aa4d4510"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/armor.toml",
+      "sha256": "34458b8217996a7e0e6aede83ed4c8e3609ac14e2e4d096c9df01c6fcb344fd1"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/armorstand.toml",
+      "sha256": "7fbd200fe20de289fb9bd9e9f7f1441b4f37ce0b969b2c12ac629f3164e578d1"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/backpack.toml",
+      "sha256": "cf6b9f4c70888960115dbc8b6bdbe702efa5afff27e09134639eee6987636788"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bag.toml",
+      "sha256": "2764024b7534f9b32d4a45d6a72cf0bcd7128a4f164e9d8e8c5ba8bd43613f45"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/ballistaarrowhead.toml",
+      "sha256": "89a8a2047e9a8474cbde484b96132d9f22e4d5d4329ce46ec12b4cc9a2b6d3e9"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/ballistaparts.toml",
+      "sha256": "c093a25d6f487bd5362e00b77003937e9c07849c34825110d54a325a3d57e78c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bar.toml",
+      "sha256": "7a43d0be3f292d956fb434b27d5ca0b4135960992b36b11b3f7c30cc559f5c5c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/barrel.toml",
+      "sha256": "8df4a2d56c0cc03a032401812d38525ab18d80fffe3afe986bbe31c855c93b43"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bed.toml",
+      "sha256": "8ccaf2ec7c382452d72f41ad10f70be13a35248737a607766c8da4025e466da2"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bin.toml",
+      "sha256": "214a251a1532e822a030e05981a7632f58fa127ed5fe412e6798d446b2dc9d10"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/blocks.toml",
+      "sha256": "5014ccbbb29161f51a7ab6a6b09f37d447accb55577ad958141486c99b36957a"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/boltthrowerparts.toml",
+      "sha256": "95e0cc1fc2daf0ef254311eb2a71d1e58851097595a1f97b675d0512bf614b03"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/book.toml",
+      "sha256": "ffd3524d64ae33b8c65fb6a362f678ab2bfb6fc801eef730f323ad7146cabaad"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bookbinding.toml",
+      "sha256": "dd62335ded76254d25267e1209928228cba305069ff9bfc619f8bcdb9bc08ebf"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bookcase.toml",
+      "sha256": "304e09952d0eb737c7a44333e65dc200891614f9b0af4fc6f5e91e6517b7928d"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/boulder.toml",
+      "sha256": "67f9a75a66946247596cc7295efc85227fa6e5d3f007fecb6bb8173d08f6e411"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/box.toml",
+      "sha256": "c1f53228a0914b31190280e12d10b9dbd1e636ebd7bb20f6036116a97ca0f49b"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bracelet.toml",
+      "sha256": "48c0caaf1b28e4e119c429439e74602cb9dd64f7c292184e7ee287a742d3d79c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/branch.toml",
+      "sha256": "dfa684b8611bc482706d122a5030784c1c99e0b0c67bdba4c23ba778b627c7dc"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/bucket.toml",
+      "sha256": "fd6d94960c42fb76f0d0f1a499080c559266ba4553901189fbc0b89efe59c664"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/cabinet.toml",
+      "sha256": "8b6eefcb088bec272ebda4851222dc50a4cd0db5c86ecada7722c5c7fefe45b0"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/cage.toml",
+      "sha256": "71809d2d0bc9de4d311fe9a28d4094e84e173b7b4667cdf141d3bf6252ee1dd1"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/catapultparts.toml",
+      "sha256": "332756778c3702d675ae26accecf670405c5f3eeefb5bb0b5161eb5407cd3355"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/chain.toml",
+      "sha256": "a4f6c3a5e718ddd0a0e1bba161a32bacc780d69e94d95667b1cab0b7a886fab7"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/chair.toml",
+      "sha256": "300c067f29bd6acc3029b878cfd2cba3f309e0a897de102a2312073d39dece85"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/cheese.toml",
+      "sha256": "60c22d4d2a9821a97ecede3e25ead27772f91d0a52048c47999c30c4762b4d62"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/cloth.toml",
+      "sha256": "ecf2b536dddf63e4f9a361c04f2f04f042ac3717f3f9360073f2e5df360a77c4"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/coffin.toml",
+      "sha256": "89346383cea1bea1de9cb31643f05179e9f290d5598e739ab372e294b0f503c5"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/coin.toml",
+      "sha256": "d854b8970a491c5b26698230908b5ad7b96c7d7f7913f8d22b22df393f6d89d4"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/corpse.toml",
+      "sha256": "7d3d4353d0832e8d4ff029255c8754c8448986a62074a33a4c667d277a14094c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/corpsepiece.toml",
+      "sha256": "0eda0f4a204a5d70fdc398a34172cf492df6a16b1d5b49880acdabfc182e761c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/crown.toml",
+      "sha256": "b862919ac9c56595c7b72c19c8c9d233fd2bcc13b78b71ba33d6a5888736b00f"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/crutch.toml",
+      "sha256": "4035f4449f8039e9f3dbfde2473dc7b3bce72fbec303f5401bd13c8e9ae14ef3"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/die.toml",
+      "sha256": "5d118b1e33f9d17a20761ef5190daa01c4d9cb8a78e89f2b3e68b00ec284f6e7"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/displaycase.toml",
+      "sha256": "afbdf500285461333ea9167e8d0a64294721ad83cd7189432e6a762c4dcd1a8a"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/door.toml",
+      "sha256": "0bbf36b6632a11c65a225065d119c910a2d4718a77a17b5a69d247cbe6e7ccc3"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/drink.toml",
+      "sha256": "9c02e06488cd010956ea90464c9decd5c7e62901eb6391c3a9217d7bd66f4d2c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/dye.toml",
+      "sha256": "590439652e55c517a73786f92d696b3e30160a9df8d5558e6a582e65baac467e"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/earring.toml",
+      "sha256": "4fb23d598aff17d5e20f51c4363c754d62b205ed8e96ef9ce7287fe91a1d85d6"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/egg.toml",
+      "sha256": "137385c4f7dc4861700dc23de97e00bb1c9f16b74d531b560b9a155300174873"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/figurine.toml",
+      "sha256": "cd60f02da91e5edf978e619bf7e45931de2150c6d6e29a34ca70bc5b0830b03b"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/fish_raw.toml",
+      "sha256": "20df204d188e6ad39effc914d418b716171d1c202ac90972abcd3e618c7e3259"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/fish.toml",
+      "sha256": "89c114886b3504c64434c1da74f8b831932825deff11f3324b8abc45f8e1799d"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/flask.toml",
+      "sha256": "6dde8dfa61ac2168e8262aa6b0c46e2f64e985af9f9c5279cceb3793fc3d4056"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/floodgate.toml",
+      "sha256": "68af0f33335d32d335b516983d3c3c9fcaa7589d608a8570f3545e909b4d2cdc"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/food.toml",
+      "sha256": "ebebea5094ae89a04c4666ba4ed4690c476683ca50e7beb8fbda4b8bde1c2f42"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/gem.toml",
+      "sha256": "cb471fbf18e1bc9fb3c03627cddbf3d19f2f306a3e030a1b5a9c3d00055416b7"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/glob.toml",
+      "sha256": "bd6ce50f0788f413d4dd3210f082d7fff54afd62a8b65e9e0bf0d98177a20e21"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/gloves.toml",
+      "sha256": "e8381c92b65d6037faed59b9510f62af95e721901dce09bb6371a70151704caf"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/goblet.toml",
+      "sha256": "a1c97f38b48272f876f3f70af02e032e21d4aa2b5dc9ade6cd817a12115d1fd1"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/grate.toml",
+      "sha256": "0fa3a3698a3f87d625bca96198157bf9f76686559d8a11c7eda24b31149db848"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/hatch_cover.toml",
+      "sha256": "75500f56d313b627f949a7dd17eacc25a49a7aa11896790e02125efe99b01f8d"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/helm.toml",
+      "sha256": "f236b7f34a48f3d0c286e41f2e7b56a5335e07f974d98f4f91c8569905e43899"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/hive.toml",
+      "sha256": "cd364c82baddf73db24becea23563f2778513fd8aa46e0d03752a7131bc18790"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/index.toml",
+      "sha256": "1d12bece5d6df78c3bd95d1bc361ba97ecc606683a54b05852cd7559523b6325"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/instrument.toml",
+      "sha256": "e7354d290a5364952fa01340c2c19d9d09bf0398d9e162e4c576a81875a1e459"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/jug.toml",
+      "sha256": "1943920236aee4c2f270c7e012316e55aa915868fd4795ce688d18dbfe1dd7ce"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/liquid_glob.toml",
+      "sha256": "5f176dc91af5004167a415e5486384d5a1abedacb4fc397a0d6806d30ce424e6"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/liquid_misc.toml",
+      "sha256": "fa38c0a1a92f44e011ebc4da5ed432ec6a114112185ce6cc486eacb66e90e790"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/meat.toml",
+      "sha256": "fa9234600703e9941cc2c9fbdde35aab759c1994419a10038f09555463568923"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/millstone.toml",
+      "sha256": "355e6528d03b4c0b3aaff8e1509d94644af4a6891abaf24c59614b7aac244e80"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/minecart.toml",
+      "sha256": "00c8c5989453ab2860dbff65d45934e329093e04f7fe40017acb9a86117ca9ca"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/nestbox.toml",
+      "sha256": "82e6c4235929fe298f38fc2dd5836eea635dc1ebacb8d7dab2dc1ce25357e804"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/orthopedic_cast.toml",
+      "sha256": "89bcd72064ff905b3d8f86c169ca6b189319f7686ae629f1a27a21edcfed0ddc"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/pants.toml",
+      "sha256": "52d3625bee770631ae35ae1fce1db3b1ff41a6e020bb377fbb15cbb1b5e3326f"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/pedestal.toml",
+      "sha256": "b9f6a879a81c911eac4c672caf8691266113311f7947d3a8af9c3ba5966b8294"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/pet.toml",
+      "sha256": "be594ee80e4513ad358297704157d95cd82cabf1eeec15fe548e24adff565c88"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/pipe_section.toml",
+      "sha256": "ecdfe9b0a5c0cc69deff18df24c3183a54080115359ac28773641b9cf830bee9"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/plant_growth.toml",
+      "sha256": "571b0b17ddcf143644b6292be1a37bb14ee8f5a30e7053dee6bde234387ec47a"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/plant.toml",
+      "sha256": "48eb9efd744c6e1a61b7d49f480975d25c111be73c90d5a1ef0c7eb8b471adf6"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/pot.toml",
+      "sha256": "4256877342fe38afc57d98b80a002c0f37f57d300e3cc8291cd1a2b15f55e68d"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/powder_misc.toml",
+      "sha256": "ab8d1222ab03aaedfe6d56379bed3d23938675011d7abdc32b054ad22ebf2319"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/quern.toml",
+      "sha256": "b9cbff269c1cfb77a157edee8796fd74fa8556d5f8927e2ed24384eb16e6ff81"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/quiver.toml",
+      "sha256": "0ad05ce345bd22e82bf2407d11220c15913c5dbcb5eb4eda3f4d9e1c70ab8738"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/remains.toml",
+      "sha256": "6d9d9726a2d591948a2bfe1711da088616d030974d71e2298c3935b2e3a7fe3b"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/ring.toml",
+      "sha256": "f7a22a447f75bd66521b2fbfb3d4a92e63aa1916532ba3ebc0ef0ed6fac2d1db"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/rock.toml",
+      "sha256": "2ea73c0a6ac94777e3b8a767cd44ed3fa49ab2d1b212407c48b22234870ad4a1"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/rough.toml",
+      "sha256": "9c3989b4392d66219366ea50532d4723ede1bdd609489f63c3dbbf20b7a58f11"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/scepter.toml",
+      "sha256": "57b3012062770699e4a0b1c46faaccb496d4ae44db9538ec15729695ebd16d98"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/scrollroller.toml",
+      "sha256": "f585a93536eb02fcebbb7d94a3f3d8e4abb4f7271dda08fcd49791961b0a463a"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/seeds.toml",
+      "sha256": "2ff82a73614aa119fe50fdeda863bba900fb7689f0f0f8b2bee9cc1bef6a6740"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/sheet.toml",
+      "sha256": "7f772485a52f2971069065a9fdadec01358c8be96529dde714469c385d715c6b"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/shield.toml",
+      "sha256": "611eabb0c00abb2b2ef0d49c1928ae927e2de12d796c2c2d5015d04734b4b860"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/shoes.toml",
+      "sha256": "f601f34edb286177bcf30d8932f326ae470ea41a0cae58c05cdc64b186817cd3"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/siegeammo.toml",
+      "sha256": "a7637d75c54918be542462bface797a8a8d841203f654cd26dc3ebfe01fa28ee"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/skin_tanned.toml",
+      "sha256": "52f75349db019cd499d7debb0c8e39617d49826a47cd7b84037ec48b38210e9a"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/slab.toml",
+      "sha256": "9d33b9b7732b547db8acdb977774b9b89fd483c48b1984c74400bf46f8d0c179"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/smallgem.toml",
+      "sha256": "460c5ba2bc4655138381a00010094eff490578007b24e6bcc00d4371d78fca68"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/splint.toml",
+      "sha256": "c394af34899e08ecc187afd0edf319184e91e188df3d1af65b631502cc638c59"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/statue.toml",
+      "sha256": "d8a3338b01618c163b375274fa05b011b479fbaf6c4ec90b78d1779d785fcd52"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/stepladder.toml",
+      "sha256": "1c85acaefb7da4b6a85a95c0e6c75720bb27b74952526a7fd0f904c8ec99302f"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/table.toml",
+      "sha256": "8893a33e48de9854731ca6cb4cb9fcdc9f5571abfa5f52ece0608cba5a65ed6d"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/thread.toml",
+      "sha256": "555be5fa670589045bc022468ad247536f21f3c7aea171e8c09e43521102b98a"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/tool.toml",
+      "sha256": "5fe3b029d56a1d09d4befdb137bb604d9c03236ac53c2093f99348e86ac1022c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/totem.toml",
+      "sha256": "2fb1722d3ab43ccecd81d9dff960631da2111678b7393f7708dba680fc7d003c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/toy.toml",
+      "sha256": "80ecd054c3b8f2c4ebf46a7d1badf2a79aacf9c07394d9716d33e999296bd91b"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/traction_bench.toml",
+      "sha256": "dd3129981ccbe02629df3e104b56e29f4fc08309dd113ac25f121fc6fe976e41"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/trapcomp.toml",
+      "sha256": "88006fcbcef00f00bcf209b724f54afd016cea8a363b573544e2ba30fe3ce80c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/trapparts.toml",
+      "sha256": "36d920db4fcd42dbdfe85f1ca67fcf36ef0324710fdec1ec3f5102c6282f69ec"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/vermin.toml",
+      "sha256": "4dba424f7fb067dfe0ee01aa50b91952904c70eaaaa1ac33058c1022ba495d49"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/weapon.toml",
+      "sha256": "5ab436fc8779a6f44593ce4fdacf866eb724c78042c8ae35140ccfc92488f46c"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/weaponrack.toml",
+      "sha256": "44cabaaab3814a2e514c9d42b9f439d1c9b0b995ded33a363bf8797debee02ab"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/wheelbarrow.toml",
+      "sha256": "f4fe1646fb96bbe0fefa71ea32a8cbcbf1306f6b5329d8529a5dc26c04ca84c1"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/window.toml",
+      "sha256": "b2c4d3470014964de40440f337e9643eb24acde85c7c06696589086fc431c0fb"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/items/wood.toml",
+      "sha256": "33225ea7db6b035d3a0741d3074a4e48a8ec0465da00d5dfc676bb42bd112def"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/materials/index.toml",
+      "sha256": "90004ecf1aca257796945c05b0bae8d50fd3053cc9528337d057085b0a517e74"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/materials/job.toml",
+      "sha256": "83cf2138cc3607b9fe716188ba5c2ab1cded1db364c34e51c705c7a08b8612bc"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/materials/state.toml",
+      "sha256": "96033d751c5d56ce3d6a4f8393177104602c270f02ab242eff16b5466365569e"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/memory.toml",
+      "sha256": "3e781cea7ca23c48202662c926df391c470a024d5ed965548886677f037ab87b"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/menu/dyer.toml",
+      "sha256": "595174fd5f43ba83f5b8771c864abc88d387d827493258ccb049808ef47a1cb3"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/menu/index.toml",
+      "sha256": "89ef363108b6fab04a392740cbf99f508096d36333e82bbc03e6dc6998e6df71"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/menu/kiln.toml",
+      "sha256": "aeddc5e4f1fbb637323a954fd8418746b3b52b46d7a1ad9607c4cfca4e85fee1"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/menu/make.toml",
+      "sha256": "679ec52f479038e62e65ff8212f8e9069f6394e7d1e6af4825e43ff21344a655"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/menu/smelt.toml",
+      "sha256": "d6b14d7da8756e50a2d9b7daef097d7346ed6db64abb9906c0e25a9b0da8528d"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/plants/growth.toml",
+      "sha256": "609c58dd99e81ca82a11ef11f9618d8632a3738e60661df49258d56e36c604cd"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/plants/index.toml",
+      "sha256": "7054332fe67838363db1c5cb1a7386b8ecc6fc30cd931324d0d7bb6cb827dcb2"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/plants/name.toml",
+      "sha256": "757564af282fad2d0da1466ba34bbcd386063e812be1df09df8e7c16d97b8c0b"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/plants/seed.toml",
+      "sha256": "dcda4d43828adb6ebff8e8d6f94d99ec3afb87cbbcab4c4fc721eb51d79eb4ce"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/positions/forest.toml",
+      "sha256": "9d77f24cc42aec1d7e81f99d9199e2604e6427bc34aaf410f132bb6e16bc4c01"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/positions/index.toml",
+      "sha256": "87cf01af110d179ad343a7872fefc998d5f5544ec0f28553f2ce36fc7aaf91d9"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/positions/mountain.toml",
+      "sha256": "d5bf1c1eec3bea44c356856f9ffe634870d22d12832563799a645e6ebc216be4"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/professions.toml",
+      "sha256": "893290bb638051157c27a2c8fad7d7bfb83074d3212af317d301c90a3c446c09"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/require.toml",
+      "sha256": "b677bc8359122e9a7b0f9f82218222684751502bf0c647357ba4d7314b6a5858"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/skills.toml",
+      "sha256": "17b52c9a85384af095859d9d2466fa671c9771461e3abf18b68f454970238875"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/tasks.toml",
+      "sha256": "a91da7081dfb74ede06dbdc1228b8428e8759753ab8058959c58f9e7c12542ec"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/thought.toml",
+      "sha256": "33e9ba1ff45bce89790abc3ca1bcf74e4bbc35f774b248cb32afd0b832d456be"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/tiles.toml",
+      "sha256": "386489e1048dec6bc3cc3c098a5006fa4c9d9bcd94a54276934f207e3fa1d1cd"
+    },
+    {
+      "path": "dfi18n-data/rulesets/zh-Hans/workshop.toml",
+      "sha256": "6c02c5ff3c59d9c9d60137e386a03699e0c98e0c8ed592ac3cb0bc077855e245"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hans.csv",
+      "sha256": "1f980a78668a0cfe445c45827632e5a798ef398ea3a28dda37a6834f9738d93c"
+    },
+    {
+      "path": "LICENSE.md",
+      "sha256": "0b288d9e859e4c7a3cd87ed7258469b2c627f555ee238c223a25ba07410c637b"
+    }
+  ]
+}
