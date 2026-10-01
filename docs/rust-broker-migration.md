@@ -9,7 +9,7 @@ Main-agent implementation sequence (no delegation):
 - [x] Implement signed official packages, bounded HTTPS downloads, immutable records, rollback/revocation verification, background deduplication, and activation at a fresh service boundary.
 - [x] Implement journal/file adapters, local world-name restoration, native prewarm and opt-in sanitized consensus outbox.
 - [x] Replace launcher; build and test with isolated state and no Node in PATH. Compare JS compatibility vectors and verify public-cloud download/offline restart.
-- [ ] Build 0.4.0, validate manifests, preserve private hashes, deploy with backups, publish GitHub/Steam, and verify a fresh Steam download.
+- [x] Build 0.4.0, validate manifests, preserve private hashes, deploy with backups, publish GitHub/Steam, and verify a fresh Steam download.
 
 New modules live in src/df-local-zh-native/broker-rust: common (atomic files and validation), settings, provider, official, shared, equipment, display, service, and main. Security checks stay deterministic. Network errors never include provider bodies, keys or URLs with credentials. HTTPS redirects are disabled. Cloud downloads never serialize private player state. Official snapshots stay pinned for a running service; downloaded updates show pending until the next game launch. The core DLL reuses the Rust signature verifier when loading the local official snapshot, including signed withdrawal handling.
 
@@ -32,3 +32,5 @@ Remaining acceptance scope: interactive fortress/adventure gameplay and every Le
 This repository is the authoritative 0.4.0 source. Earlier `_localization-work/broker` and `_localization-work/df-local-zh-native` development trees were left intact to preserve unrelated local changes; use the build commands in WORKSHOP-PUBLISHING.md, not the old Node deployment scripts.
 
 Steam 0.4.0 update committed successfully to item 3811313433. Independent SteamCMD download returned 61,579,048 bytes; its manifest and all 818 file SHA256 values match the release. Downloaded-EXE tests passed 4/4, including clean cloud sync and offline restart with no Node in PATH. Final observed timings: startup 130–141 ms, Hant/Hans full downloads 1,245/873 ms, offline verified loads 6.75 ms Hant and 10.13 ms cumulative. This verifies the downloaded payload; Steam client subscription/auto-update has not been independently exercised.
+
+GitHub v0.4.0 is published with the player ZIP and SHA256 at https://github.com/as5611198/dwarf-fortress-local-zh/releases/tag/v0.4.0. Source/runtime release commit: e3ddbd3099f6ce12cc4a97196da9f8e94cd218d0. The Git index export was independently checked against all 818 manifest file hashes; release-file line endings are preserved across Git checkouts.
