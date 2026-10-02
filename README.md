@@ -2,6 +2,16 @@
 
 繁體中文／簡體中文的 Dwarf Fortress 本機翻譯模組，包含 DFHack native core、Broker、官方譯庫同步與選擇性 AI 補譯。
 
+## 先謝謝讓中文化成為可能的大家
+
+衷心感謝 **矮人要塞中文維基翻譯組翻譯人員**、**WAN1694、Misery**，以及所有參與翻譯、校對、術語整理和工具維護的貢獻者。大家長期累積的翻譯文本與程式碼，是本模組的重要基礎。
+
+DFI18n 程式碼採 **MIT** 授權，中文資料採 **CC BY-NC 4.0（姓名標示－非商業性）** 授權。本模組加入繁簡轉換與部分詞彙、介面修正；完整來源、授權及修改說明見 [ATTRIBUTION.md](https://github.com/as5611198/dwarf-fortress-local-zh/blob/main/ATTRIBUTION.md)。
+
+程式來源：[DFI18n/dfi18n](https://github.com/DFI18n/dfi18n)
+
+中文資料來源：[DFI18n/dfi18n-data-zh-hans](https://github.com/DFI18n/dfi18n-data-zh-hans)
+
 ## 公開內容
 
 - `src/df-local-zh-native`：可建置的 Rust native core 與 DFHack 模組原始碼。
