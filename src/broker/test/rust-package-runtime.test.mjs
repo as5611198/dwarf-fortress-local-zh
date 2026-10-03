@@ -31,7 +31,21 @@ test('actual Steam EXE translates both languages offline and preserves fixed and
 });
 test('Lua file protocol saves scoped settings and sync acknowledgement never overwrites drafts',async t=>{
  const state=await fixture(t);const runtime=await launch(t,{state});let number=0;
- const request=async body=>{const id='fixture-'+(++number);await writeFile(join(state,'settings-request.json'),JSON.stringify({id,...body}));for(let n=0;n<100;n++){try{const response=JSON.parse(await readFile(join(state,'settings-response.json')));if(response.id===id)return response;}catch{}await new Promise(r=>setTimeout(r,50));}throw Error('settings response deadline');};
+ const request=async body=>{
+  const id='fixture-'+(++number);
+  await writeFile(join(state,'settings-request.json'),JSON.stringify({id,...body}));
+  // Match Lua's single-client protocol: reply publication precedes cleanup.
+  // Releasing the mailbox before processed=id can lose the next request.
+  for(let n=0;n<100;n++){
+   try{
+    const response=JSON.parse(await readFile(join(state,'settings-response.json')));
+    const acknowledgement=JSON.parse(await readFile(join(state,'settings-request.json')));
+    if(response.id===id&&acknowledgement.processed===id)return response;
+   }catch{}
+   await new Promise(r=>setTimeout(r,50));
+  }
+  throw Error('settings response/acknowledgement deadline');
+ };
  assert.equal((await request({action:'save',scope:'save',world:'region-fixture',settings:{language:'zh-Hans',translationPrompt:'My unapplied-independent prompt.'}})).ok,true);
  const before=await readFile(join(state,'settings.json'));const answer=await request({action:'official-sync',language:'zh-Hant'});assert.equal(answer.ok,true);assert.equal(answer.snapshot,undefined);assert.deepEqual(await readFile(join(state,'settings.json')),before);
  const wrong=await request({action:'save',scope:'global',settings:{language:'en'}});assert.equal(wrong.ok,false);assert.deepEqual(await readFile(join(state,'settings.json')),before);

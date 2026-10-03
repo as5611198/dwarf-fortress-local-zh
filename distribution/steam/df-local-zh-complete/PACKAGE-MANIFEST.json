@@ -1,7 +1,7 @@
 {
   "package": "df-local-zh-complete",
   "version": "0.5.0",
-  "generatedAt": "2026-10-03T01:38:10.276Z",
+  "generatedAt": "2026-10-03T02:06:01.366Z",
   "releaseMode": "standalone-bilingual",
   "runtime": "rust",
   "requiresNode": false,
@@ -2371,7 +2371,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-settings.lua",
-      "sha256": "617e938a604c9494512211a5400de8ef638eb15f461500da523c001dcd967c96"
+      "sha256": "b005bbc056efb8dc3c5d5893b72d82e965b0b83d7a36f94e94e9700e5fa47684"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-status-ui.lua",
@@ -2476,6 +2476,10 @@
     {
       "path": "self-tests/search-literal-render.lua",
       "sha256": "7ad0f33ddbc0a0fd3771b0a39721c4d3842e0a4718a0d502f26e27a930adb70d"
+    },
+    {
+      "path": "self-tests/settings-mailbox-handoff.lua",
+      "sha256": "bb8d981ffa38b4eb929223392d90cb43f6a40a5dd1d328f75e8df7d50143973a"
     },
     {
       "path": "self-tests/shortcut-routing.lua",

@@ -74,8 +74,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/PACKAGE-MANIFEST.json",
-      "bytes": 170212,
-      "sha256": "8c83a9aba03af42e6323877e486a715807722a7bc4ac6be2019a51b45bf703f1"
+      "bytes": 170365,
+      "sha256": "2ed1ab1158265e4acb2943a76639573535b9a553c99aca368d8af1af112837b6"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/README.md",
@@ -2159,8 +2159,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings.lua",
-      "bytes": 5629,
-      "sha256": "617e938a604c9494512211a5400de8ef638eb15f461500da523c001dcd967c96"
+      "bytes": 5985,
+      "sha256": "b005bbc056efb8dc3c5d5893b72d82e965b0b83d7a36f94e94e9700e5fa47684"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-status-ui.lua",
@@ -2291,6 +2291,11 @@
       "path": "distribution/steam/df-local-zh-complete/self-tests/search-literal-render.lua",
       "bytes": 2890,
       "sha256": "7ad0f33ddbc0a0fd3771b0a39721c4d3842e0a4718a0d502f26e27a930adb70d"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/self-tests/settings-mailbox-handoff.lua",
+      "bytes": 2278,
+      "sha256": "bb8d981ffa38b4eb929223392d90cb43f6a40a5dd1d328f75e8df7d50143973a"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/self-tests/shortcut-routing.lua",
@@ -4289,8 +4294,8 @@
     },
     {
       "path": "docs/SHORTCUT-AUDIT-0.5.0.md",
-      "bytes": 2626,
-      "sha256": "9d904f81a65732e2384309d080c331c36837dd72013eaee9d2931679fa77e382"
+      "bytes": 3128,
+      "sha256": "6515e2d78ec4b7cb47840037a7a62917be39e66e9c4d6dba4627af9b8d13ebcf"
     },
     {
       "path": "docs/WORKSHOP-PUBLISHING.md",
@@ -4634,8 +4639,8 @@
     },
     {
       "path": "src/broker/prepare-standalone-package.mjs",
-      "bytes": 15997,
-      "sha256": "10d486861a44463260f0a5eff4781393c8a261e6a6fd18ee458cd3cb36934691"
+      "bytes": 16028,
+      "sha256": "09b461a9b8b8ff53fd719fcfc875f349c2589fa4f302fb20dbeb75644b6c9c1e"
     },
     {
       "path": "src/broker/prepare-workshop-package.mjs",
@@ -4954,8 +4959,8 @@
     },
     {
       "path": "src/broker/test/rust-package-runtime.test.mjs",
-      "bytes": 6732,
-      "sha256": "4aff752ccd90b2f77744b473f7cd108880e794787fb4ca6bba45f422a118f0c5"
+      "bytes": 7061,
+      "sha256": "142549942fa69d5511d0847997e4fb7dae5ae5dac7f9939557def2e39ef23f1c"
     },
     {
       "path": "src/broker/test/safety.test.mjs",
@@ -6049,8 +6054,8 @@
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings.lua",
-      "bytes": 5629,
-      "sha256": "617e938a604c9494512211a5400de8ef638eb15f461500da523c001dcd967c96"
+      "bytes": 5985,
+      "sha256": "b005bbc056efb8dc3c5d5893b72d82e965b0b83d7a36f94e94e9700e5fa47684"
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-status-ui.lua",
@@ -6276,6 +6281,11 @@
       "path": "src/df-local-zh-native/self-tests/search-literal-render.lua",
       "bytes": 2890,
       "sha256": "7ad0f33ddbc0a0fd3771b0a39721c4d3842e0a4718a0d502f26e27a930adb70d"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/settings-mailbox-handoff.lua",
+      "bytes": 2278,
+      "sha256": "bb8d981ffa38b4eb929223392d90cb43f6a40a5dd1d328f75e8df7d50143973a"
     },
     {
       "path": "src/df-local-zh-native/self-tests/shortcut-routing.lua",

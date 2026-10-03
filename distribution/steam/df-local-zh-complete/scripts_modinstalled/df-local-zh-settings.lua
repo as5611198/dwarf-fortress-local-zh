@@ -105,7 +105,11 @@ function submit(request,callback)
     local function receive()
         if not pending then return end
         local response=read('settings-response.json')
-        if response and response.id==pending.id then
+        -- The broker publishes the reply before clearing the request's secrets.
+        -- Keep the single-client mailbox locked until cleanup is acknowledged,
+        -- otherwise a callback can submit a request that old cleanup overwrites.
+        local acknowledged=response and response.id==pending.id and read('settings-request.json')
+        if acknowledged and acknowledged.processed==pending.id then
             local job=pending;pending=nil
             if response.ok and response.snapshot then reload();apply_native() end
             if job.callback then job.callback(response) end

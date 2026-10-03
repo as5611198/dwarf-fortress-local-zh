@@ -55,7 +55,7 @@ const data=join(output,'dfi18n-data');
 await mkdir(join(output,'broker/data'),{recursive:true});
 await mkdir(join(output,'libs'),{recursive:true});
 await mkdir(join(output,'self-tests'),{recursive:true});
-for(const name of ['ime-editor.lua','ime-clipboard.lua','ime-render-order.lua','search-literal-render.lua','keybinding-labels.lua','os-ime-acceptance.lua','extended-adapters.lua','editor-boundaries.lua','runtime-response-recovery.lua','runtime-reviewed-fallback.lua','names-worker-performance.lua','shortcut-routing.lua','rename-native-entry.lua','nickname-display.lua']) {
+for(const name of ['ime-editor.lua','ime-clipboard.lua','ime-render-order.lua','search-literal-render.lua','keybinding-labels.lua','os-ime-acceptance.lua','extended-adapters.lua','editor-boundaries.lua','runtime-response-recovery.lua','runtime-reviewed-fallback.lua','names-worker-performance.lua','shortcut-routing.lua','rename-native-entry.lua','nickname-display.lua','settings-mailbox-handoff.lua']) {
   await cp(join(root,'src/df-local-zh-native/self-tests',name),join(output,'self-tests',name));
 }
 await cp(core,join(output,'libs/df_local_zh_core.dll'));
