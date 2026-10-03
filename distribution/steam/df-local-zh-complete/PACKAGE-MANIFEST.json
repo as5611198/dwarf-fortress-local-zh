@@ -1,11 +1,11 @@
 {
   "package": "df-local-zh-complete",
   "version": "0.5.0",
-  "generatedAt": "2026-10-03T02:06:01.366Z",
+  "generatedAt": "2026-10-03T05:01:13.045092+00:00",
   "releaseMode": "standalone-bilingual",
   "runtime": "rust",
   "requiresNode": false,
-  "brokerSha256": "ac026ba037522ccfd2b6301fbc1ca376c2af123a6d3c8087b7ec0dd093e07db6",
+  "brokerSha256": "4407918a18528c8fb18b7563c35dd9f88ec413fdba1d275cb870f5690d6e0983",
   "languages": [
     "zh-Hant",
     "zh-Hans"
@@ -683,7 +683,7 @@
       "creatureRows": 4667
     }
   },
-  "nativeCoreSha256": "6252a117aa3647462bcad18c074568317fdb92f638eebb223d1376959db07f38",
+  "nativeCoreSha256": "c99598a0128cfd76c72497beae1d37f4e7a0f87863cbd8e58fbe9d9211dbb138",
   "files": [
     {
       "path": "ATTRIBUTION.md",
@@ -851,7 +851,7 @@
     },
     {
       "path": "broker/df-local-zh-broker.exe",
-      "sha256": "ac026ba037522ccfd2b6301fbc1ca376c2af123a6d3c8087b7ec0dd093e07db6"
+      "sha256": "4407918a18528c8fb18b7563c35dd9f88ec413fdba1d275cb870f5690d6e0983"
     },
     {
       "path": "broker/glossary-zh-Hans.json",
@@ -2199,7 +2199,7 @@
     },
     {
       "path": "libs/df_local_zh_core.dll",
-      "sha256": "6252a117aa3647462bcad18c074568317fdb92f638eebb223d1376959db07f38"
+      "sha256": "c99598a0128cfd76c72497beae1d37f4e7a0f87863cbd8e58fbe9d9211dbb138"
     },
     {
       "path": "preview.png",
@@ -2347,7 +2347,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-runtime.lua",
-      "sha256": "0fc6b13f350a8879d373678598921b42c93595f0f2523a8becfc5ec42d43146f"
+      "sha256": "c16da6d4a0effd5c46be2f24e12b3083250641aef2ffc9f42403930306c1a46f"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-search-editor.lua",
@@ -2399,7 +2399,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-unit-text.lua",
-      "sha256": "c7a23db341c3b92dac4e372a0c55f7c97526acecf02bf919e994dfe44a6ef719"
+      "sha256": "a13fe43cfd4dbe7d02412d2ad58b326929809847f3739afc0091cef3846f6da6"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-visible-text.lua",

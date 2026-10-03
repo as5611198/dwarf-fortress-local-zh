@@ -7,7 +7,7 @@ impl Replacer for AnyReplacer {
     text: &str, translator: &Translator, level: usize) -> Vec<ResultTree> {
     let mut results = Vec::new();
     for end in text.char_indices().map(|(index, _)| index).skip(1).chain(std::iter::once(text.len())).take(128) {
-      if context.calls >= 4096 { break; }
+      if context.calls >= 4096 || context.expired() { break; }
       let captured = &text[..end];
       let translated = if config.is_empty() { Some(captured.to_owned()) } else {
         let reference = to_canonical_identifier(config, base);

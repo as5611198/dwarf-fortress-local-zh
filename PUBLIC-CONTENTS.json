@@ -74,8 +74,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/PACKAGE-MANIFEST.json",
-      "bytes": 170365,
-      "sha256": "2ed1ab1158265e4acb2943a76639573535b9a553c99aca368d8af1af112837b6"
+      "bytes": 170373,
+      "sha256": "c3da3d4d8e47cba65804d6d2bf7865d3fb743e1c7665429117202e7c5ebbccd7"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/README.md",
@@ -259,8 +259,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/broker/df-local-zh-broker.exe",
-      "bytes": 10173952,
-      "sha256": "ac026ba037522ccfd2b6301fbc1ca376c2af123a6d3c8087b7ec0dd093e07db6"
+      "bytes": 10065408,
+      "sha256": "4407918a18528c8fb18b7563c35dd9f88ec413fdba1d275cb870f5690d6e0983"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/broker/glossary-zh-Hans.json",
@@ -1944,8 +1944,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/libs/df_local_zh_core.dll",
-      "bytes": 10563584,
-      "sha256": "6252a117aa3647462bcad18c074568317fdb92f638eebb223d1376959db07f38"
+      "bytes": 10565632,
+      "sha256": "c99598a0128cfd76c72497beae1d37f4e7a0f87863cbd8e58fbe9d9211dbb138"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/preview.png",
@@ -2129,8 +2129,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-runtime.lua",
-      "bytes": 41722,
-      "sha256": "0fc6b13f350a8879d373678598921b42c93595f0f2523a8becfc5ec42d43146f"
+      "bytes": 41765,
+      "sha256": "c16da6d4a0effd5c46be2f24e12b3083250641aef2ffc9f42403930306c1a46f"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-search-editor.lua",
@@ -2194,8 +2194,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-unit-text.lua",
-      "bytes": 15661,
-      "sha256": "c7a23db341c3b92dac4e372a0c55f7c97526acecf02bf919e994dfe44a6ef719"
+      "bytes": 19361,
+      "sha256": "a13fe43cfd4dbe7d02412d2ad58b326929809847f3739afc0091cef3846f6da6"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-visible-text.lua",
@@ -4298,6 +4298,11 @@
       "sha256": "6515e2d78ec4b7cb47840037a7a62917be39e66e9c4d6dba4627af9b8d13ebcf"
     },
     {
+      "path": "docs/UNIT-VALUES-COLORS-20261003.md",
+      "bytes": 2136,
+      "sha256": "f10ce769617bd3b930bece718154cd34c6ad63273f9c9b90b7c50f046a439247"
+    },
+    {
       "path": "docs/WORKSHOP-PUBLISHING.md",
       "bytes": 3081,
       "sha256": "03d9effa3c906e85ce1409e0bad606346143fdce5210acae7792ba7d31881c87"
@@ -5344,8 +5349,8 @@
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/common.rs",
-      "bytes": 8361,
-      "sha256": "bbb8096f84766a91841dfd8db579ca7d2ac9c707aa732e6738ed2ca3baf52181"
+      "bytes": 9195,
+      "sha256": "40e2cc0e73a3f0ff8953f3f3af628229546d5260fc35499414dba332b92af735"
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/display.rs",
@@ -5544,13 +5549,13 @@
     },
     {
       "path": "src/df-local-zh-native/crates/rule_based_translator/src/lib.rs",
-      "bytes": 25018,
-      "sha256": "2870f1c91118a37ebdae71d9c889074714c48d043390fdc974aea1121a667212"
+      "bytes": 26314,
+      "sha256": "19839dbd5d9c96c3e71cf91fb1f89f616264cf984e7db76563022fc968aaf523"
     },
     {
       "path": "src/df-local-zh-native/crates/rule_based_translator/src/replacer/any.rs",
-      "bytes": 1025,
-      "sha256": "052585fd93bb469ce57421818f31ae12a475ca9a6fa22284afd0ef33c7846f17"
+      "bytes": 1046,
+      "sha256": "13495f611a6602e50aa3fe2f4da91e96278facc6043d51e2e2a38193d0251927"
     },
     {
       "path": "src/df-local-zh-native/crates/rule_based_translator/src/replacer/item_designation.rs",
@@ -5814,13 +5819,13 @@
     },
     {
       "path": "src/df-local-zh-native/dfi18n/src/translator/mod.rs",
-      "bytes": 12247,
-      "sha256": "f4e0167cfbc16b33ed2d8857f15a438aa194edd13a455deee4bd6dc9c6a8fccd"
+      "bytes": 15867,
+      "sha256": "112b788efae5b49b8774268269a9a17732c4dc92434031921b09c5211e51aefb"
     },
     {
       "path": "src/df-local-zh-native/dfi18n/src/translator/rulesets.rs",
-      "bytes": 10563,
-      "sha256": "1fe41e1dd6824257e2d88921078aa6cde7cfffc101662178c077adfbdea5b068"
+      "bytes": 10724,
+      "sha256": "376c11ed52ddb53872c7c126853348289adbadbca97bbb06f46651e2b1005b03"
     },
     {
       "path": "src/df-local-zh-native/dfi18n/src/translator/simple.rs",
@@ -6024,8 +6029,8 @@
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-runtime.lua",
-      "bytes": 41722,
-      "sha256": "0fc6b13f350a8879d373678598921b42c93595f0f2523a8becfc5ec42d43146f"
+      "bytes": 41765,
+      "sha256": "c16da6d4a0effd5c46be2f24e12b3083250641aef2ffc9f42403930306c1a46f"
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-search-editor.lua",
@@ -6094,8 +6099,8 @@
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-unit-text.lua",
-      "bytes": 15661,
-      "sha256": "c7a23db341c3b92dac4e372a0c55f7c97526acecf02bf919e994dfe44a6ef719"
+      "bytes": 19361,
+      "sha256": "a13fe43cfd4dbe7d02412d2ad58b326929809847f3739afc0091cef3846f6da6"
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-visible-text.lua",
@@ -6426,6 +6431,11 @@
       "path": "src/df-local-zh-native/self-tests/test-unit-sheet-text.lua",
       "bytes": 15334,
       "sha256": "59fb6802d4a0962a01cd3a82020cfe31399f4408e8b8176175b9f4cea7c277d0"
+    },
+    {
+      "path": "src/df-local-zh-native/self-tests/test-unit-values-colors.lua",
+      "bytes": 4672,
+      "sha256": "a2a564d703c33deca78476789e13cd0aa6b232c87f31bc7c32346b9445de77a2"
     },
     {
       "path": "src/df-local-zh-native/self-tests/test-visible-fortress-text.lua",

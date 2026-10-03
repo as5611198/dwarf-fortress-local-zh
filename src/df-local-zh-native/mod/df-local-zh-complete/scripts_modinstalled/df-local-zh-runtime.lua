@@ -917,7 +917,8 @@ function start()
     local legends = reqscript('df-local-zh-legends')
     local unit_text = reqscript('df-local-zh-unit-text')
     reqscript('df-local-zh-hover-text').start(_ENV)
-    local unit_bridge = {translation=unit_translation,colored_key=colored_key,publish=publish,display_rows=display_rows,
+    local unit_bridge = {translation=unit_translation,colored_key=colored_key,announcement_key=announcement_key,
+        publish=publish,display_rows=display_rows,
         name_translation=unit_name_translation,observe=reqscript('df-local-zh-prefetch').observe}
     reqscript('df-local-zh-unit-prewarm').start({translation=background_translation,colored_key=colored_key})
     reqscript('df-local-zh-native-prewarm').start()

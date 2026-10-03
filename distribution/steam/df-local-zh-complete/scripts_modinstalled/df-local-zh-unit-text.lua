@@ -24,14 +24,46 @@ local function plain(value)
         :gsub('%[C:%d+:%d+:%d+%]', ''):gsub('%[P%]', ''):gsub('%[R%]', '')
 end
 
+local function color_spans(value)
+    local text=dfhack.df2utf(value):gsub('^%[P%]','')
+    local spans,colors={},{}
+    local color,tag=string.char(7),'[C:7:0:0]'
+    local offset=1
+    local function append(fragment)
+        if fragment=='' then return end
+        local last=spans[#spans]
+        if last and last.color==color then last.source=last.source..fragment
+        else spans[#spans+1]={source=fragment,color=color,tag=tag} end
+    end
+    while offset<=#text do
+        local first,last,fg,bg,bright=text:find('%[C:([0-7]):([0-7]):([01])%]',offset)
+        if not first then append(text:sub(offset));break end
+        append(text:sub(offset,first-1))
+        tag=text:sub(first,last)
+        color=string.char(tonumber(fg)+tonumber(bg)*8+tonumber(bright)*64)
+        offset=last+1
+    end
+    local cleaned={}
+    for _,span in ipairs(spans) do
+        span.source=span.source:match('^%s*(.-)%s*$')
+        -- Unsupported markup keeps the native path; never flatten it silently.
+        if span.source:find('[',1,true) or span.source:find(']',1,true) then return nil end
+        if span.source~='' then cleaned[#cleaned+1]=span;colors[span.color]=true end
+    end
+    local count=0;for _ in pairs(colors) do count=count+1 end
+    return count>1 and cleaned or nil
+end
+
 local function source_at(sheets,index)
     local raw=sheets.personality_raw_str[index]
     local value=type(raw)=='string' and raw or raw.value
     local cached=source_cache[index]
-    if cached and cached.value==value then return cached.source end
+    if cached and cached.value==value then return cached.source,cached.spans end
     local source=plain(value)
-    source_cache[index]={value=value,source=source}
-    return source
+    local spans=color_spans(value)
+    if spans then source=dfhack.df2utf(value) end
+    source_cache[index]={value=value,source=source,spans=spans}
+    return source,spans
 end
 
 local function restore(sheets)
@@ -146,10 +178,46 @@ local function preference_subject(source,sheets,runtime)
     return '{DWARF_NAME}'..source:sub(#name+1),{id=unit.id or sheets.active_id,name=name}
 end
 
-local function prepare_box(box, source, runtime, sheets, prepared_translation)
+local function prepare_colored_rows(spans,box,runtime)
+    if not runtime.announcement_key then return end
+    local capacity=math.floor(box.width/2)
+    if capacity<4 then return end
+    local translated,complete={},true
+    for i,span in ipairs(spans) do
+        if runtime.observe then runtime.observe(span.source,'display','view_sheets.personality_color_span') end
+        local text=span.source:match('[A-Za-z]') and runtime.translation(span.source) or span.source
+        if type(text)~='string' or text=='' or not utf8.len(text) or text:match('[A-Za-z{}%[%]]') then
+            complete=false
+        else translated[i]=text end
+    end
+    if not complete then return end
+    local rows,row,used={},nil,0
+    for i,span in ipairs(spans) do
+        for _,codepoint in utf8.codes(translated[i]) do
+            if not row or used>=capacity then
+                row={text='',color=span.color,tag=nil};rows[#rows+1]=row;used=0
+                if #rows>#box.line then return end
+            end
+            if row.tag~=span.tag then row.text=row.text..span.tag;row.tag=span.tag end
+            row.text=row.text..utf8.char(codepoint);used=used+1
+        end
+    end
+    local keys,colors={},{}
+    for j=0,#box.line-1 do
+        local row=rows[j+1]
+        local key=''
+        if row then key=runtime.announcement_key(row.text,row.color) end
+        if not key or #key>box.width then return end
+        keys[j+1]=key
+        colors[j+1]=string.rep(row and row.color or string.char(7),#key)
+    end
+    return keys,colors
+end
+
+local function prepare_box(box, source, runtime, sheets, prepared_translation, spans)
     local id=tostring(box)
     local old=boxes[id]
-    if old and box.width~=old.width then
+    if old and (box.width~=old.width or old.source~=source or #box.line~=#old.lines) then
         for j=0,math.min(#box.line,#old.lines)-1 do
             if box.line[j].text==old.keys[j+1] then
                 box.line[j].text=old.lines[j+1].text
@@ -165,6 +233,16 @@ local function prepare_box(box, source, runtime, sheets, prepared_translation)
         end
     end
     if old then return function() end end
+    if spans then
+        local keys,colors=prepare_colored_rows(spans,box,runtime)
+        if not keys then return end
+        local lines={}
+        for j=0,#box.line-1 do lines[j+1]={text=box.line[j].text,color=box.line[j].color} end
+        return function()
+            for j=0,#box.line-1 do box.line[j].text=keys[j+1];box.line[j].color=colors[j+1] end
+            boxes[id]={source=source,lines=lines,keys=keys,width=box.width}
+        end
+    end
     local request,subject=preference_subject(source,sheets,runtime)
     if not request then return end
     local translation=prepared_translation or runtime.translation(request)
@@ -266,14 +344,17 @@ function poll(runtime)
         local processed=0
         for _=1,count do
             if cursor>=count then cursor=0 end
-            local source=source_at(sheets,cursor)
+            local source,spans=source_at(sheets,cursor)
             if source:match('[A-Za-z]') then
-                if runtime.observe then
+                if runtime.observe and not spans then
                     local masked=preference_subject(source,sheets,runtime)
                     if masked then runtime.observe(masked,'display','view_sheets.personality_raw_str') end
                 end
                 processed=processed+1
-                if needs then
+                if spans then
+                    local commit=prepare_box(sheets.personality_box[cursor],source,runtime,sheets,nil,spans)
+                    if commit then commit() end
+                elseif needs then
                     if not prepared[source] then
                         local translated=runtime.translation(source)
                         if translated and not translated:match('[A-Za-z]') then prepared[source]=translated end
@@ -340,7 +421,8 @@ function start_cached()
     local script=dfhack.internal.scripts[dfhack.findScript('df-local-zh-runtime')]
     assert(script and script.env,'Translation runtime must already be loaded')
     local runtime=script.env
-    start({colored_key=runtime.colored_key,name_translation=runtime.unit_name_translation,display_rows=runtime.display_rows,
+    start({colored_key=runtime.colored_key,announcement_key=runtime.announcement_key,
+        name_translation=runtime.unit_name_translation,display_rows=runtime.display_rows,
         translation=runtime.unit_translation,publish=runtime.publish,
         observe=reqscript('df-local-zh-prefetch').observe})
 end

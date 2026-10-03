@@ -5,9 +5,12 @@ use crate::{broker_client, game, lang, native_cache, tasks, translation};
 mod rulesets;
 mod simple;
 
+const SYNC_RULE_BYTES:usize=160;
+const WORKER_RULE_BYTES:usize=4096;
+
 static REFRESHED_RULES:std::sync::atomic::AtomicBool=std::sync::atomic::AtomicBool::new(false);
 fn refreshed_rules(language:&str,request:&translation::TranslationRequest)->Option<translation::TranslationResponse> {
-  if REFRESHED_RULES.load(std::sync::atomic::Ordering::Relaxed) && request.original().len()<=160 {
+  if REFRESHED_RULES.load(std::sync::atomic::Ordering::Relaxed) && request.original().len()<=SYNC_RULE_BYTES {
     rulesets::translate(language,request.context())
   } else {None}
 }
@@ -115,6 +118,9 @@ pub fn known(request: &translation::TranslationRequest) -> Option<translation::T
 
 // Perform the actual translation using different methods
 pub fn do_translate(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
+  // Lua callers run on the game thread. Long rules are resolved by translate's
+  // deduplicated worker and become available through known/cache_lookup later.
+  if request.original().len()>SYNC_RULE_BYTES { return simple::translate(&lang::current_lang_tag(),request.context()); }
   do_translate_for_language(request, &lang::current_lang_tag())
 }
 
@@ -138,7 +144,7 @@ fn do_translate_for_language(request: &translation::TranslationRequest, lang_tag
   // chain translation methods
   None
     .or_else(|| simple::translate(lang_tag, request.context()))
-    .or_else(|| if request.original().len() <= 160 { rulesets::translate(lang_tag, request.context()) } else { None })
+    .or_else(|| if request.original().len() <= WORKER_RULE_BYTES { rulesets::translate(lang_tag, request.context()) } else { None })
 }
 
 // Synchronous translation function called from Lua (will not use cache)
@@ -182,6 +188,55 @@ extern "C" fn cache_lookup(state: *mut std::ffi::c_void) -> i32 {
 mod immediate_tests {
   use super::*;
   use std::sync::atomic::Ordering;
+
+  #[test]
+  fn long_local_rule_is_available_to_worker_but_not_uncached_sync_lookup() {
+    let path=std::env::temp_dir().join(format!("df-long-rule-test-{}",std::process::id()));
+    std::fs::create_dir_all(&path).unwrap();
+    let source="This ancient workshop was built by travelers from the northern mountains. Its carefully arranged furnaces can refine unusual metals and craft equipment for the defenders of the fortress.";
+    std::fs::write(path.join("index.toml"),format!("[[rulesets]]\n[rulesets.rules]\n{source:?} = \"這座古老工坊能精煉特殊金屬，為要塞守軍製作裝備。\"\n")).unwrap();
+    rulesets::fixture_rules("long-rule-test",&path);
+    let request=translation::TranslationRequest::lookup(source);
+    assert_eq!(do_translate_for_language(&request,"long-rule-test").map(|r|r.translated),
+      Some("這座古老工坊能精煉特殊金屬，為要塞守軍製作裝備。".into()));
+    // Refreshed rules are queried on render/cache lookup paths and must stay short.
+    local_rules_refresh(std::ptr::null_mut());
+    assert!(refreshed_rules("long-rule-test",&request).is_none());
+    assert!(do_translate(&request).is_none());
+    std::fs::remove_dir_all(path).unwrap();
+  }
+
+  #[test]
+  fn worker_rule_limit_preserves_utf8_and_rejects_oversized_rules() {
+    let path=std::env::temp_dir().join(format!("df-rule-boundary-test-{}",std::process::id()));
+    std::fs::create_dir_all(&path).unwrap();
+    let at_limit=format!("{}a", "界".repeat(1365));
+    let over_limit=format!("{at_limit}b");
+    assert_eq!(at_limit.len(),4096);
+    std::fs::write(path.join("index.toml"),format!("[[rulesets]]\n[rulesets.rules]\n{at_limit:?} = \"界線內\"\n{over_limit:?} = \"界線外\"\n")).unwrap();
+    rulesets::fixture_rules("rule-boundary-test",&path);
+    assert_eq!(do_translate_for_language(&translation::TranslationRequest::lookup(&at_limit),"rule-boundary-test").map(|r|r.translated),Some("界線內".into()));
+    assert!(do_translate_for_language(&translation::TranslationRequest::lookup(&over_limit),"rule-boundary-test").is_none());
+    std::fs::remove_dir_all(path).unwrap();
+  }
+
+  #[test]
+  #[ignore = "requires DF_MOD_SAMPLES and DF_LOCAL_RULESETS audit paths"]
+  fn benchmark_real_mod_rules_without_ai() {
+    rule_based_translator::register_default_replacers();
+    rulesets::fixture_rules("mod-audit",std::path::Path::new(&std::env::var("DF_LOCAL_RULESETS").unwrap()));
+    let samples:Vec<serde_json::Value>=serde_json::from_slice(&std::fs::read(std::env::var("DF_MOD_SAMPLES").unwrap()).unwrap()).unwrap();
+    let mut records=Vec::new();
+    for sample in samples {
+      let source=sample["text"].as_str().unwrap();
+      let request=translation::TranslationRequest::lookup(source);
+      let start=std::time::Instant::now();
+      let response=do_translate_for_language(&request,"mod-audit");
+      let elapsed=start.elapsed().as_secs_f64()*1000.0;
+      records.push(serde_json::json!({"mod_id":sample["mod_id"],"text":source,"bytes":source.len(),"old_limit_eligible":source.len()<=160,"milliseconds":elapsed,"translation":response.map(|r|r.translated)}));
+    }
+    std::fs::write(std::env::var("DF_MOD_BENCH_OUT").unwrap(),serde_json::to_vec_pretty(&records).unwrap()).unwrap();
+  }
 
   #[test]
   fn refreshed_rule_precedes_old_dynamic_translation() {

@@ -189,7 +189,10 @@ pub fn translate(
   let translator = translators.get(lang_tag)?;
   let text = context.original();
 
-  translator.translate(text).map(|translated| translation::TranslationResponse {
+  let translated=if text.len()>super::SYNC_RULE_BYTES {
+    translator.translate_with_budget(text,std::time::Duration::from_millis(25))
+  } else { translator.translate(text) };
+  translated.map(|translated| translation::TranslationResponse {
     translated,
     alignment: translation::TextAlignment::default(),
   })

@@ -39,7 +39,9 @@ pub fn re(pattern: &str) -> std::sync::Arc<Regex> {
 }
 pub fn tokens() -> &'static Regex {
   static TOKENS: OnceLock<std::sync::Arc<Regex>> = OnceLock::new();
-  TOKENS.get_or_init(||re(r"\{\{[^{}\r\n]*\}\}|\{[^{}\r\n]+\}|\[[^\[\]\r\n]+\]|</?[A-Za-z][^>\r\n]*>|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[a-zA-Z]"))
+  // Protect a complete percentage before printf matching can mistake `% c`
+  // in `15% chance` for a format specifier. Its exact value stays validated.
+  TOKENS.get_or_init(||re(r"\d+(?:[.,]\d+)*%|\{\{[^{}\r\n]*\}\}|\{[^{}\r\n]+\}|\[[^\[\]\r\n]+\]|</?[A-Za-z][^>\r\n]*>|%(?:\d+\$)?[-+0 #]*\d*(?:\.\d+)?[a-zA-Z]"))
 }
 pub fn aliases(text: &str) -> bool {
   re(r"(?:^|[^A-Za-z0-9_])(?:L[A-Za-z0-9]{3}_+|L[A-Za-z0-9]{6}_+|P_____|DFLIVE_[0-9a-f]{64})(?:$|[^A-Za-z0-9_])")
@@ -118,6 +120,19 @@ pub fn validate(source: &str, output: &str) -> Result<String> {
     bail!("excessive translation length")
   }
   Ok(value.into())
+}
+
+#[cfg(test)]
+mod percentage_regressions {
+  use super::*;
+  #[test]
+  fn prose_percentages_do_not_become_printf_placeholders() {
+    let source="Cremates enemy corpses with a 15% chance for 1 bar of coke, consumes no fuel.";
+    assert!(validate(source,"火化敵人屍體，有 15% 機率獲得 1 根焦炭，不消耗燃料。").is_ok());
+    assert!(validate(source,"火化敵人屍體，有 50% 機率獲得 1 根焦炭，不消耗燃料。").is_err());
+    assert!(validate("Chance: 5%; value: % d; name: %s", "機率：5%；數值：% d；名稱：%s").is_ok());
+    assert!(validate("Chance: 5%; value: % d", "機率：5%；數值：%s").is_err());
+  }
 }
 pub fn mentions(text: &str, term: &str) -> bool {
   text.match_indices(term).any(|(i, _)| {

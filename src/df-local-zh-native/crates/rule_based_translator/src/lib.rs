@@ -32,6 +32,15 @@ impl Translator {
     results.into_iter().min_by_key(|result| result.weight()).map(|result| result.translated)
   }
 
+  /// Cooperative CPU budget; expired searches never return a partial result.
+  pub fn translate_with_budget(&self, text: &str, budget: std::time::Duration) -> Option<String> {
+    let mut context=Context { deadline: Some(std::time::Instant::now()+budget), ..Context::default() };
+    let results=self.do_translate(&mut context,text,"::",0);
+    if context.expired() { return None; }
+    results.into_iter().filter(|result| result.remaining.is_empty())
+      .min_by_key(|result|result.weight()).map(|result|result.translated)
+  }
+
   // Get all translation results for the given text, for debugging purposes
   pub fn get_all_translations(&self, text: &str, partial_match: bool) -> Vec<ResultTree> {
     let mut context = Context::default();
@@ -44,7 +53,7 @@ impl Translator {
 
   // Internal recursive function to translate text using a specific ruleset
   fn do_translate(&self, context: &mut Context, text: &str, identifier: &str, level: usize) -> Vec<ResultTree> {
-    if level > 48 || context.calls >= context.call_limit { return Vec::new(); }
+    if level > 48 || context.calls >= context.call_limit || context.expired() { return Vec::new(); }
     context.calls += 1;
     let indent = "  ".repeat(level);
 
@@ -83,6 +92,7 @@ impl Translator {
     let lower_text = text.to_lowercase();
     let overall_limit = context.call_limit;
     for (original, translated) in ruleset {
+      if context.expired() { break; }
       // Keep expensive top-level categories from consuming later categories' budget.
       if level == 0 { context.call_limit = overall_limit.min(context.calls + 512); }
       // Reject impossible literal sequences before expanding recursive captures.
@@ -115,6 +125,7 @@ impl Translator {
 
         // match each candidate against the current token
         for candidate in candidates.iter().take(128) {
+          if context.expired() { break; }
           match token {
             Token::Literal(literal) => {
               // for literal tokens, check if the candidate's remaining text starts with the literal (case-insensitive)
@@ -550,11 +561,16 @@ pub struct Context {
   pub call_limit: usize,
   pub identifier_path: Vec<String>,
   pub cyclic_rules: BTreeSet<RuleNode>,
+  pub deadline: Option<std::time::Instant>,
+}
+
+impl Context {
+  pub fn expired(&self)->bool { self.deadline.is_some_and(|deadline|std::time::Instant::now()>=deadline) }
 }
 
 impl Default for Context {
   fn default() -> Self {
-    Self { calls: 0, call_limit: 32768, identifier_path: Vec::new(), cyclic_rules: BTreeSet::new() }
+    Self { calls: 0, call_limit: 32768, identifier_path: Vec::new(), cyclic_rules: BTreeSet::new(), deadline: None }
   }
 }
 
@@ -681,6 +697,14 @@ mod tests {
     let mut context = Context { calls: 4096, call_limit: 4096, ..Context::default() };
     assert!(translator.do_translate(&mut context, "Unknown", "::", 0).is_empty());
     assert_eq!(context.calls, 4096);
+  }
+
+  #[test]
+  fn expired_parse_budget_returns_no_translation_even_for_a_matching_rule() {
+    let translator=fixture("known sentence", "已知句子");
+    assert_eq!(translator.translate("known sentence").as_deref(),Some("已知句子"));
+    assert!(translator.translate_with_budget("known sentence",std::time::Duration::ZERO).is_none());
+    assert_eq!(translator.translate_with_budget("known sentence",std::time::Duration::from_secs(1)).as_deref(),Some("已知句子"));
   }
 
   #[test]
