@@ -7,10 +7,17 @@ use anyhow::Result;
 use lua53_sys as lua;
 
 use crate::translation;
+use df_local_zh_broker::numeric_templates::NumericTemplates;
+
+static NUMERIC: OnceLock<RwLock<HashMap<String, NumericTemplates>>> = OnceLock::new();
+fn numeric() -> &'static RwLock<HashMap<String, NumericTemplates>> {
+  NUMERIC.get_or_init(|| RwLock::new(HashMap::new()))
+}
 
 // Reset the simple translators
 pub fn reset() {
   get_dicts_mut().clear();
+  numeric().write().unwrap().clear();
 }
 
 // Simple dictionary maps original text to translated text along with tags
@@ -45,12 +52,68 @@ pub(crate) fn fixture_insert(text: &str, translated: &str, alignment: &str) {
   get_dicts_mut().entry("en".into()).or_default().insert(
     text.into(), (translated.into(), HashMap::from([("ALIGNMENT".into(), alignment.into())])),
   );
+  numeric().write().unwrap().entry("en".into()).or_default().insert(text, translated);
 }
 
 #[cfg(test)]
 mod arena_tests {
   use super::*;
   use crate::{translator,translation,native_cache};
+  #[test]
+  #[ignore="requires DF_LOCAL_PACKAGE integration data path"]
+  fn packaged_numeric_ui_and_existing_number_rules() {
+    let root=std::path::PathBuf::from(std::env::var("DF_LOCAL_PACKAGE").unwrap());
+    for language in ["zh-Hant","zh-Hans"] {
+      let mut dict=SimpleDictionary::new();
+      let mut files=std::fs::read_dir(root.join(format!("dfi18n-data/simple/{language}"))).unwrap()
+        .map(|p|p.unwrap().path()).filter(|p|p.extension().is_some_and(|e|e=="csv")).collect::<Vec<_>>();
+      files.sort();
+      for file in files {
+        let mut candidate=SimpleDictionary::new();
+        load_csv(file,|row:Entry| {candidate.insert(row.text,(row.translation,parse_tags(&row.tags)));}).unwrap();
+        merge_dictionary(&mut dict,candidate);
+      }
+      let mut index=NumericTemplates::default();
+      for (source,(value,_)) in &dict { index.insert(source,value); }
+      for (source,(value,_)) in &dict {
+        if !source.contains("{{count}}") || source.contains("{{subject") {continue;}
+        if index.lookup(&source.replace("{{count}}","12345")).is_none() {continue;}
+        for n in 0..=100 {
+          assert_eq!(index.lookup(&source.replace("{{count}}",&n.to_string())).unwrap().0,value.replace("{{count}}",&n.to_string()),"{language} {source}");
+        }
+      }
+      for source in ["Music Volume (Adventure): 84%","Average Seconds Between Tracks/Interludes (Fortress): 239",
+        "Meeting Area: 57","Bedroom: 112","Range: -1 to 12,345","Historical figures: 3024",
+        "An abridged chronicle (21000 events total):","Nearest site: 7 days' travel SW"] {
+        assert!(index.lookup(source).is_some(),"{language} {source}");
+      }
+      // Existing rule paths already support changing ages and kill counts.
+      rule_based_translator::register_default_replacers();
+      let mut rules=rule_based_translator::Translator::default();
+      rules.load_from_dir(root.join(format!("dfi18n-data/rulesets/{language}"))).unwrap();
+      for n in [21,57,123] {
+        for source in [format!("{n} Years Old"),format!("{n} Notable Kills")] {
+          let translated=rules.translate(&source).expect(&source);
+          assert!(translated.contains(&n.to_string()) && translated.chars().any(|c|('\u{4e00}'..='\u{9fff}').contains(&c)),"{language} {source}: {translated}");
+        }
+      }
+    }
+  }
+  #[test]
+  fn numeric_ui_templates_are_immediate_and_preserve_changed_values() {
+    let source="Sound Effects Volume (Fortress): {{count}}%";
+    fixture_insert(source,"音效音量（要塞）：{{count}}%","LEFT");
+    fixture_insert("Range: {{minimum}} to {{maximum}}","範圍：{{minimum}} 至 {{maximum}}","LEFT");
+    for value in ["0","77","78","100"] {
+      let request=translation::TranslationRequest::lookup(&format!("Sound Effects Volume (Fortress): {value}%"));
+      native_cache::fixture_complete(native_cache::key("en",&request),translation::TranslationResponse {
+        translated:format!("舊音效 {value}%"),alignment:Default::default()});
+      assert_eq!(translator::known(&request).map(|r|r.translated),Some(format!("音效音量（要塞）：{value}%")));
+      assert_eq!(translator::translate(&request).unwrap().translated,format!("音效音量（要塞）：{value}%"));
+    }
+    let request=translation::TranslationRequest::lookup("[C:2:0:1]Range: -1 to 12,345");
+    assert_eq!(translator::known(&request).map(|r|r.translated),Some("[C:2:0:1]範圍：-1 至 12,345".into()));
+  }
   #[test]
   fn save_destination_labels_and_hints_are_centered_before_cached_responses() {
     let path=std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
@@ -201,7 +264,20 @@ pub fn translate(
     let (entry, output_prefix, output_dot)=if let Some(entry)=dict.get(key) {
       (entry,prefix,dot)
     } else {
-      (dict.get(text)?,"",false)
+      if let Some(entry)=dict.get(text) { (entry,"",false) }
+      else {
+        let templates=numeric().read().unwrap();
+        let (translated,source)=templates.get(lang_tag)?.lookup(body)?;
+        let tags=&dict.get(source)?.1;
+        return Some(translation::TranslationResponse {
+          translated:format!("{prefix}{translated}"),
+          alignment:match tags.get("ALIGNMENT").map(String::as_str) {
+            Some("RIGHT")=>translation::TextAlignment::Right,
+            Some("CENTER")=>translation::TextAlignment::Center,
+            _=>translation::TextAlignment::Left,
+          },
+        });
+      }
     };
     Some(entry).and_then(|(translated, tags)| {
       Some(translation::TranslationResponse {
@@ -243,6 +319,11 @@ extern "C" fn load_simple_dict(lua_state: *mut std::ffi::c_void) -> i32 {
   candidate.retain(|source,value| !dict.get(source).is_some_and(|(_,tags)|
     tags.get("REVIEWED").map(String::as_str)==Some("1") && value.1.get("REVIEWED").map(String::as_str)!=Some("1")));
   crate::search::literals(&lang_tag,candidate.iter().map(|(source,(text,_))| (source.clone(),text.clone())));
+  {
+    let mut templates=numeric().write().unwrap();
+    let index=templates.entry(lang_tag.clone()).or_default();
+    for (source,(text,_)) in &candidate { index.insert(source,text); }
+  }
   merge_dictionary(dict,candidate);
   log::info!("Loaded Simple translator data for language {lang_tag:?} from {path_str:?}");
   lua::push_boolean(lua_state, true); lua::push_nil(lua_state);

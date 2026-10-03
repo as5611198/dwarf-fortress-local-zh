@@ -2,6 +2,7 @@ pub mod common;
 pub mod bounded;
 pub mod display;
 pub mod equipment;
+pub mod numeric_templates;
 pub mod official;
 pub mod provider;
 pub mod service;

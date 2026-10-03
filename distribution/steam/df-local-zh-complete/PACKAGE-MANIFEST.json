@@ -1,11 +1,11 @@
 {
   "package": "df-local-zh-complete",
-  "version": "0.5.1",
-  "generatedAt": "2026-10-03T12:09:45.923Z",
+  "version": "0.5.2",
+  "generatedAt": "2026-10-03T13:17:08.192Z",
   "releaseMode": "standalone-bilingual",
   "runtime": "rust",
   "requiresNode": false,
-  "brokerSha256": "09ac4d0d7a630de50ce5b060111fb1155963ac2212830eb450bbf51b763579af",
+  "brokerSha256": "c035aeab7a27507dd88d95e43b2db42172f5fc513d8305c0e476cd5987a1e7cd",
   "languages": [
     "zh-Hant",
     "zh-Hans"
@@ -674,17 +674,17 @@
   ],
   "counts": {
     "zh-Hant": {
-      "simpleRows": 11366,
+      "simpleRows": 11384,
       "rulesetFiles": 147,
       "creatureRows": 4667
     },
     "zh-Hans": {
-      "simpleRows": 14808,
+      "simpleRows": 14826,
       "rulesetFiles": 147,
       "creatureRows": 4667
     }
   },
-  "nativeCoreSha256": "c99598a0128cfd76c72497beae1d37f4e7a0f87863cbd8e58fbe9d9211dbb138",
+  "nativeCoreSha256": "a093f10de15a1013a51210a865086da70384dcf0dd1f394cb3a9dbcfa3024100",
   "files": [
     {
       "path": "ATTRIBUTION.md",
@@ -712,7 +712,7 @@
     },
     {
       "path": "WORKSHOP-PUBLISHING.md",
-      "sha256": "600d01be6e6a749202096fe5bfd6f09731bf008eb33cc4510093d0aaa3b79412"
+      "sha256": "52b7d213861c8e43d7d399e82c982cc7eb67c74f28b8ab115c8bc5d8c5617ca0"
     },
     {
       "path": "broker/LICENSE-STATUS.json",
@@ -852,7 +852,7 @@
     },
     {
       "path": "broker/df-local-zh-broker.exe",
-      "sha256": "09ac4d0d7a630de50ce5b060111fb1155963ac2212830eb450bbf51b763579af"
+      "sha256": "c035aeab7a27507dd88d95e43b2db42172f5fc513d8305c0e476cd5987a1e7cd"
     },
     {
       "path": "broker/glossary-zh-Hans.json",
@@ -2083,6 +2083,10 @@
       "sha256": "7ee5671d04ac32324d75b31938bf478a1625d5360c06661b7f264f9653be0d12"
     },
     {
+      "path": "dfi18n-data/simple/zh-Hans/numeric-ui.csv",
+      "sha256": "c97e7042d678b589aaf6e65aca5c4e5ce6dea51ddacde05b0fe4ad0ab5e5e3ab"
+    },
+    {
       "path": "dfi18n-data/simple/zh-Hans/visual-blocks.csv",
       "sha256": "7af16332a1bc88b4e7ecbd5e7ccce0662a78f93d15247de7b12e895337cf8983"
     },
@@ -2143,6 +2147,10 @@
       "sha256": "1fd6d2804c7f8605ca11325b95e00bb385c5a1fbad9c28054e500524f55434aa"
     },
     {
+      "path": "dfi18n-data/simple/zh-Hant/numeric-ui.csv",
+      "sha256": "911eef765a87617b64eef9b3c2f75c75c7af23ffeefd4e0d87621cf291e60362"
+    },
+    {
       "path": "dfi18n-data/simple/zh-Hant/visual-blocks.csv",
       "sha256": "27eafbfba9e2f357cdac5c05ae6dfd5465b5d536d3636e8d3b59ae7e22feb652"
     },
@@ -2196,11 +2204,11 @@
     },
     {
       "path": "info.txt",
-      "sha256": "89c69f008ea1369a2e6dff1ca05aab29bef0f38e75c1c4de463efa58c1431a3f"
+      "sha256": "140eaa76222f82033e5137c83dc9eeb5519f1e5f0a64fb0ac07a20c3ffdee1ee"
     },
     {
       "path": "libs/df_local_zh_core.dll",
-      "sha256": "c99598a0128cfd76c72497beae1d37f4e7a0f87863cbd8e58fbe9d9211dbb138"
+      "sha256": "a093f10de15a1013a51210a865086da70384dcf0dd1f394cb3a9dbcfa3024100"
     },
     {
       "path": "preview.png",

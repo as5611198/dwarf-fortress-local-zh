@@ -38,6 +38,35 @@ fn files(d: &std::path::Path) -> std::path::PathBuf {
   source.join("config.json")
 }
 
+#[tokio::test]
+async fn numeric_ui_changes_translate_offline_before_old_cache_and_respect_pins() {
+  let d=tempfile::tempdir().unwrap();
+  let cfg=files(d.path());
+  let root=d.path().join("state");
+  for (lang,file) in [("zh-Hant","hant.csv"),("zh-Hans","hans.csv")] {
+    let rows=include_str!("../../../data-patches/simple/zh-Hant/numeric-ui.csv");
+    std::fs::write(cfg.parent().unwrap().join(file),convert(rows,lang)).unwrap();
+    append(&root.join("translations.jsonl"),&json!({"policy":POLICY,"language":lang,"kind":"exact",
+      "source":"Sound Effects Volume (Fortress): 77%","key":cache_key("Sound Effects Volume (Fortress): 77%",lang,"exact"),
+      "translation":"舊音效 77%"})).unwrap();
+    atomic(&root.join(format!("fixed-{lang}.json")),&json!({"Master Volume: 42%":"自訂音量 42%"})).unwrap();
+  }
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+  let journal=std::fs::read(root.join("translations.jsonl")).unwrap();
+  for lang in ["zh-Hant","zh-Hans"] {
+    for n in 0..=100 {
+      let source=format!("Sound Effects Volume (Fortress): {n}%");
+      assert_eq!(app.translate(&source,lang,"",0).await.unwrap(),convert(&format!("音效音量（要塞）：{n}%"),lang));
+    }
+    assert_eq!(app.translate("Master Volume: 42%",lang,"",0).await.unwrap(),"自訂音量 42%");
+    assert_eq!(app.translate("[C:2:0:1]Historical figures: 12,345",lang,"",0).await.unwrap(),convert("[C:2:0:1]歷史人物：12,345",lang));
+    assert!(app.translate("Sound Effects Volume (Fortress): 1,23%",lang,"",0).await.is_err());
+  }
+  assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
+  assert_eq!(std::fs::read(root.join("translations.jsonl")).unwrap(),journal);
+}
+
 async fn single_runtime_sentence_reaches_provider(priority: &str) {
   use axum::{Json, Router, routing::post};
   let d = tempfile::tempdir().unwrap();

@@ -31,6 +31,7 @@ pub struct App {
   pub pool: Arc<Pool>,
   pub shared: Arc<Shared>,
   builtins: HashMap<String, Dict>,
+  numeric: HashMap<String, crate::numeric_templates::NumericTemplates>,
   glossaries: HashMap<String, Value>,
   name_dictionary: Value,
   races: Value,
@@ -154,6 +155,7 @@ impl App {
     let pool = Pool::new()?;
     let shared = Shared::load(root, settings.clone())?;
     let mut builtins = HashMap::new();
+    let mut numeric = HashMap::new();
     let mut glossaries = HashMap::new();
     let mut fixed = HashMap::new();
     let mut equipment = HashMap::new();
@@ -192,6 +194,9 @@ impl App {
         "will only do assigned tasks".into(),
         convert("只會執行指派的工作", lang),
       );
+      let mut templates = crate::numeric_templates::NumericTemplates::default();
+      for (source, translated) in &dict { templates.insert(source, translated); }
+      numeric.insert(lang.into(), templates);
       builtins.insert(lang.into(), dict);
       let glossary_path = config["glossaryPathsByLanguage"][lang].as_str().or(config["glossaryPath"].as_str());
       let mut glossary = if let Some(p) = glossary_path {
@@ -266,6 +271,7 @@ impl App {
       pool,
       shared,
       builtins,
+      numeric,
       glossaries,
       name_dictionary,
       races,
@@ -318,6 +324,9 @@ impl App {
     }
     if let Some(v) = self.builtins.get(lang)?.get(source) {
       return Some(v.clone());
+    }
+    if let Some((value, _)) = self.numeric.get(lang).and_then(|n| n.lookup(source)) {
+      return Some(value);
     }
     let pattern = re(r"^(?:\[C:[0-7]:[0-7]:[01]\]|\[[BPR]\])+");
     if let Some(prefix) = pattern.find(source) {
