@@ -1,11 +1,11 @@
 {
   "package": "df-local-zh-complete",
-  "version": "0.5.0",
-  "generatedAt": "2026-10-03T05:01:13.045092+00:00",
+  "version": "0.5.1",
+  "generatedAt": "2026-10-03T12:09:45.923Z",
   "releaseMode": "standalone-bilingual",
   "runtime": "rust",
   "requiresNode": false,
-  "brokerSha256": "4407918a18528c8fb18b7563c35dd9f88ec413fdba1d275cb870f5690d6e0983",
+  "brokerSha256": "09ac4d0d7a630de50ce5b060111fb1155963ac2212830eb450bbf51b763579af",
   "languages": [
     "zh-Hant",
     "zh-Hans"
@@ -657,6 +657,7 @@
     ]
   },
   "changes": [
+    "Allow confirmed local cloud-library removal, disable automatic downloads across save scopes, retain anti-rollback authority and permit reinstall",
     "Remove macro shortcut collisions; preserve Enter newlines and IME editing; translate surname and profession after custom nicknames",
     "Pre-release audit: runtime retry recovery, context isolation, bounded queues/caches, SDL ownership fixes and clipboard limits",
     "Incremental atomic name exports, cached hot-path modules, terminal failure reporting and IME composition recovery",
@@ -711,7 +712,7 @@
     },
     {
       "path": "WORKSHOP-PUBLISHING.md",
-      "sha256": "03d9effa3c906e85ce1409e0bad606346143fdce5210acae7792ba7d31881c87"
+      "sha256": "600d01be6e6a749202096fe5bfd6f09731bf008eb33cc4510093d0aaa3b79412"
     },
     {
       "path": "broker/LICENSE-STATUS.json",
@@ -851,7 +852,7 @@
     },
     {
       "path": "broker/df-local-zh-broker.exe",
-      "sha256": "4407918a18528c8fb18b7563c35dd9f88ec413fdba1d275cb870f5690d6e0983"
+      "sha256": "09ac4d0d7a630de50ce5b060111fb1155963ac2212830eb450bbf51b763579af"
     },
     {
       "path": "broker/glossary-zh-Hans.json",
@@ -2195,7 +2196,7 @@
     },
     {
       "path": "info.txt",
-      "sha256": "898a19b7bd9541eec048316a895716eeabf1df731579a86afa0adfe995a58613"
+      "sha256": "89c69f008ea1369a2e6dff1ca05aab29bef0f38e75c1c4de463efa58c1431a3f"
     },
     {
       "path": "libs/df_local_zh_core.dll",
@@ -2367,11 +2368,11 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-settings-ui.lua",
-      "sha256": "307e6a2a833b398a5de38d621c17b6cb2bf848534ed33a31f5626345d84a7ff5"
+      "sha256": "178fa0851474216dc9224fc0908b47b90d654842e9ca9a2edd8ee115c72792a3"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-settings.lua",
-      "sha256": "b005bbc056efb8dc3c5d5893b72d82e965b0b83d7a36f94e94e9700e5fa47684"
+      "sha256": "c3f379af3b2f5449d12d01b6dc4e8a34ff2755af6c1440ab067927795a85dad8"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-status-ui.lua",
@@ -2456,6 +2457,10 @@
     {
       "path": "self-tests/nickname-display.lua",
       "sha256": "85735a90807903f9cd234fa018e0eb188da811b0c88b39d339e825f67abbeee9"
+    },
+    {
+      "path": "self-tests/official-clear-ui.lua",
+      "sha256": "1f1e0e93491613bba99d6a91512caf065b16412a237176520ce9d37d4142d751"
     },
     {
       "path": "self-tests/os-ime-acceptance.lua",

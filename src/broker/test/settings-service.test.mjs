@@ -58,3 +58,18 @@ test('connection test exercises the chosen draft API profile without storing it'
     assert.ok(!JSON.stringify(result).includes('fixture-key'));
   } finally {await new Promise(resolve=>api.close(resolve));await rm(directory,{recursive:true,force:true});}
 });
+
+
+test('official clear disables auto-download in every scope without saving UI drafts or changing keys',async t=>{
+  const directory=await mkdtemp(join(tmpdir(),'df-official-clear-'));t.after(()=>rm(directory,{recursive:true,force:true}));
+  const store=new module.SettingsStore(directory);await store.load();
+  await store.apply({scope:'save',world:'region1',settings:{officialAutoDownload:true,language:'zh-Hans'}});
+  const privateBefore=await readFile(join(directory,'api-profiles.private.json'),'utf8');
+  let calls=0;
+  const service=new module.SettingsService(store,{onClearOfficial:async()=>{calls++;assert.equal(store.effective('region1').officialAutoDownload,false);}});
+  const result=await service.handle({id:'clear-library',action:'official-clear'});
+  assert.equal(result.ok,true);assert.equal(calls,1);
+  assert.equal(store.effective('').officialAutoDownload,false);assert.equal(store.effective('region1').officialAutoDownload,false);
+  assert.equal(store.effective('region1').language,'zh-Hans');
+  assert.equal(await readFile(join(directory,'api-profiles.private.json'),'utf8'),privateBefore);
+});

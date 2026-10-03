@@ -149,6 +149,8 @@ struct Store {
   progress: HashMap<String, Value>,
   withdrawn: HashSet<String>,
   requested: HashSet<String>,
+  generation: u64,
+  clearing: bool,
 }
 pub struct Official {
   pub root: PathBuf,
@@ -174,6 +176,8 @@ impl Official {
         progress: HashMap::new(),
         withdrawn: HashSet::new(),
         requested: HashSet::new(),
+        generation: 0,
+        clearing: false,
       }),
       gate: tokio::sync::Mutex::new(()),
       client: reqwest::Client::builder()
@@ -325,6 +329,41 @@ impl Official {
     }
     Ok(())
   }
+  // Serialize with downloads. Invalidate queued work before waiting so another
+  // language cannot silently reinstall the library after the clear operation.
+  pub async fn clear(&self) -> Result<()> {
+    {
+      let mut s = self.store.lock().unwrap();
+      ensure!(!s.clearing, "official clear already running");
+      s.generation += 1;s.clearing = true;
+    }
+    struct ClearGuard<'a>(&'a Official);
+    impl Drop for ClearGuard<'_> {
+      fn drop(&mut self) {self.0.store.lock().unwrap().clearing = false;}
+    }
+    let _clear = ClearGuard(self);
+    let _gate = self.gate.lock().await;
+    {
+      let mut s = self.store.lock().unwrap();
+      let mut state = s.state.clone();
+      state["languages"] = json!({});
+      state["cleared"] = json!(true);
+      // Keep signed authority and its anti-rollback counters, but no package pointers.
+      atomic(&self.root.join("state.json"), &state)?;
+      s.state = state;
+      s.snapshots.clear();s.index.clear();s.progress.clear();
+    }
+    for entry in std::fs::read_dir(&self.root)? {
+      let entry = entry?;
+      let name = entry.file_name();let name = name.to_string_lossy();
+      if re(r"^[a-zA-Z0-9._-]+-zh-(?:Hant|Hans)-[0-9a-f]{64}\.json$").is_match(&name)
+        || re(r"^download-zh-(?:Hant|Hans)\.(?:manifest|package)\.tmp$").is_match(&name) {
+        std::fs::remove_file(entry.path())?;
+      }
+    }
+    for lang in ["zh-Hant", "zh-Hans"] {self.publish(lang)?;}
+    Ok(())
+  }
   pub fn lookup(&self, text: &str, lang: &str, kind: &str) -> Option<String> {
     self
       .store
@@ -344,6 +383,7 @@ impl Official {
     let installed = row["active"]["version"].as_str().unwrap_or("");
     let available = row["pending"]["version"].as_str().unwrap_or(installed);
     let mut status = json!({"schema":1,"language":lang,"installedVersion":installed,"activeVersion":snapshot.map(|p|p["version"].clone()).unwrap_or(json!("")),"availableVersion":available,"entries":snapshot.and_then(|p|p["entries"].as_array()).map(|a|a.len()).unwrap_or(0),"lastSuccess":row["lastSuccess"].as_str().unwrap_or(""),"phase":if row["pending"].is_object(){"pending"}else if snapshot.is_some(){"complete"}else{"idle"},"progress":if snapshot.is_some()||row["pending"].is_object(){100}else{0},"activation":"關閉遊戲後，下次啟動採用新版；目前畫面保持同一版本"});
+    if s.state["cleared"] == true && !row.is_object() {status["phase"] = json!("cleared");}
     if let Some(v) = s.progress.get(lang).and_then(Value::as_object) {
       for (k, v) in v {
         status[k] = v.clone();
@@ -383,13 +423,16 @@ impl Official {
   }
   pub async fn sync(self: Arc<Self>, lang: String) -> Result<()> {
     ensure!(language(&lang), "language unsupported");
+    let generation = {
+      let mut s = self.store.lock().unwrap();
+      if s.clearing || !s.requested.insert(lang.clone()) {return Ok(());}
+      s.generation
+    };
+    let _gate = self.gate.lock().await;
     {
       let mut s = self.store.lock().unwrap();
-      if !s.requested.insert(lang.clone()) {
-        return Ok(());
-      }
+      if s.generation != generation {s.requested.remove(&lang);return Ok(());}
     }
-    let _gate = self.gate.lock().await;
     let started = Instant::now();
     let mut error = None;
     for attempt in 0..=2 {
@@ -553,6 +596,59 @@ mod tests {
     let envelope=serde_json::to_vec(&json!({"keyId":"test","payload":STANDARD.encode(&payload),"signature":STANDARD.encode(key.sign(&payload).to_bytes())})).unwrap();
     (HashMap::from([("test".into(), key.verifying_key())]), envelope, pack)
   }
+  #[tokio::test]
+  async fn clear_removes_packages_and_retains_authority_across_restart() {
+    let (keys, envelope, bytes) = fixture();
+    let d = tempfile::tempdir().unwrap();
+    let o = Official::with_trust(d.path(), ENDPOINT.into(), keys.clone()).unwrap();
+    o.load().unwrap();
+    let m = verify_manifest(&envelope, &keys).unwrap();
+    o.accept_authority(&envelope, &m).unwrap();
+    let package = format!("fixture-1-zh-Hant-{}.json", hash(&bytes));
+    atomic_bytes(&o.root.join(&package), &bytes).unwrap();
+    {
+      let mut s = o.store.lock().unwrap();
+      s.state["languages"]["zh-Hant"] = json!({"active":{"version":"fixture-1","sequence":1,"sha256":hash(&bytes),"packageFile":package,"manifestFile":"fixture-1-1.manifest.json"}});
+      atomic(&o.root.join("state.json"), &s.state).unwrap();
+    }
+    o.load().unwrap();
+    assert_eq!(o.lookup("Health", "zh-Hant", "exact"), Some("健康".into()));
+    let cache = d.path().join("translations.jsonl");
+    std::fs::write(&cache, "private AI fixture").unwrap();
+    o.clear().await.unwrap();
+    assert!(!o.root.join(&package).exists());
+    assert_eq!(o.status("zh-Hant")["phase"], "cleared");
+    assert_eq!(o.lookup("Health", "zh-Hant", "exact"), None);
+    assert_eq!(std::fs::read_to_string(cache).unwrap(), "private AI fixture");
+    let next = Official::with_trust(d.path(), ENDPOINT.into(), keys).unwrap();
+    next.load().unwrap();
+    assert_eq!(next.status("zh-Hant")["entries"], 0);
+    assert_eq!(next.store.lock().unwrap().state["highestSequence"], 1);
+    next.accept_authority(&envelope, &m).unwrap(); // Same signed version can be installed again.
+    let mut older=m.clone();older["sequence"]=json!(0);
+    assert!(next.accept_authority(&envelope, &older).is_err());
+  }
+
+  #[tokio::test]
+  async fn clear_invalidates_queued_download_and_blocks_new_sync() {
+    let (keys, _, _) = fixture();let d = tempfile::tempdir().unwrap();
+    let o = Official::with_trust(d.path(), ENDPOINT.into(), keys).unwrap();o.load().unwrap();
+    let gate = o.gate.lock().await;
+    let queued = tokio::spawn(o.clone().sync("zh-Hant".into()));
+    tokio::task::yield_now().await;
+    assert!(o.store.lock().unwrap().requested.contains("zh-Hant"));
+    let target=o.clone();let clear=tokio::spawn(async move {target.clear().await});
+    tokio::task::yield_now().await;
+    assert!(o.store.lock().unwrap().clearing);
+    // No network or gate wait is allowed for a sync arriving during clear.
+    tokio::time::timeout(Duration::from_secs(1),o.clone().sync("zh-Hans".into())).await.unwrap().unwrap();
+    drop(gate);
+    tokio::time::timeout(Duration::from_secs(1),queued).await.unwrap().unwrap().unwrap();
+    tokio::time::timeout(Duration::from_secs(1),clear).await.unwrap().unwrap().unwrap();
+    let s=o.store.lock().unwrap();assert!(!s.clearing);assert!(s.requested.is_empty());
+    assert_eq!(s.state["languages"],json!({}));
+  }
+
   #[test]
   fn forged_signature_hash_and_incompatible_package_rejected() {
     let (keys, bytes, pack) = fixture();

@@ -282,7 +282,7 @@ cloud.profile.key='unapplied-fixture-key';cloud:profile_changed()
 local cloud_submit=fake.submit
 fake.submit=function(request,callback)
     requests[#requests+1]=request
-    if request.action=='official-sync' then callback({ok=true}) end
+    if request.action=='official-sync' or request.action=='official-clear' then callback({ok=true}) end
     return true
 end
 cloud.subviews.officialAutoDownload:cycle()
@@ -290,11 +290,17 @@ assert(cloud.draft.officialAutoDownload==false and snapshot.document.defaults.of
 assert(cloud:sync_official())
 assert(requests[#requests].action=='official-sync' and requests[#requests].settings==nil)
 assert(cloud.profile.key=='unapplied-fixture-key' and cloud.draft.translationPrompt=='未套用提示詞')
+local before_clear=#requests
+assert(not cloud:clear_official() and #requests==before_clear,'First click must ask for confirmation')
+assert(cloud:clear_official() and requests[#requests].action=='official-clear')
+assert(requests[#requests].settings==nil and requests[#requests].profile==nil,'Clear must not save unrelated drafts')
+assert(cloud.profile.key=='unapplied-fixture-key' and cloud.draft.translationPrompt=='未套用提示詞')
+assert(cloud.message:find('請重開遊戲') and cloud.draft.officialAutoDownload==false)
 assert(cloud:apply() and requests[#requests].settings.officialAutoDownload==false)
 for _,width in ipairs({64,80}) do
     cloud.subviews.window.frame.w=width-2;cloud.subviews.pages:setSelected(4)
     cloud:updateLayout(gui.ViewRect{rect={x1=0,y1=0,x2=width-1,y2=29}})
-    for _,id in ipairs({'officialAutoDownload','official_sync','official_phase','official_entries','official_help','official_offline'}) do
+    for _,id in ipairs({'officialAutoDownload','official_sync','official_clear','official_clear_help','official_phase','official_entries','official_help','official_offline'}) do
         local rect=cloud.subviews[id].frame_body;local window=cloud.subviews.window.frame_body
         assert(rect.x1>=window.x1 and rect.x2<=window.x2 and rect.y2<cloud.subviews.apply.frame_body.y1,'Cloud page clips at '..width)
     end

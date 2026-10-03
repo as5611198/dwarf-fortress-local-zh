@@ -335,6 +335,16 @@ impl Settings {
     self.publish()?;
     Ok(self.snapshot(world))
   }
+  pub fn disable_official_download(&mut self) -> Result<()> {
+    let mut doc = self.document.clone();
+    doc["defaults"]["officialAutoDownload"] = json!(false);
+    for row in doc["saves"].as_object_mut().unwrap().values_mut() {
+      row.as_object_mut().unwrap().remove("officialAutoDownload");
+    }
+    atomic(&self.root.join("settings.json"), &doc)?;
+    self.document = doc;
+    self.publish()
+  }
   pub fn selected(&self, world: &str) -> Vec<(String, Value)> {
     let s = self.effective(world);
     let ids = if s["apiPoolEnabled"] == true {

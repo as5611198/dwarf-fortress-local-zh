@@ -1,4 +1,4 @@
-import {readFile,writeFile,rename,mkdir,rm,stat} from 'node:fs/promises';
+import {readFile,writeFile,rename,mkdir,rm,stat,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash,verify} from 'node:crypto';
 import {performance} from 'node:perf_hooks';
@@ -72,13 +72,13 @@ export class OfficialLibrary {
     this.root=join(directory,'official');this.endpoint=endpoint;this.trust=trust;this.fetcher=fetcher;this.canActivate=canActivate;
     this.timeoutMs=timeoutMs;this.retries=retries;this.retryBaseMs=retryBaseMs;this.writeFile=writeFile;
     this.state={schema:1,highestSequence:0,highestManifest:null,languages:{}};
-    this.snapshots=new Map();this.progress=new Map();this.running=null;this.timer=null;this.withdrawn=new Set();
+    this.snapshots=new Map();this.progress=new Map();this.running=null;this.clearing=null;this.timer=null;this.withdrawn=new Set();
   }
   status(language) {
     const state=this.state.languages[language] ?? {},snapshot=this.snapshots.get(language);
     return {schema:1,language,installedVersion:state.active?.version ?? '',activeVersion:snapshot?.version ?? '',
       availableVersion:state.pending?.version ?? state.active?.version ?? '',entries:snapshot?.entries.length ?? 0,
-      lastSuccess:state.lastSuccess ?? '',phase:state.pending?'pending':snapshot?'complete':'idle',progress:state.pending||snapshot?100:0,
+      lastSuccess:state.lastSuccess ?? '',phase:state.pending?'pending':snapshot?'complete':this.state.cleared?'cleared':'idle',progress:state.pending||snapshot?100:0,
       activation:'遊戲執行中延後；關閉遊戲後重啟服務啟用',...(this.progress.get(language) ?? {})};
   }
   async publish(language) {
@@ -170,10 +170,28 @@ export class OfficialLibrary {
   }
   sync(language) {
     check(languages.includes(language),'language unsupported');
+    if(this.clearing)return Promise.resolve(this.status(language));
     // One global task; switching languages queues the second without a parallel writer.
     if(this.running) return this.running.language===language ? this.running.promise : this.running.promise.then(()=>this.sync(language));
     const promise=this.download(language);this.running={language,promise};
     promise.finally(()=>{if(this.running?.promise===promise)this.running=null;}).catch(()=>{});return promise;
+  }
+  clear() {
+    if(this.clearing)return this.clearing;
+    const promise=(async()=>{
+      await this.running?.promise;
+      const state={...this.state,languages:{},cleared:true};
+      await this.atomic(join(this.root,'state.json'),state);
+      this.state=state;this.snapshots.clear();this.progress.clear();
+      for(const name of await readdir(this.root)) {
+        if(/^[a-zA-Z0-9._-]+-zh-(?:Hant|Hans)-[0-9a-f]{64}\.json$/.test(name) ||
+          /^download-zh-(?:Hant|Hans)\.(?:manifest|package)\.tmp$/.test(name))await rm(join(this.root,name),{force:true});
+      }
+      for(const language of languages)await this.publish(language);
+    })();
+    this.clearing=promise;
+    promise.finally(()=>{if(this.clearing===promise)this.clearing=null;}).catch(()=>{});
+    return promise;
   }
   async download(language) {
     const started=performance.now();let error;

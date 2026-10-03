@@ -480,3 +480,19 @@ fn bundled_binary_runs_with_no_node_in_path() {
     std::thread::sleep(Duration::from_millis(25));
   }
 }
+
+#[tokio::test]
+async fn official_clear_settings_action_preserves_secrets_and_disables_all_scopes() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"save","world":"region1","settings":{"officialAutoDownload":true,"language":"zh-Hans","translationPrompt":"keep this"}})).unwrap();
+  let secrets=std::fs::read(root.join("api-profiles.private.json")).unwrap();
+  let response=app.settings_request(&json!({"id":"clear-test","action":"official-clear","world":"region1"})).await.unwrap();
+  assert_eq!(response["ok"],true);assert_eq!(response["restartRequired"],true);
+  assert_eq!(response["snapshot"]["effective"]["officialAutoDownload"],false);
+  assert_eq!(response["snapshot"]["effective"]["translationPrompt"],"keep this");
+  assert_eq!(response["snapshot"]["effective"]["language"],"zh-Hans");
+  assert_eq!(app.settings.lock().unwrap().effective("")["officialAutoDownload"],false);
+  assert_eq!(std::fs::read(root.join("api-profiles.private.json")).unwrap(),secrets);
+  assert_eq!(app.official.status("zh-Hant")["phase"],"cleared");
+}

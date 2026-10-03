@@ -286,7 +286,7 @@ export async function start(configPath = join(dirname(fileURLToPath(import.meta.
     shared.consentChanged();
     await shared.publish(worldKey(activeWorld()));
   };
-  settingsService=new SettingsService(settingsStore,{onApply:updateSettings,onSync:language=>{void official.sync(language).catch(()=>{});},onClearShared:()=>shared.clear()});
+  settingsService=new SettingsService(settingsStore,{onApply:updateSettings,onSync:language=>{void official.sync(language).catch(()=>{});},onClearShared:()=>shared.clear(),onClearOfficial:()=>official.clear()});
   await settingsService.refreshContext();
   settingsService.start();
   official.start(()=>settingsStore.effective(activeWorld()));

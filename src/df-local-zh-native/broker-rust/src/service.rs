@@ -548,7 +548,7 @@ impl App {
     let lang = context["language"].as_str().unwrap_or("zh-Hant");
     let s = self.settings.lock().unwrap();
     let configured = s.effective(world)["apiEnabled"] == true && !s.selected(world).is_empty();
-    json!({"service":"df-local-zh","engine":"rust","version":"0.4.0","policy":POLICY,"language":lang,"providerConfigured":configured,"cached":self.cache.lock().unwrap().len(),"pending":self.pending.lock().unwrap().len(),"providerBatch":self.pool.stats(),"official":self.official.status(lang),"runtime":self.runtime_status()})
+    json!({"service":"df-local-zh","engine":"rust","version":env!("CARGO_PKG_VERSION"),"policy":POLICY,"language":lang,"providerConfigured":configured,"cached":self.cache.lock().unwrap().len(),"pending":self.pending.lock().unwrap().len(),"providerBatch":self.pool.stats(),"official":self.official.status(lang),"runtime":self.runtime_status()})
   }
   fn runtime_status(&self)->Value {
     let mut status=self.runtime_snapshot.lock().unwrap().clone();
@@ -589,6 +589,13 @@ impl App {
         tokio::spawn(async move {
           let _ = o.sync(lang).await;
         });
+      }
+      "official-clear" => {
+        // Persist opt-out first, including per-save overrides; no UI draft/keys are saved.
+        self.settings.lock().unwrap().disable_official_download()?;
+        self.official.clear().await?;
+        reply["snapshot"] = self.settings.lock().unwrap().snapshot(world);
+        reply["restartRequired"] = json!(true);
       }
       "shared-clear" => self.shared.clear().await?,
       "clipboard" => reply["text"] = json!(clipboard()?),
@@ -1082,6 +1089,7 @@ pub async fn run_background(app: Arc<App>) {
       failures.retain(|_,row|row["retryGeneration"]==generation);
       retry_generation=generation;tail=Tail::default();
     }
+    if settings["officialAutoDownload"] != true {auto_at.clear();}
     if settings["officialAutoDownload"] == true
       && now() - auto_at.get(language).copied().unwrap_or(0) > 6 * 60 * 60 * 1000
     {

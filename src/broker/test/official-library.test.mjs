@@ -135,3 +135,37 @@ test('stalled fetch and stalled response body have bounded deadlines',async t=>{
   library.fetcher=()=>new Promise(()=>{});const begin=Date.now();await library.sync('zh-Hant');assert.ok(Date.now()-begin<500);assert.equal(library.status('zh-Hant').phase,'error');
   library.fetcher=async()=>new Response(new ReadableStream({start(){}}));await library.sync('zh-Hant');assert.equal(library.status('zh-Hant').phase,'error');
 });
+
+
+test('clear removes downloaded bilingual packages and permits same release reinstall without rollback',async t=>{
+  const {library,directory,setRemote}=await setup(t);
+  await library.sync('zh-Hant');
+  const current=fixture(2,undefined,'zh-Hans');setRemote(current);await library.sync('zh-Hans');
+  const files=Object.values(library.state.languages).map(row=>row.active.packageFile);
+  await writeFile(join(directory,'translations.jsonl'),'private AI fixture');
+  await library.clear();
+  assert.equal(library.status('zh-Hant').entries,0);
+  assert.equal(library.status('zh-Hans').entries,0);
+  assert.equal(library.status('zh-Hant').phase,'cleared');
+  assert.equal(library.lookup(entry().text,'zh-Hant'),undefined);
+  for(const file of files)await assert.rejects(readFile(join(directory,'official',file)),{code:'ENOENT'});
+  assert.equal(await readFile(join(directory,'translations.jsonl'),'utf8'),'private AI fixture');
+  const next=new OfficialLibrary({directory,trust,canActivate:()=>true,fetcher:library.fetcher,retries:0});
+  await next.load();assert.equal(next.state.highestSequence,2);assert.equal(next.status('zh-Hans').entries,0);
+  await next.sync('zh-Hans');assert.equal(next.status('zh-Hans').entries,1);
+  setRemote(fixture());await next.sync('zh-Hant');assert.equal(next.status('zh-Hant').phase,'error');
+  assert.equal(next.status('zh-Hant').entries,0);
+});
+
+test('clear waits for in-flight download and suppresses queued language sync',async t=>{
+  assert.equal(typeof OfficialLibrary.prototype.clear,'function');
+  const {library,directory}=await setup(t);
+  const remote=fixture();let release,started;
+  const entered=new Promise(resolve=>started=resolve);
+  library.fetcher=async url=>{if(String(url).endsWith('manifest.json')){started();await new Promise(resolve=>release=resolve);}return new Response(String(url).endsWith('manifest.json')?remote.envelope:remote.pack);};
+  const running=library.sync('zh-Hant');await entered;
+  const queued=library.sync('zh-Hans');const clearing=library.clear();release();
+  await Promise.all([running,queued,clearing]);
+  assert.deepEqual(library.state.languages,{});assert.equal(library.status('zh-Hant').entries,0);
+  const disk=JSON.parse(await readFile(join(directory,'official/state.json')));assert.deepEqual(disk.languages,{});
+});

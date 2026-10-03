@@ -351,11 +351,11 @@ function SettingsScreen:init()
             NativeCycle{view_id='scope',frame={l=1,t=0,r=1,h=1},label='設定範圍',label_width=24,
                 options=settings.world()~='' and {{label='本存檔',value='save'},{label='全域預設',value='global'}} or
                     {{label='全域預設',value='global'}},initial_option=self.scope,
-                on_change=function(value) self.scope=value;self:load_draft();self:refresh_fields() end},
+                on_change=function(value) self.clear_official_armed=false;self.scope=value;self:load_draft();self:refresh_fields() end},
             NativeTabs{view_id='tabs',frame={l=1,t=2,r=1,h=2},
                 labels={'語言顯示','模型服務','翻譯處理','雲端同步','共享投稿'},
                 get_cur_page=function() return self.page end,
-                on_select=function(value) self.page=value;self.subviews.pages:setSelected(value) end},
+                on_select=function(value) self.clear_official_armed=false;self.page=value;self.subviews.pages:setSelected(value) end},
             widgets.Pages{view_id='pages',frame={l=1,t=5,r=1,b=5},subviews={
                 widgets.Panel{view_id='display',subviews={
                     NativeCycle{view_id='language',frame={l=1,t=1,r=1,h=1},label='語言',label_width=32,
@@ -432,12 +432,16 @@ function SettingsScreen:init()
                     toggle('officialAutoDownload','自動下載官方譯庫','officialAutoDownload',0),
                     NativeButton{view_id='official_sync',frame={l=1,t=2,w=24,h=1},key='CUSTOM_J',caption='立即同步',
                         enabled=function() return not settings.is_pending() end,on_activate=function() self:sync_official() end},
+                    NativeButton{view_id='official_clear',frame={l=26,t=2,r=1,h=1},key='CUSTOM_X',
+                        caption=function() return self.clear_official_armed and '確認刪除' or '刪除本機譯本' end,
+                        enabled=function() return not settings.is_pending() end,on_activate=function() self:clear_official() end},
+                    NativeLabel{view_id='official_clear_help',frame={l=1,t=3,r=1,h=1},text='刪除繁簡譯本並關閉自動下載；重開生效',text_pen=COLOR_GREY},
                     NativeLabel{view_id='official_language',frame={l=1,t=4,r=1,h=1},text=function() return '目前語言：'..(self.draft.language=='zh-Hans' and '簡體中文' or '繁體中文') end},
-                    NativeLabel{view_id='official_installed',frame={l=1,t=5,r=1,h=1},text=function() return '已安裝：'..(self:official_status().installedVersion or '尚無') end},
-                    NativeLabel{view_id='official_available',frame={l=1,t=6,r=1,h=1},text=function() return '可用版本：'..(self:official_status().availableVersion or '尚無') end},
+                    NativeLabel{view_id='official_installed',frame={l=1,t=5,r=1,h=1},text=function() return '已安裝：'..(self:official_status().installedVersion~='' and self:official_status().installedVersion or '尚無') end},
+                    NativeLabel{view_id='official_available',frame={l=1,t=6,r=1,h=1},text=function() return '可用版本：'..(self:official_status().availableVersion~='' and self:official_status().availableVersion or '尚無') end},
                     NativeLabel{view_id='official_phase',frame={l=1,t=7,r=1,h=1},text=function()
                         local value=self:official_status()
-                        local phases={idle='尚未下載',checking='檢查更新',downloading='下載中',verifying='驗證中',pending='待啟用',complete='已完成',error='同步失敗',recovered='已回復前版'}
+                        local phases={idle='尚未下載',checking='檢查更新',downloading='下載中',verifying='驗證中',pending='待啟用',complete='已完成',cleared='已刪除',error='同步失敗',recovered='已回復前版'}
                         return '狀態：'..(phases[value.phase] or '尚未下載')..' '..tostring(value.progress or 0)..'%'
                     end},
                     NativeLabel{view_id='official_entries',frame={l=1,t=8,r=1,h=1},text=function() return '條目數：'..tostring(self:official_status().entries or 0) end},
@@ -482,6 +486,26 @@ function SettingsScreen:sync_official()
         if self:isActive() then self.message=result.ok and '同步已排入背景；請查看狀態' or result.error end
     end)
     self.message=ok and '提交同步作業' or error;return ok,error
+end
+function SettingsScreen:clear_official()
+    if not self.clear_official_armed then
+        self.clear_official_armed=true
+        self.message='再按確認刪除；內建字典、AI 快取與存檔保留'
+        return false
+    end
+    self.clear_official_armed=false
+    local completed=false
+    local ok,error=settings.submit({action='official-clear'},function(result)
+        completed=true
+        if result.ok then
+            -- Update only this control; keep unrelated unsaved profiles/prompts intact.
+            self.draft.officialAutoDownload=false
+            self.loading=true;self.subviews.officialAutoDownload:setOption(false);self.loading=false
+        end
+        if self:isActive() then self.message=result.ok and '譯本已刪除；自動下載已關閉，請重開遊戲' or result.error end
+    end)
+    if not completed then self.message=ok and '刪除中；等待目前下載結束' or error end
+    return ok,error
 end
 function SettingsScreen:shared_status()
     return settings.shared_status and settings.shared_status() or {phase='idle',pending=0,sent=0}

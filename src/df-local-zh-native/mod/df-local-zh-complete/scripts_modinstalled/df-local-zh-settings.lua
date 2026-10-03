@@ -101,7 +101,7 @@ function submit(request,callback)
     if not ok or not written or not closed or not result then return false,'無法寫入設定' end
     os.remove(path)
     if not os.rename(path..'.tmp',path) then return false,'無法提交設定' end
-    pending={id=request.id,callback=callback,deadline=dfhack.getTickCount()+(request.action=='test' and 7000 or 5000)}
+    pending={id=request.id,callback=callback,deadline=dfhack.getTickCount()+(request.action=='official-clear' and 130000 or request.action=='test' and 7000 or 5000)}
     local function receive()
         if not pending then return end
         local response=read('settings-response.json')
@@ -112,6 +112,7 @@ function submit(request,callback)
         if acknowledged and acknowledged.processed==pending.id then
             local job=pending;pending=nil
             if response.ok and response.snapshot then reload();apply_native() end
+            if response.ok and request.action=='official-clear' then official_cached=nil end
             if job.callback then job.callback(response) end
             return
         end

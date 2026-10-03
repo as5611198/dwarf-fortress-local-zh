@@ -39,8 +39,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 2678,
-      "sha256": "7ba530682ebc419cc798b074281684af7fa8e9b8d79d14d2237f6224c86293e1"
+      "bytes": 2959,
+      "sha256": "943c5a7b7c9159ce21c14cb96b556bc966e4cce9722b7190084deb0bcbfd3da6"
     },
     {
       "path": "assets/workshop-preview.png",
@@ -74,8 +74,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/PACKAGE-MANIFEST.json",
-      "bytes": 170373,
-      "sha256": "c3da3d4d8e47cba65804d6d2bf7865d3fb743e1c7665429117202e7c5ebbccd7"
+      "bytes": 170663,
+      "sha256": "f272cbfd914c1693c460b324739641033aba20777e4419f4a7188e90429f47c5"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/README.md",
@@ -85,7 +85,7 @@
     {
       "path": "distribution/steam/df-local-zh-complete/WORKSHOP-PUBLISHING.md",
       "bytes": 3081,
-      "sha256": "03d9effa3c906e85ce1409e0bad606346143fdce5210acae7792ba7d31881c87"
+      "sha256": "600d01be6e6a749202096fe5bfd6f09731bf008eb33cc4510093d0aaa3b79412"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/broker/LICENSE-STATUS.json",
@@ -259,8 +259,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/broker/df-local-zh-broker.exe",
-      "bytes": 10065408,
-      "sha256": "4407918a18528c8fb18b7563c35dd9f88ec413fdba1d275cb870f5690d6e0983"
+      "bytes": 10187776,
+      "sha256": "09ac4d0d7a630de50ce5b060111fb1155963ac2212830eb450bbf51b763579af"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/broker/glossary-zh-Hans.json",
@@ -1939,8 +1939,8 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/info.txt",
-      "bytes": 1195,
-      "sha256": "898a19b7bd9541eec048316a895716eeabf1df731579a86afa0adfe995a58613"
+      "bytes": 1121,
+      "sha256": "89c69f008ea1369a2e6dff1ca05aab29bef0f38e75c1c4de463efa58c1431a3f"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/libs/df_local_zh_core.dll",
@@ -2154,13 +2154,13 @@
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings-ui.lua",
-      "bytes": 40727,
-      "sha256": "307e6a2a833b398a5de38d621c17b6cb2bf848534ed33a31f5626345d84a7ff5"
+      "bytes": 42377,
+      "sha256": "178fa0851474216dc9224fc0908b47b90d654842e9ca9a2edd8ee115c72792a3"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings.lua",
-      "bytes": 5985,
-      "sha256": "b005bbc056efb8dc3c5d5893b72d82e965b0b83d7a36f94e94e9700e5fa47684"
+      "bytes": 6125,
+      "sha256": "c3f379af3b2f5449d12d01b6dc4e8a34ff2755af6c1440ab067927795a85dad8"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/scripts_modinstalled/df-local-zh-status-ui.lua",
@@ -2266,6 +2266,11 @@
       "path": "distribution/steam/df-local-zh-complete/self-tests/nickname-display.lua",
       "bytes": 2279,
       "sha256": "85735a90807903f9cd234fa018e0eb188da811b0c88b39d339e825f67abbeee9"
+    },
+    {
+      "path": "distribution/steam/df-local-zh-complete/self-tests/official-clear-ui.lua",
+      "bytes": 1855,
+      "sha256": "1f1e0e93491613bba99d6a91512caf065b16412a237176520ce9d37d4142d751"
     },
     {
       "path": "distribution/steam/df-local-zh-complete/self-tests/os-ime-acceptance.lua",
@@ -4288,6 +4293,11 @@
       "sha256": "f367c1b8e1aa262435251e442901da4607b4650e0e63a026f5044473ecfb90f2"
     },
     {
+      "path": "docs/CLOUD-LIBRARY-CLEAR-0.5.1.md",
+      "bytes": 2178,
+      "sha256": "40fe19801d3af17ef26bcc8a4a788d78857afb128304e96578481300794486d7"
+    },
+    {
       "path": "docs/PLAYER-INSTALL.md",
       "bytes": 4756,
       "sha256": "65dcd84e2a1d3daf736ca91599e344625463fc0ea405748163088fbbf2e3ec18"
@@ -4305,7 +4315,7 @@
     {
       "path": "docs/WORKSHOP-PUBLISHING.md",
       "bytes": 3081,
-      "sha256": "03d9effa3c906e85ce1409e0bad606346143fdce5210acae7792ba7d31881c87"
+      "sha256": "600d01be6e6a749202096fe5bfd6f09731bf008eb33cc4510093d0aaa3b79412"
     },
     {
       "path": "docs/license-authorization-20261001.json",
@@ -4614,8 +4624,8 @@
     },
     {
       "path": "src/broker/official-library.mjs",
-      "bytes": 17322,
-      "sha256": "b440e22cf69f99a24c7126b28a4a8ed325fae3fa9f43d06b5c0dde39969c916a"
+      "bytes": 18239,
+      "sha256": "de19806a51b659f97d4104cc6d2d05c2624df82d3ff3341db0be3c6c4c73ab5e"
     },
     {
       "path": "src/broker/official-owned.mjs",
@@ -4644,8 +4654,8 @@
     },
     {
       "path": "src/broker/prepare-standalone-package.mjs",
-      "bytes": 16028,
-      "sha256": "09b461a9b8b8ff53fd719fcfc875f349c2589fa4f302fb20dbeb75644b6c9c1e"
+      "bytes": 16163,
+      "sha256": "e9eebbe6a931df256770c26b428621d91acb561fafe51940e965d6ffa2ec7785"
     },
     {
       "path": "src/broker/prepare-workshop-package.mjs",
@@ -4729,13 +4739,13 @@
     },
     {
       "path": "src/broker/server.mjs",
-      "bytes": 19027,
-      "sha256": "50776618f669b9ac00ac24b62b501bbece59c99c79d79ce3aa8a8c330ab86e85"
+      "bytes": 19064,
+      "sha256": "dfbc3b9c0e590c17634d264a2b132020f082cf25e4f0cf9763cd6f1d6a1ec0e4"
     },
     {
       "path": "src/broker/settings.mjs",
-      "bytes": 16154,
-      "sha256": "7bd96bb651ee547c434f762b84c78cef77fd1a8354b9ff752128f3ac58017e8a"
+      "bytes": 16867,
+      "sha256": "ec8d619ef20b69fe7c3912b6f0f0d8e2c18f4af6371141bc5888f8d8069bbf2e"
     },
     {
       "path": "src/broker/shared-outbox.mjs",
@@ -4874,8 +4884,8 @@
     },
     {
       "path": "src/broker/test/official-library.test.mjs",
-      "bytes": 13426,
-      "sha256": "aca9cdb4b9cb26c5cfba0165518bcc4978a9a41fb522e5b015abd1dfcc78cfcf"
+      "bytes": 15725,
+      "sha256": "edc9f69f31e88ca80ebd77fdf82c7c0755a433901608d23af88445fd5686174e"
     },
     {
       "path": "src/broker/test/preference-entities.test.mjs",
@@ -4974,8 +4984,8 @@
     },
     {
       "path": "src/broker/test/settings-service.test.mjs",
-      "bytes": 3559,
-      "sha256": "ee5b76c1259d8ce91ca736ad7f1080f0f3f6820abc8eb6104d573c7be1103290"
+      "bytes": 4674,
+      "sha256": "dd4ccde10530c2869d0458179fe7214a982f2506f4bf12ac0d6d65a42d34012b"
     },
     {
       "path": "src/broker/test/settings.test.mjs",
@@ -5295,7 +5305,7 @@
     {
       "path": "src/df-local-zh-native/Cargo.lock",
       "bytes": 73268,
-      "sha256": "400e9bd82f1a2e5bea1581a38dfc93c92b435bd370344b129c06bc112178db49"
+      "sha256": "e71b66584111640c7ecddbbf7bbbd4eeb722bf1697d5e24cbcd3b6fb740e917e"
     },
     {
       "path": "src/df-local-zh-native/Cargo.toml",
@@ -5340,7 +5350,7 @@
     {
       "path": "src/df-local-zh-native/broker-rust/Cargo.toml",
       "bytes": 947,
-      "sha256": "480a6ee9bc4064eedf51bce838a40d234a6b43b08412a643e31382cba0bd17fe"
+      "sha256": "bb5956f99dca10b178963af1b59bc7811d8df5636f5f03c10b990636a23f6cad"
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/bounded.rs",
@@ -5379,8 +5389,8 @@
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/official.rs",
-      "bytes": 27264,
-      "sha256": "72a58e9ee8ffa6da5f713eb5ea319cb44bda4bb2ec527faab79ae2fd27459a81"
+      "bytes": 31971,
+      "sha256": "4d4d656884a49ec18bf851be88542e33e7f53625f6db587fba63ea2705553e5b"
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/provider.rs",
@@ -5389,13 +5399,13 @@
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/service.rs",
-      "bytes": 52229,
-      "sha256": "cc079dacba675a8909613ff233cbf5b4d08c293b9c97dcc88085121ff61331b0"
+      "bytes": 52671,
+      "sha256": "12c8ec74c49a18e56a6965386da3e1b45ae1366d5dfb6e95fb7a7e160a095054"
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/settings.rs",
-      "bytes": 16437,
-      "sha256": "de5ca907e5ff1c7a2ad556e6f3f16496b5a310f9152bf212e385935a78e2b7b1"
+      "bytes": 16842,
+      "sha256": "47643600b0009fbbb14cbc9ec07f83e2f3ebe896eada80689cda546bd9d63450"
     },
     {
       "path": "src/df-local-zh-native/broker-rust/src/shared.rs",
@@ -5409,8 +5419,8 @@
     },
     {
       "path": "src/df-local-zh-native/broker-rust/tests/runtime.rs",
-      "bytes": 23472,
-      "sha256": "b96c3480cdc28ffc27bb966732d3b5048ae4b784622d0bfd80dbb63446920bfe"
+      "bytes": 24651,
+      "sha256": "58240c7354ec5bbef92527bcfe98971a54024b16663363225b6cc03374ed3eed"
     },
     {
       "path": "src/df-local-zh-native/crates/cp437_string/Cargo.toml",
@@ -6054,13 +6064,13 @@
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings-ui.lua",
-      "bytes": 40727,
-      "sha256": "307e6a2a833b398a5de38d621c17b6cb2bf848534ed33a31f5626345d84a7ff5"
+      "bytes": 42377,
+      "sha256": "178fa0851474216dc9224fc0908b47b90d654842e9ca9a2edd8ee115c72792a3"
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-settings.lua",
-      "bytes": 5985,
-      "sha256": "b005bbc056efb8dc3c5d5893b72d82e965b0b83d7a36f94e94e9700e5fa47684"
+      "bytes": 6125,
+      "sha256": "c3f379af3b2f5449d12d01b6dc4e8a34ff2755af6c1440ab067927795a85dad8"
     },
     {
       "path": "src/df-local-zh-native/mod/df-local-zh-complete/scripts_modinstalled/df-local-zh-status-ui.lua",
@@ -6258,6 +6268,11 @@
       "sha256": "85735a90807903f9cd234fa018e0eb188da811b0c88b39d339e825f67abbeee9"
     },
     {
+      "path": "src/df-local-zh-native/self-tests/official-clear-ui.lua",
+      "bytes": 1855,
+      "sha256": "1f1e0e93491613bba99d6a91512caf065b16412a237176520ce9d37d4142d751"
+    },
+    {
       "path": "src/df-local-zh-native/self-tests/os-ime-acceptance.lua",
       "bytes": 2517,
       "sha256": "4b135072c91aefb6810ec4e167805cc74a376e599aa9cc73d2f170b415956a0c"
@@ -6399,8 +6414,8 @@
     },
     {
       "path": "src/df-local-zh-native/self-tests/test-settings-ui.lua",
-      "bytes": 23234,
-      "sha256": "4fbc4b3b733a0bce1f613b8a0b497a1755cb52739c41825b640fd95505ffcf52"
+      "bytes": 23836,
+      "sha256": "6cf52e1ffb7b99e626e3bcb62626dc2d942508a141e0aaeb6da75520e22c8864"
     },
     {
       "path": "src/df-local-zh-native/self-tests/test-startup-events.lua",

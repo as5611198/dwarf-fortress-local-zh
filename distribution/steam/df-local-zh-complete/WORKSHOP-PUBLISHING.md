@@ -9,7 +9,7 @@
 從倉庫根目錄執行：
 
 ```powershell
-node src/broker/prepare-standalone-package.mjs --version=0.5.0 --native-dll=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df_local_zh_core.dll --broker-exe=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df-local-zh-broker.exe
+node src/broker/prepare-standalone-package.mjs --version=0.5.1 --native-dll=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df_local_zh_core.dll --broker-exe=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df-local-zh-broker.exe
 node src/broker/validate-workshop-package.mjs distribution/steam/df-local-zh-complete
 cd src/broker
 npm test

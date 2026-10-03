@@ -213,13 +213,20 @@ export class SettingsStore {
     this.document=validated;this.profiles=profiles;await this.publish();
     return this.snapshot(world);
   }
+  async disableOfficialDownload() {
+    const document=structuredClone(this.document);
+    document.defaults.officialAutoDownload=false;
+    for(const row of Object.values(document.saves))delete row.officialAutoDownload;
+    await atomicJson(join(this.directory,'settings.json'),document);
+    this.document=document;await this.publish();
+  }
   async publish() { await atomicJson(join(this.directory,'settings-public.json'),this.snapshot()); }
 }
 
 export class SettingsService {
-  constructor(store,{onApply=async()=>{},onSync=()=>{},onClearShared=async()=>{},readClipboard=readClipboardText}={}) {
+  constructor(store,{onApply=async()=>{},onSync=()=>{},onClearShared=async()=>{},onClearOfficial=async()=>{throw Error("official library unavailable");},readClipboard=readClipboardText}={}) {
     this.onSync=onSync;
-    this.onClearShared=onClearShared;
+    this.onClearShared=onClearShared;this.onClearOfficial=onClearOfficial;
     this.readClipboard=readClipboard;
     this.store=store;this.onApply=onApply;this.lastId=null;this.work=Promise.resolve();
   }
@@ -233,6 +240,11 @@ export class SettingsService {
         if(!['zh-Hant','zh-Hans'].includes(request.language)) throw new Error('invalid language');
         this.onSync(request.language);
         // Acknowledgement only; do not return a settings snapshot or disturb drafts.
+      } else if(request.action==='official-clear') {
+        await this.store.disableOfficialDownload();
+        await this.onClearOfficial();
+        result.snapshot=this.store.snapshot(request.world);result.restartRequired=true;
+        await this.onApply();
       } else if(request.action==='shared-clear') {
         await this.onClearShared();
       } else if(request.action==='clipboard') {
