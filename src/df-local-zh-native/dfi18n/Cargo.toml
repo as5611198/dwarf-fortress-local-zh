@@ -41,3 +41,5 @@ with_builtin_macros = { workspace = true }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 winapi = { workspace = true }
+windows = { version = "0.62", features = ["Win32_Foundation", "Win32_System_Com", "Win32_UI_TextServices", "Win32_UI_Input_Ime"] }
+windows-core = "0.62"

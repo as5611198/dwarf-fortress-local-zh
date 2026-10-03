@@ -56,6 +56,9 @@ async fn pin(State(app): State<Arc<App>>, headers: HeaderMap, Json(payload): Jso
   }
   let lang = payload["language"].as_str().unwrap_or(context["language"].as_str().unwrap_or("zh-Hant"));
   let world = payload["world"].as_str().unwrap_or(context["world"].as_str().unwrap_or(""));
+  if !language(lang) || world.len()>1024 || world.contains('\0') || (!world.is_empty() && context["world"]!=world) {
+    return (StatusCode::BAD_REQUEST,Json(json!({"error":"invalid context"})));
+  }
   match app.pin(id, lang, world).await {
     Ok(t) => (StatusCode::OK, Json(json!({"translation":t}))),
     Err(_) => (

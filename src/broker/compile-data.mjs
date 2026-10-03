@@ -69,7 +69,7 @@ let community = [];
 try { community = parse(await readFile(new URL('./data/community-reviewed.csv', import.meta.url), 'utf8'), { columns: true }); }
 catch (error) { if (error.code !== 'ENOENT') throw error; }
 const greed = { Greed: '貪欲', Avarice: '貪婪', Jealousy: '嫉妒', Cupidity: '貪財', Gluttony: '貪食' };
-const work = { Toil: '勞苦', Diligence: '勤勉', Exertion: '奮力', Tenacity: '堅韌', Resourcefulness: '機智', Determination: '決心', Mettle: '勇氣', Dynamism: '活力', Industry: '勤奮', Enterprise: '進取', Labor: '勞動', Perseverance: '毅力' };
+const work = { Toil: '勞苦', Diligence: '勤勉', Exertion: '奮力', Tenacity: '堅韌', Resourcefulness: '機智', Determination: '決心', Mettle: '勇氣', Dynamism: '活力', Industry: '勤奮', Enterprise: '進取', Labor: '勞動', Perseverance: '堅毅' };
 for (const [a, zhA] of Object.entries(greed)) {
   for (const [b, zhB] of Object.entries(work)) corrections.push({ text: `Histories of ${a} and ${b}`, translation: `${zhA}與${zhB}的歷史`, tags: '[ALIGNMENT:CENTER]' });
 }

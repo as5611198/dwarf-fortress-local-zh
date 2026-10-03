@@ -4,6 +4,7 @@ local json=require('json')
 local paths=reqscript('df-local-zh-paths')
 local manifest, fixed, learned, fixed_loaded
 local active_world, active_language, templates, seen, done, template_cursor
+local runtime_module
 
 local function read(path)
     local file=io.open(path,'rb')
@@ -49,7 +50,8 @@ end
 local function context()
     load()
     local current=world()
-    local ok,runtime=pcall(reqscript,'df-local-zh-runtime')
+    local ok,runtime=true,runtime_module
+    if not runtime then ok,runtime=pcall(reqscript,'df-local-zh-runtime');if ok then runtime_module=runtime end end
     local language=ok and runtime.language and runtime.language() or 'zh-Hant'
     if current==active_world and language==active_language and templates then return current end
     active_world=current

@@ -1,5 +1,19 @@
 use std::{marker::PhantomData, ops::Deref, sync::Arc};
 
+#[cfg(test)]
+mod ownership_tests {
+  use super::*;
+  #[test]
+  fn borrowed_wrappers_release_their_allocation_without_owning_foreign_memory() {
+    for _ in 0..1000 {
+      let borrowed=Renderer::from_raw(std::ptr::null_mut());
+      let weak=Arc::downgrade(&borrowed.inner);
+      drop(borrowed);
+      assert!(weak.upgrade().is_none(),"Borrowed wrapper leaked its allocation");
+    }
+  }
+}
+
 use crate::*;
 
 const SDL_RENDERER_TARGETTEXTURE: u32 = 0x00000008;
@@ -37,6 +51,7 @@ impl<'a> Renderer<'a> {
 
     let inner = RendererInner {
       ptr,
+      owned: true,
       _marker: PhantomData,
     };
 
@@ -47,12 +62,11 @@ impl<'a> Renderer<'a> {
   pub fn from_raw(ptr: *mut SDL_Renderer) -> Self {
     let inner = RendererInner {
       ptr,
+      owned: false,
       _marker: PhantomData,
     };
 
-    let boxed = Box::new(Renderer { inner: Arc::new(inner) });
-    let leaked = Box::leak(boxed);
-    leaked.clone()
+    Renderer { inner: Arc::new(inner) }
   }
 }
 
@@ -60,6 +74,7 @@ impl<'a> Renderer<'a> {
 #[derive(Debug)]
 pub struct RendererInner<'a> {
   ptr: *mut SDL_Renderer,
+  owned: bool,
   _marker: PhantomData<&'a ()>,
 }
 
@@ -68,7 +83,7 @@ unsafe impl Sync for RendererInner<'static> {}
 impl Drop for RendererInner<'_> {
   // Destroy the SDL Renderer when the RendererInner is dropped
   fn drop(&mut self) {
-    unsafe { SDL_DestroyRenderer(self.ptr) };
+    if self.owned { invalidate_renderer_textures(self.ptr);unsafe { SDL_DestroyRenderer(self.ptr) }; }
   }
 }
 

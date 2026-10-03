@@ -18,7 +18,7 @@ local env = setmetatable({
     io = {open = function(path, mode)
         if mode == 'rb' then
             if not files[path] then return nil end
-            return {read=function() return files[path] end, close=function() end}
+            return {lines=function() return ((files[path] or '')..'\n'):gmatch('(.-)\n') end,read=function() return files[path] end, close=function() end}
         end
         local content = ''
         return {

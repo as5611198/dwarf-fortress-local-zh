@@ -16,6 +16,7 @@ mod markup;
 mod memory;
 mod native_cache;
 mod display_rows;
+mod nickname_display;
 mod prewarm;
 mod official;
 mod broker_client;
@@ -23,6 +24,9 @@ mod screen;
 mod search;
 mod search_text;
 mod search_input;
+mod history_events;
+#[cfg(windows)]
+mod search_ime_windows;
 mod tasks;
 mod text;
 mod translation;
@@ -110,4 +114,16 @@ extern "C" fn debug(lua_state: *mut std::ffi::c_void) -> i32 {
   lua::push_boolean(lua_state, true);
   lua::push_boolean(lua_state, false);
   return 4;
+}
+// Commit a fully written sibling export without a delete/rename visibility gap.
+#[unsafe(no_mangle)]
+extern "C" fn local_export_commit(state:*mut std::ffi::c_void)->i32 {
+  let from=lua53_sys::check_string(state,1);let to=lua53_sys::check_string(state,2);
+  let from=std::path::Path::new(&from);let to=std::path::Path::new(&to);
+  let result=if from.parent()==to.parent() && from.extension().is_some_and(|s|s=="tmp") {
+    df_local_zh_broker::common::replace(from,to)
+  } else {Err(anyhow::anyhow!("invalid export paths"))};
+  lua53_sys::push_boolean(state,result.is_ok());
+  if let Err(e)=result {lua53_sys::push_string(state,&e.to_string());} else {lua53_sys::push_nil(state);}
+  2
 }

@@ -174,7 +174,7 @@ local function find_entry()
             assert(entry.visible(),'Settings entry must be visible in the actual Settings screen')
             local rect=entry.frame_body
             result.checks.entry={focus=dfhack.gui.getCurFocus(),x=rect.x1,y=rect.y1,width=rect.width,height=rect.height}
-            gui.simulateInput(dfhack.gui.getCurViewscreen(),'CUSTOM_CTRL_M')
+            gui.simulateInput(dfhack.gui.getCurViewscreen(),'CUSTOM_CTRL_E')
             dfhack.timeout(1,'frames',test_panel);return
         end
         for _,row in ipairs(json.decode(native.core_trace_read())) do

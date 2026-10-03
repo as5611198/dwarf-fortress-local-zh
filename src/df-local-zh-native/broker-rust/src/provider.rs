@@ -31,8 +31,40 @@ pub struct Pool {
   slots: Mutex<HashMap<String, Arc<Semaphore>>>,
   cooldowns: Mutex<HashMap<String, i64>>,
 }
+struct ActiveGuard(Arc<Pool>);
+impl Drop for ActiveGuard {
+  fn drop(&mut self) {self.0.active.fetch_sub(1,Ordering::Relaxed);}
+}
 fn profile_key(name: &str, p: &Value) -> String {
   hash(serde_json::to_vec(&json!([name, p])).unwrap())
+}
+#[cfg(test)]
+mod tests {
+  use super::*;
+  #[tokio::test]
+  async fn a_cooling_profile_does_not_block_an_unrelated_healthy_profile() {
+    use axum::{Json,Router,routing::post};
+    let listener=tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();let addr=listener.local_addr().unwrap();
+    let server=tokio::spawn(async move {axum::serve(listener,Router::new().route("/chat/completions",post(||async {
+      Json(json!({"choices":[{"message":{"content":r#"{"translations":[{"id":"0","translation":"他很樂觀。"}]}"#}}]}))
+    }))).await.unwrap()});
+    let pool=Pool::new().unwrap();let settings=json!({"apiEnabled":true,"timeoutMs":500,"concurrency":2});
+    let profile=json!({"baseUrl":format!("http://{addr}"),"model":"fixture","concurrency":1});
+    pool.cooldowns.lock().unwrap().insert(profile_key("cooling",&profile),now()+60000);
+    let (bad,good)=tokio::join!(
+      pool.translate("He is optimistic.".into(),"zh-Hant".into(),json!({}),settings.clone(),vec![("cooling".into(),profile.clone())],false,0),
+      pool.translate("He is optimistic.".into(),"zh-Hant".into(),json!({}),settings,vec![("healthy".into(),profile)],false,2));
+    server.abort();assert!(bad.is_err());assert_eq!(good.unwrap().0,"他很樂觀。");
+    tokio::time::sleep(Duration::from_millis(50)).await;
+    assert_eq!(pool.queued.load(Ordering::Relaxed),0);assert_eq!(pool.active.load(Ordering::Relaxed),0);
+  }
+  #[tokio::test]
+  async fn cancelled_batch_releases_active_count() {
+    let pool=Pool::new().unwrap();pool.active.store(1,Ordering::Relaxed);
+    let guard=ActiveGuard(pool.clone());
+    let task=tokio::spawn(async move {let _guard=guard;std::future::pending::<()>().await});
+    task.abort();let _=task.await;assert_eq!(pool.active.load(Ordering::Relaxed),0);
+  }
 }
 impl Pool {
   pub fn new() -> Result<Arc<Self>> {
@@ -69,7 +101,8 @@ impl Pool {
     );
     let timeout = Duration::from_millis(settings["timeoutMs"].as_u64().unwrap_or(25000));
     let (tx, rx) = oneshot::channel();
-    self.queued.fetch_add(1, Ordering::Relaxed);
+    self.queued.fetch_update(Ordering::Relaxed,Ordering::Relaxed,|n|(n<128).then_some(n+1))
+      .map_err(|_|anyhow::anyhow!("translation queue full"))?;
     let job = Work {
       source,
       language,
@@ -108,9 +141,14 @@ impl Pool {
         }
       });
       waiting.sort_by_key(|w| w.priority);
-      while let Some(first) = waiting.first() {
+      self.cooldowns.lock().unwrap().retain(|_,until|*until>now());
+      // Edited profiles may disappear; never discard a semaphore still in use.
+      self.slots.lock().unwrap().retain(|_,sem|Arc::strong_count(sem)>1);
+      loop {
+        let mut runnable=None;
+        for (position,first) in waiting.iter().enumerate() {
         if self.active.load(Ordering::Relaxed) >= first.settings["concurrency"].as_u64().unwrap_or(2) as usize {
-          break;
+          continue;
         }
         let mut slot = None;
         for offset in 0..first.profiles.len() {
@@ -133,10 +171,10 @@ impl Pool {
             break;
           }
         }
-        let Some((selected, permit)) = slot else {
-          break;
-        };
-        let first = waiting.remove(0);
+        if let Some((selected,permit))=slot {runnable=Some((position,selected,permit));break}
+        }
+        let Some((position,selected,permit))=runnable else {break};
+        let first = waiting.remove(position);
         let signature =
           serde_json::to_string(&json!([first.language, first.phonetic, first.settings, first.profiles])).unwrap();
         let mut chars = first.source.chars().count();
@@ -158,6 +196,7 @@ impl Pool {
         self.active.fetch_add(1, Ordering::Relaxed);
         let p = self.clone();
         tokio::spawn(async move {
+          let _active=ActiveGuard(p.clone());
           let _permit = permit;
           let result = p.batch(&group, selected).await;
           match result {
@@ -173,7 +212,6 @@ impl Pool {
               }
             }
           }
-          p.active.fetch_sub(1, Ordering::Relaxed);
         });
       }
     }

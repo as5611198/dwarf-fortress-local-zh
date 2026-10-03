@@ -10,9 +10,10 @@ local native={search_set_query=function(_,query) return query~='' and 'LZHS000__
         local result=json.encode(actions);actions={};return result
     end}
 local env=setmetatable({reqscript=function(name)
+    if name=='df-local-zh-unicode' then return {decode=function(s) return s end} end
     return name=='df-local-zh-search-editor' and editor or native
 end,require=function(name)
-    if name=='gui' then return {simulateInput=function() end} end
+    if name=='gui' then return {simulateInput=function() end,Screen={onRender=function() end}} end
     if name=='gui.widgets' then return {EditField={setCursor=function() end}} end
     if name=='gui.widgets.text_area.text_area_content' then return {} end
     if name=='utils' then return {search_text=function() return false end} end

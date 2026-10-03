@@ -20,7 +20,8 @@
     "zh-Hant": [
       "data/community-workbook-zh-Hant.csv",
       "data/official-builtin-zh-Hant.csv",
-      "data/creature-names-zh-Hant.csv"
+      "data/creature-names-zh-Hant.csv",
+      "data/arena-corrections-zh-Hant.csv"
     ],
     "zh-Hans": [
       "data/prewarmed-raw-states-zh-Hans.csv",
@@ -32,7 +33,8 @@
       "reviewed-zh-Hans.csv",
       "data/community-workbook-zh-Hans.csv",
       "data/official-builtin-zh-Hans.csv",
-      "data/creature-names-zh-Hans.csv"
+      "data/creature-names-zh-Hans.csv",
+      "data/arena-corrections-zh-Hans.csv"
     ]
   },
   "literalDictionaries": [
@@ -43,12 +45,15 @@
     "data/community-workbook-zh-Hans.csv",
     "data/official-builtin-zh-Hans.csv",
     "data/creature-names-zh-Hant.csv",
-    "data/creature-names-zh-Hans.csv"
+    "data/creature-names-zh-Hans.csv",
+    "data/arena-corrections-zh-Hant.csv",
+    "data/arena-corrections-zh-Hans.csv"
   ],
   "glossaryPath": "glossary.json",
   "glossaryPathsByLanguage": {
     "zh-Hans": "glossary-zh-Hans.json"
   },
   "equipmentRulesDirectory": "../dfi18n-data/rulesets",
-  "rimworldConfig": ""
+  "rimworldConfig": "",
+  "gameplayGlossaryPath": "data/gameplay-glossary.json"
 }

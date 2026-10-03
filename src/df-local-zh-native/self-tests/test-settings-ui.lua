@@ -31,6 +31,14 @@ dfhack=setmetatable({internal=setmetatable({getClipboardTextCp437=function() ret
     painted[#painted+1]={x=x,y=y,text=value,bypassed=interception_bypassed}
 end},{__index=dfhack.screen})},{__index=dfhack}),
 reqscript=function(name)
+    if name=='df-local-zh-search' then return {track=function(view,options)
+        -- The production input bridge paints literals after the whole screen.
+        -- This fixture owns only settings layout; model that painter explicitly.
+        view._df_local_zh_ime=true
+        interception_bypassed=true
+        dfhack.screen.paintString(COLOR_WHITE,options.rect.x1,options.rect.y1,options.get())
+        interception_bypassed=false
+    end} end
     if name=='df-local-zh-settings' then return fake end
     if name=='df-local-zh-runtime' then
         local runtime=reqscript(name)
@@ -69,7 +77,7 @@ local function assert_native_text(widget,text)
     error('Native painter did not receive '..text)
 end
 local help_text={
-    api_key_help='點金鑰欄輸入或 Ctrl+V 貼上，Ctrl+S 套用',
+    api_key_help='Ctrl+V 貼上金鑰；Ctrl+Enter 套用',
     backgroundHelp='閒置時補譯背景佇列，前景請求優先',
     concurrencyHelp='所有 API 合計的請求上限（1-32）',
     timeoutHelp='單次模型請求的等待上限（毫秒）',
@@ -206,6 +214,24 @@ env.PromptScreen.show=function(self) return self end
 env.PromptScreen.dismiss=function() end
 local editor=parent:edit_prompt()
 assert(editor.subviews.prompt_text:getText()=='Dwarf Fortress fixture default.')
+-- Modified Enter must reach the accept button while plain Enter remains a newline.
+local shortcut_editor=parent:edit_prompt()
+shortcut_editor.subviews.prompt_text:setText('line')
+shortcut_editor.subviews.prompt_text.cursor=5
+local accepted=0
+shortcut_editor.accept=function() accepted=accepted+1 end
+assert(shortcut_editor.subviews.window:onInput{SELECT=true})
+assert(shortcut_editor.subviews.prompt_text:getText()=='line\n' and accepted==0)
+assert(shortcut_editor.subviews.window:onInput{CUSTOM_CTRL_ENTER=true})
+assert(accepted==1 and shortcut_editor.subviews.prompt_text:getText()=='line\n',
+    'Ctrl+Enter must accept once without adding a newline')
+local applied=0
+local old_apply=parent.apply
+parent.apply=function() applied=applied+1 end
+parent.subviews.api_key:setFocus(true)
+assert(parent.subviews.window:onInput{CUSTOM_CTRL_ENTER=true})
+assert(applied==1,'Apply must work with a focused secret field')
+parent.apply=old_apply
 editor.subviews.prompt_text:setText('請使用肉盔菇。\n健康描述保持精確。')
 assert(parent.draft.translationPrompt=='','Editing must remain a separate draft until accepted')
 editor:accept()

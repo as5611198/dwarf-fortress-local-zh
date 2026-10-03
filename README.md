@@ -27,7 +27,7 @@ Steam Workshop：[矮人要塞中文化（繁體／簡體整合）](https://stea
 
 只需本模組與 DFHack，不需要另訂 DFI18n 本體或簡體中文資料包，也不需要安裝 Node.js 或其他開發環境。繁簡都在模組設定頁切換，靜態與已安裝官方譯庫離線可用、不需 API Key。啟用與選用 AI 功能見 [玩家安裝說明](docs/PLAYER-INSTALL.md)。不要同時啟用其他 DFI18n 原生核心。
 
-重建與 Steam 上傳流程見 [發布說明](docs/WORKSHOP-PUBLISHING.md)。請使用 0.4.1 Rust 繁簡整合包（授權紀錄更正版）；0.3.x 的選用背景服務依賴 Node.js，已由新版本取代。
+重建與 Steam 上傳流程見 [發布說明](docs/WORKSHOP-PUBLISHING.md)。請使用 0.5.0 Rust 繁簡整合包（中文輸入、效能與翻譯佇列修正版）；0.3.x 的選用背景服務依賴 Node.js，已由新版本取代。
 
 ## 授權
 

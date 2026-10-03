@@ -71,7 +71,7 @@ function ZhRaceFilterOverlay:render(dc)
         previous_search=page.filter_str; self.dirty=false
     end
     ZhRaceFilterOverlay.super.render(self,dc)
-    local label=runtime.literal_key('按種族篩選：')
+    local label=runtime.literal_key('Ctrl+E 種族：')
     local value=runtime.literal_key(race_to_label[cur_race] or '全部')
     if label then runtime.draw_key(57,11,COLOR_WHITE,0,label) end
     if value then runtime.draw_key(80,11,COLOR_YELLOW,0,value) end
@@ -79,7 +79,7 @@ end
 
 function ZhRaceFilterOverlay:onInput(keys)
     if not is_list() then return end
-    if keys.CUSTOM_ALT_S then self:choose_race(); return true end
+    if keys.CUSTOM_CTRL_E then self:choose_race(); return true end
     return ZhRaceFilterOverlay.super.onInput(self,keys)
 end
 

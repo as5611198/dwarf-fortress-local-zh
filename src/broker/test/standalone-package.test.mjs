@@ -10,6 +10,19 @@ import {spawnSync} from 'node:child_process';
 
 const packageRoot = process.env.DF_LOCAL_ZH_PACKAGE_TEST_ROOT ?? fileURLToPath(new URL('../../../distribution/steam/df-local-zh-complete/', import.meta.url));
 
+test('Lua reviewed prose index is packaged with matching bilingual dictionaries', async () => {
+  const file='broker/data/reviewed-text-keys.json';
+  const keys=JSON.parse(await readFile(join(packageRoot,file),'utf8'));
+  const manifest=JSON.parse(await readFile(join(packageRoot,'PACKAGE-MANIFEST.json'),'utf8'));
+  assert.ok(manifest.files.some(row=>row.path===file),'Runtime dependency must be covered by the package manifest');
+  assert.equal(keys.dragon['zh-Hant'],'巨龍');
+  for(const language of ['zh-Hant','zh-Hans']) {
+    const rows=parse(await readFile(join(packageRoot,`dfi18n-data/simple/${language}/zzzzzzzz-arena-corrections.csv`),'utf8'),{columns:true});
+    const native=new Map(rows.map(row=>[row.text,row.translation]));
+    for(const [source,translations] of Object.entries(keys)) assert.equal(translations[language],native.get(source),source);
+  }
+});
+
 test('one Workshop package supplies both languages and its own core without upstream subscriptions', async () => {
   const manifest = JSON.parse(await readFile(join(packageRoot, 'PACKAGE-MANIFEST.json'), 'utf8'));
   assert.equal(manifest.releaseMode, 'standalone-bilingual');

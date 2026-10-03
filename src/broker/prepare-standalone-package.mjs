@@ -7,6 +7,7 @@ import {stringify} from 'csv-stringify/sync';
 import {convertCsv, convertRules, mergeTraditionalRuleOverride, canonicalizeCreatureRules} from './data.mjs';
 import {buildSimplified} from './build-language-data.mjs';
 import {buildCreatureDictionaries} from './build-creature-dictionaries.mjs';
+import {buildArenaCorrections} from './build-arena-corrections.mjs';
 import {ownedRows} from './official-owned.mjs';
 import {simplify} from './language-data.mjs';
 
@@ -17,7 +18,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(value => {
   if (split < 3 || !value.startsWith('--')) throw new Error(`Expected --name=value: ${value}`);
   return [value.slice(2, split), value.slice(split + 1)];
 }));
-const version = args.version ?? '0.4.1';
+const version = args.version ?? '0.5.0';
 if (!/^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(version)) throw new Error('Invalid version');
 const output = resolve(args.output ?? join(root, 'distribution/steam/df-local-zh-complete'));
 const core = resolve(args['native-dll'] ?? join(root, 'src/df-local-zh-native/target/release/df_local_zh_core.dll'));
@@ -54,6 +55,9 @@ const data=join(output,'dfi18n-data');
 await mkdir(join(output,'broker/data'),{recursive:true});
 await mkdir(join(output,'libs'),{recursive:true});
 await mkdir(join(output,'self-tests'),{recursive:true});
+for(const name of ['ime-editor.lua','ime-clipboard.lua','ime-render-order.lua','search-literal-render.lua','keybinding-labels.lua','os-ime-acceptance.lua','extended-adapters.lua','editor-boundaries.lua','runtime-response-recovery.lua','runtime-reviewed-fallback.lua','names-worker-performance.lua','shortcut-routing.lua','rename-native-entry.lua','nickname-display.lua']) {
+  await cp(join(root,'src/df-local-zh-native/self-tests',name),join(output,'self-tests',name));
+}
 await cp(core,join(output,'libs/df_local_zh_core.dll'));
 await cp(launcher,join(output,'broker/df-broker-launch.dll'));
 await cp(rustBroker,join(output,'broker/df-local-zh-broker.exe'));
@@ -149,7 +153,8 @@ for(const language of ['zh-Hant','zh-Hans']) {
   await writeFile(join(output,'broker/config.json'),JSON.stringify(current,null,2)+'\n');
 }
 const creatureCounts=await buildCreatureDictionaries(output);
-await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與 Rust 本機服務。需要 DFHack；不需要 Node.js 或另外訂閱中文資料包。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料、原生核心與 Rust 背景服務，於設定切換。玩家無須安裝 Node.js；網路請求、AI 補譯及官方譯庫同步由隨包元件處理。靜態與已安裝譯庫可離線使用。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：更正授權方向與下游開發者身分；繁簡與 Rust 執行功能保留。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
+await buildArenaCorrections(output);
+await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與 Rust 本機服務。需要 DFHack；不需要 Node.js 或另外訂閱中文資料包。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料、原生核心與 Rust 背景服務，於設定切換。玩家無須安裝 Node.js；網路請求、AI 補譯及官方譯庫同步由隨包元件處理。靜態與已安裝譯庫可離線使用。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：發布前修補：單句與重試佇列、背景逾時、設定回覆可靠寫入、UTF-8／剪貼簿邊界、SDL 資源生命週期、快取容量與分幀名稱匯出；中文改名、姓名尾段漢化與快捷鍵巨集衝突修正。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
 await cp(join(root,'docs/PLAYER-INSTALL.md'),join(output,'README.md'));
 const counts={};
 for(const language of ['zh-Hant','zh-Hans']) {
@@ -173,7 +178,16 @@ const manifest={package:'df-local-zh-complete',version,generatedAt:new Date().to
   runtime:'rust',requiresNode:false,brokerSha256:sha256(await readFile(rustBroker)),
   languages:['zh-Hant','zh-Hans'],requiresOriginalEngine:false,requiresOriginalDataSubscription:false,
   requiredWorkshopItems:[],requiresDFHack:true,privateRuntimeExcluded:true,upstreamDataBundled:true,upstreamRedistributionApproved:true,
-  upstreamLicenseMetadata:[approved],sourceMetadata:metadata,changes:['CN->TW conversion with OpenCC and local terminology corrections',
+  upstreamLicenseMetadata:[approved],sourceMetadata:metadata,changes:['Remove macro shortcut collisions; preserve Enter newlines and IME editing; translate surname and profession after custom nicknames',
+    'Pre-release audit: runtime retry recovery, context isolation, bounded queues/caches, SDL ownership fixes and clipboard limits',
+    'Incremental atomic name exports, cached hot-path modules, terminal failure reporting and IME composition recovery',
+    'In-game copy/cut writes UTF-8 through the public SDL clipboard API; clipboard roundtrip regression added',
+    'TSF candidate pages retained during selection; bounded candidate box drawn after DFHack window backgrounds',
+    'Public SDL/IMM/TSF IME adapter and composition key ownership',
+    'UTF-8 literal draft editors, accepted-only nickname entry and local font fallback',
+    'Independent structured history, adventure journal reader and opt-in bounded local diagnostics',
+    'Real Microsoft Zhuyin and display-matrix acceptance remains pending',
+    'CN->TW conversion with OpenCC and local terminology corrections',
     'Fixed missing CSV quoting in Macro, Save and Adventure down-fast rows; source vendor remains unchanged',
     'Hans original source retained; local Hant overrides converted with OpenCC T2S','Project static dictionaries and owned exact rows added'],
   counts,nativeCoreSha256:sha256(await readFile(core)),files:manifestFiles};

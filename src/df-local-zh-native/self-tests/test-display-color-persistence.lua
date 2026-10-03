@@ -22,7 +22,7 @@ local function open(path,mode)
             offset=kind=='end' and #(files[path] or '') or position
             return offset
         end,
-        read=function() return (files[path] or ''):sub(offset+1) end,
+        lines=function() return ((files[path] or '')..'\n'):gmatch('(.-)\n') end,read=function() return (files[path] or ''):sub(offset+1) end,
         write=function(_,...)
             files[path]=(files[path] or '')..table.concat({...})
             return true

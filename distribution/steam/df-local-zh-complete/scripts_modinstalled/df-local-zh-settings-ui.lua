@@ -6,6 +6,7 @@ local settings=reqscript('df-local-zh-settings')
 local runtime=reqscript('df-local-zh-runtime')
 local mod=reqscript('df-local-zh-core/mod')
 local native=reqscript('df-local-zh-core/native')
+local input=reqscript('df-local-zh-search')
 
 local function raw_paint(pen,x,y,text)
     native.interception_bypass_enable()
@@ -80,6 +81,9 @@ function NativeEdit:init()
     end
 end
 function NativeEdit:onRenderBody()
+    input.track(self,{get=function() return self.text end,set=function(value) self:setText(value,self.cursor) end,
+        cursor=function() return self.cursor end,set_cursor=function(cursor) self:setCursor(cursor) end,
+        rect=self.text_area.frame_body,max_bytes=8192})
     local rect=self.frame_body
     local prefix=self.key and gui.getKeyDisplay(self.key)..': ' or ''
     if prefix~='' then raw_paint(COLOR_LIGHTGREEN,rect.x1,rect.y1,prefix) end
@@ -128,6 +132,10 @@ end
 SecretField=defclass(SecretField,widgets.Panel)
 SecretField.ATTRS{value=DEFAULT_NIL,has_key=false,on_change=DEFAULT_NIL}
 function SecretField:onRenderBody()
+    input.track(self,{get=function() return self.value or '' end,set=function(value) self:setValue(value) end,
+        cursor=function() return self.ime_cursor or #(self.value or '')+1 end,
+        set_cursor=function(cursor,selected) self.ime_cursor=cursor;self.selected=selected end,
+        rect=self.frame_body,max_bytes=8192,secret=true})
     local text=self.value and string.rep('*',math.min(32,#self.value)) or
         (self.has_key and '已保存的金鑰' or '未設定')
     local rect=self.frame_body
@@ -216,6 +224,11 @@ function PromptText:onRenderBody()
         for _,p in utf8.codes(before) do x=x+(p>127 and 2 or 1) end
         local following=utf8.offset(line.text,offset+2) or #line.text+1
         local character=line.text:sub(ending,following-1)
+        local cx=rect.x1+math.min(x,width);local cy=rect.y1+cursor_line-self.scroll-1
+        input.track(self,{get=function() return self.text end,set=function(value) self:setText(value) end,
+            cursor=function() return utf8.offset(self.text,self.cursor) or #self.text+1 end,
+            set_cursor=function(cursor,selected) self.cursor=(utf8.len(self.text:sub(1,cursor-1)) or 0)+1;self.selected=selected end,
+            rect={x1=cx,x2=rect.x2,y1=cy,y2=cy},max_bytes=32768,max_chars=8192,multiline=true,anchor=true})
         self:paint_literal(rect.x1+math.min(x,width),rect.y1+cursor_line-self.scroll-1,character~='' and character or '_',COLOR_YELLOW)
     end
 end
@@ -259,9 +272,9 @@ function PromptScreen:init()
             NativeLabel{frame={l=1,b=3,r=1,h=1},text=function() return self.message end,text_pen=COLOR_YELLOW},
             NativeButton{view_id='paste_prompt',frame={l=1,b=2,w=22,h=1},key='CUSTOM_CTRL_V',caption='貼上',
                 on_activate=function() self:paste() end},
-            NativeButton{view_id='default_prompt',frame={l=25,b=2,r=1,h=1},key='CUSTOM_CTRL_R',caption='恢復預設',
+            NativeButton{view_id='default_prompt',frame={l=25,b=2,r=1,h=1},key='CUSTOM_CTRL_E',caption='恢復預設',
                 on_activate=function() self:restore_default() end},
-            NativeButton{view_id='accept_prompt',frame={l=1,b=0,w=25,h=1},key='CUSTOM_CTRL_S',caption='確認編輯',
+            NativeButton{view_id='accept_prompt',frame={l=1,b=0,w=25,h=1},key='CUSTOM_CTRL_ENTER',caption='確認編輯',
                 on_activate=function() self:accept() end},
             NativeButton{frame={l=28,b=0,r=1,h=1},key='LEAVESCREEN',caption='取消',on_activate=function() self:dismiss() end},
         }}}
@@ -378,7 +391,7 @@ function SettingsScreen:init()
                     SecretField{view_id='api_key',frame={l=14,t=7,r=1,h=1},has_key=self.profile.hasKey==true,
                         on_change=function(value) self.profile.key=value;self:profile_changed() end},
                     NativeLabel{view_id='api_key_help',frame={l=1,t=8,r=1,h=1},
-                        text='點金鑰欄輸入或 Ctrl+V 貼上，Ctrl+S 套用',text_pen=COLOR_GREY},
+                        text='Ctrl+V 貼上金鑰；Ctrl+Enter 套用',text_pen=COLOR_GREY},
                     NativeEdit{view_id='apiConcurrency',frame={l=1,t=9,r=1,h=1},native_label='此 API 並行數',label_text='',
                         text=tostring(self.profile.concurrency or 2),key='CUSTOM_B',on_char=function(ch) return ch:match('%d')~=nil end,
                         on_change=function(value) if not self.loading then
@@ -454,7 +467,7 @@ function SettingsScreen:init()
                 }},
             }},
             NativeLabel{view_id='message',frame={l=2,b=4,r=2,h=1},text=function() return self.message end,text_pen=COLOR_YELLOW},
-            NativeButton{view_id='apply',frame={l=2,b=1,w=20,h=1},key='CUSTOM_CTRL_S',caption='套用',
+            NativeButton{view_id='apply',frame={l=2,b=1,w=20,h=1},key='CUSTOM_CTRL_ENTER',caption='套用',
                 enabled=function() return not settings.is_pending() end,on_activate=function() self:apply() end},
             NativeButton{view_id='inherit',frame={l=24,b=1,w=27,h=1},key='CUSTOM_I',caption='沿用全域預設',
                 enabled=function() return self.scope=='save' and not settings.is_pending() end,on_activate=function() self:apply(true) end},
@@ -651,7 +664,7 @@ function SettingsEntry:onRenderBody()
     paint(rect.x1,rect.y1,'模組設定',COLOR_LIGHTGREEN,rect.x2-rect.x1+1)
 end
 function SettingsEntry:onInput(keys)
-    if keys.CUSTOM_CTRL_M or keys._MOUSE_L and self:getMousePos() then show();return true end
+    if keys.CUSTOM_CTRL_E or keys._MOUSE_L and self:getMousePos() then show();return true end
 end
 OVERLAY_WIDGETS={settings=SettingsEntry}
 if not dfhack_flags.module then show() end

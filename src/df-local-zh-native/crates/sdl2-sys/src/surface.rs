@@ -1,5 +1,30 @@
 use std::{ffi, marker::PhantomData, ops::Deref, slice, sync::Arc};
 
+#[cfg(test)]
+mod ownership_tests {
+  use super::*;
+  #[test]
+  fn borrowed_wrappers_release_their_allocation_without_owning_foreign_memory() {
+    for _ in 0..1000 {
+      let borrowed=Surface::from_raw(std::ptr::null_mut());
+      let weak=Arc::downgrade(&borrowed.inner);
+      drop(borrowed);
+      assert!(weak.upgrade().is_none(),"Borrowed wrapper leaked its allocation");
+    }
+  }
+  #[test]
+  fn borrowed_surface_does_not_free_the_live_owner() {
+    let owner=Surface::new(8,8);assert!(!owner.raw().is_null());
+    {let borrowed=Surface::from_raw(owner.raw_mut());assert_eq!(borrowed.get_size(),(8,8));}
+    owner.with_lock_mut(|pixels|pixels[0]=73);
+    owner.with_lock_mut(|pixels|assert_eq!(pixels[0],73));
+    let weak=Arc::downgrade(&owner.inner);let clone=owner.clone();drop(owner);
+    assert!(weak.upgrade().is_some());drop(clone);assert!(weak.upgrade().is_none());
+    let missing=Surface::from_raw(std::ptr::null_mut());
+    assert_eq!(missing.get_size(),(0,0));missing.with_lock_mut(|pixels|assert!(pixels.is_empty()));
+  }
+}
+
 use anyhow::{Result, anyhow};
 
 use crate::*;
@@ -39,6 +64,7 @@ impl<'a> Surface<'a> {
 
     let inner = SurfaceInner {
       ptr,
+      owned: true,
       _marker: PhantomData,
     };
 
@@ -49,12 +75,11 @@ impl<'a> Surface<'a> {
   pub fn from_raw(ptr: *mut SDL_Surface) -> Self {
     let inner = SurfaceInner {
       ptr,
+      owned: false,
       _marker: PhantomData,
     };
 
-    let boxed = Box::new(Surface { inner: Arc::new(inner) });
-    let leaked = Box::leak(boxed);
-    leaked.clone()
+    Surface { inner: Arc::new(inner) }
   }
 
   // Load an image from a byte slice and create a Surface
@@ -71,6 +96,7 @@ impl<'a> Surface<'a> {
 
     let inner = SurfaceInner {
       ptr: surface_ptr,
+      owned: true,
       _marker: PhantomData,
     };
 
@@ -91,6 +117,7 @@ impl<'a> Surface<'a> {
 
     let inner = SurfaceInner {
       ptr: surface_ptr,
+      owned: true,
       _marker: PhantomData,
     };
 
@@ -101,6 +128,7 @@ impl<'a> Surface<'a> {
 // Inner structure for Surface reference counting
 pub struct SurfaceInner<'a> {
   ptr: *mut SDL_Surface,
+  owned: bool,
   _marker: PhantomData<&'a ()>,
 }
 
@@ -109,7 +137,7 @@ unsafe impl Sync for SurfaceInner<'static> {}
 impl<'a> Drop for SurfaceInner<'a> {
   // Free the SDL Surface when the SurfaceInner is dropped
   fn drop(&mut self) {
-    unsafe { SDL_FreeSurface(self.ptr) };
+    if self.owned { unsafe { SDL_FreeSurface(self.ptr) }; }
   }
 }
 
@@ -126,6 +154,7 @@ impl SurfaceInner<'_> {
 
   // Get the size of the surface
   pub fn get_size(&self) -> (ffi::c_int, ffi::c_int) {
+    if self.ptr.is_null() {return (0,0)}
     let raw_ref = self.raw_ref();
 
     (raw_ref.get_width(), raw_ref.get_height())
@@ -133,16 +162,20 @@ impl SurfaceInner<'_> {
 
   // Execute a closure with a locked mutable reference to the pixel data
   pub fn with_lock_mut<R, F: FnOnce(&mut [u8]) -> R>(&self, f: F) -> R {
+    if self.ptr.is_null() {return f(&mut [])}
     // Lock the surface for pixel access
     if unsafe { SDL_LockSurface(self.ptr) != 0 } {
       log::error!("could not lock surface");
+      return f(&mut []);
     }
 
     // Execute the closure with the pixel data
+    struct Unlock(*mut SDL_Surface);
+    impl Drop for Unlock {fn drop(&mut self){unsafe {SDL_UnlockSurface(self.0)};}}
+    let _unlock=Unlock(self.ptr);
     let rv = f(self.raw_ref().get_pixels_mut());
 
     // Unlock the surface after pixel access
-    unsafe { SDL_UnlockSurface(self.ptr) };
 
     rv
   }

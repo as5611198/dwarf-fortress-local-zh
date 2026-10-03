@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use df_local_zh_broker::bounded::BoundedMap;
 use std::sync::{OnceLock, RwLock};
 
 use crate::{tasks, translation, translator};
@@ -26,9 +26,9 @@ extern "C" fn developer_mode_get_status(state: *mut std::ffi::c_void) -> i32 {
   lua53_sys::push_boolean(state, developer_mode()); 1
 }
 
-static VISITED: OnceLock<RwLock<HashSet<String>>> = OnceLock::new();
+static VISITED: OnceLock<RwLock<BoundedMap<String,()>>> = OnceLock::new();
 
-pub fn log_text(request: &translation::TranslationRequest, backtrace: &str, ptr: *const std::ffi::c_void) {
+pub fn trace_text(request: &translation::TranslationRequest) {
   if TRACE_ENABLED.load(Ordering::Relaxed) {
     let position=request.coordinate();
     let row=serde_json::json!({"text":request.original(),"x":position.column,"y":position.row,
@@ -36,6 +36,10 @@ pub fn log_text(request: &translation::TranslationRequest, backtrace: &str, ptr:
     let mut trace=TRACE.get_or_init(|| std::sync::Mutex::new(Vec::new())).lock().unwrap();
     if trace.len()<512 && !trace.contains(&row) { trace.push(row); }
   }
+}
+
+pub fn log_text(request: &translation::TranslationRequest, backtrace: &str, ptr: *const std::ffi::c_void) {
+  trace_text(request);
   if !developer_mode() || translator::known(request).is_some() { return; }
   let key = request.key().to_owned();
   let context = request.context().clone();
@@ -46,12 +50,12 @@ pub fn log_text(request: &translation::TranslationRequest, backtrace: &str, ptr:
   }
 
   // only log new translation requests once
-  let visited = VISITED.get_or_init(|| RwLock::new(HashSet::new()));
-  if visited.read().unwrap().contains(&key) {
+  let visited = VISITED.get_or_init(|| RwLock::new(BoundedMap::new(8192)));
+  if visited.read().unwrap().contains_key(&key) {
     return;
   }
 
-  visited.write().unwrap().insert(key.to_owned());
+  visited.write().unwrap().insert(key.to_owned(),());
 
   // spawn a task to perform the translation
   let request = request.clone();

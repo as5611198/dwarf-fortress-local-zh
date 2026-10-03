@@ -1,5 +1,19 @@
 use std::{ffi, marker::PhantomData, ops::Deref, sync::Arc};
 
+#[cfg(test)]
+mod ownership_tests {
+  use super::*;
+  #[test]
+  fn borrowed_wrappers_release_their_allocation_without_owning_foreign_memory() {
+    for _ in 0..1000 {
+      let borrowed=CppVector::<u8>::from_raw(std::ptr::null_mut());
+      let weak=Arc::downgrade(&borrowed.inner);
+      drop(borrowed);
+      assert!(weak.upgrade().is_none(),"Borrowed wrapper leaked its allocation");
+    }
+  }
+}
+
 unsafe extern "C-unwind" {
   fn cpp_create_vector() -> *mut RawCppVector;
   fn cpp_delete_vector(ptr: *mut RawCppVector);
@@ -30,6 +44,7 @@ impl<'a, T: Clone> CppVector<'a, T> {
     let ptr = unsafe { cpp_create_vector() };
     let inner = CppVectorInner {
       ptr,
+      owned: true,
       _marker: PhantomData,
     };
     CppVector { inner: Arc::new(inner) }
@@ -39,18 +54,18 @@ impl<'a, T: Clone> CppVector<'a, T> {
   pub fn from_raw(ptr: *mut RawCppVector) -> Self {
     let inner = CppVectorInner {
       ptr,
+      owned: false,
       _marker: PhantomData,
     };
 
-    let boxed = Box::new(CppVector { inner: Arc::new(inner) });
-    let leaked = Box::leak(boxed);
-    leaked.clone()
+    CppVector { inner: Arc::new(inner) }
   }
 }
 
 // Inner structure for CppVector reference counting
 pub struct CppVectorInner<'a, T> {
   ptr: *mut RawCppVector,
+  owned: bool,
   _marker: PhantomData<&'a T>,
 }
 
@@ -59,7 +74,7 @@ unsafe impl<T> Sync for CppVectorInner<'static, T> {}
 impl<'a, T> Drop for CppVectorInner<'a, T> {
   // Destroy the C++ vector when the CppVectorInner is dropped
   fn drop(&mut self) {
-    unsafe { cpp_delete_vector(self.ptr) };
+    if self.owned { unsafe { cpp_delete_vector(self.ptr) }; }
   }
 }
 

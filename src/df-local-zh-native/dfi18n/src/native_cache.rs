@@ -1,4 +1,5 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
+use df_local_zh_broker::bounded::BoundedMap;
 use std::fs::{self, OpenOptions};
 use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
@@ -23,11 +24,13 @@ pub(crate) struct CacheKey {
   pub original: String,
 }
 
-#[derive(Default)]
 pub(crate) struct MemoryCache {
-  ready: HashMap<CacheKey, TranslationResponse>,
+  ready: BoundedMap<CacheKey, TranslationResponse>,
   pending: HashSet<CacheKey>,
-  misses: HashMap<CacheKey, Instant>,
+  misses: BoundedMap<CacheKey, Instant>,
+}
+impl Default for MemoryCache {
+  fn default()->Self {Self{ready:BoundedMap::new(4096),pending:HashSet::new(),misses:BoundedMap::new(2048)}}
 }
 
 impl MemoryCache {
@@ -98,6 +101,14 @@ pub fn lookup(key: &CacheKey) -> Option<TranslationResponse> {
   Some(response)
 }
 pub fn begin(key: &CacheKey) -> bool { memory().write().unwrap().begin(key) }
+pub(crate) struct PendingGuard(pub CacheKey);
+impl Drop for PendingGuard {
+  fn drop(&mut self) {
+    // Cancellation/panic must release the dedup slot without doing disk I/O.
+    let mut cache=memory().write().unwrap();
+    if cache.pending.contains(&self.0) {cache.complete(self.0.clone(),None);}
+  }
+}
 
 #[cfg(test)]
 pub(crate) fn fixture_complete(key: CacheKey, response: TranslationResponse) {
@@ -160,6 +171,10 @@ fn restore(path: &Path, cache: &mut MemoryCache) -> anyhow::Result<usize> {
 }
 
 pub fn valid_translation(original: &str, translated: &str) -> bool {
+  if let Some(inner)=df_local_zh_broker::common::braced_item(original) {
+    return translated.strip_prefix('{').and_then(|s|s.strip_suffix('}'))
+      .is_some_and(|text|valid_translation(inner,text));
+  }
   if translated.is_empty() || translated.len() > 24000 || translated.contains('\0') { return false; }
   let tags = |text: &str| -> Vec<String> {
     static TAGS: OnceLock<regex::Regex> = OnceLock::new();
@@ -304,6 +319,22 @@ extern "C" fn persistent_cache_clear(state: *mut std::ffi::c_void) -> i32 {
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn ready_and_miss_caches_remain_bounded_during_long_sessions() {
+    let mut cache=MemoryCache::default();
+    for i in 0..20000 {
+      let mut k=key("long-session","plain");k.original=format!("Unique sentence {i}");
+      cache.complete(k.clone(),Some(response()));
+      k.original.push('x');cache.complete(k,None);
+    }
+    assert!(cache.ready.len()<=4096,"Ready rows grow without bound");
+    assert!(cache.misses.len()<=2048,"Failed sources grow without bound");
+  }
+  #[test]
+  fn native_validation_understands_item_wrappers_and_protects_template_names() {
+    assert!(valid_translation("{olm Remains}","{洞螈殘骸}"));
+    assert!(!valid_translation("{DWARF_NAME} likes stone.","某人喜歡石頭。"));
+  }
   fn key(world: &str, kind: &str) -> CacheKey {
     CacheKey { world: world.into(), language: "zh-Hant".into(), kind: kind.into(), original: "[C:6:0:1]Report[B]Next".into() }
   }

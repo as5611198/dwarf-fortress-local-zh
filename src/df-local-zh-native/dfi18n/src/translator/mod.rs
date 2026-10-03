@@ -5,6 +5,19 @@ use crate::{broker_client, game, lang, native_cache, tasks, translation};
 mod rulesets;
 mod simple;
 
+static REFRESHED_RULES:std::sync::atomic::AtomicBool=std::sync::atomic::AtomicBool::new(false);
+fn refreshed_rules(language:&str,request:&translation::TranslationRequest)->Option<translation::TranslationResponse> {
+  if REFRESHED_RULES.load(std::sync::atomic::Ordering::Relaxed) && request.original().len()<=160 {
+    rulesets::translate(language,request.context())
+  } else {None}
+}
+#[unsafe(no_mangle)]
+extern "C" fn local_rules_refresh(_state:*mut std::ffi::c_void)->i32 {
+  // Fresh rules take precedence over old dynamic responses, without touching
+  // persisted player caches or resetting attached renderers.
+  REFRESHED_RULES.store(true,std::sync::atomic::Ordering::Relaxed);0
+}
+
 // Pure local lookup: safe on the preload thread, without Lua or DF state.
 pub(crate) fn static_lookup(language:&str,source:&str)->Option<translation::TranslationResponse> {
   rulesets::translate_equipment(language,source)
@@ -35,6 +48,7 @@ pub fn should_skip_translation(original: &str) -> bool {
 pub fn translate(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
   if let Some(response)=crate::search::display_query(request.original()) { return Some(response); }
   let lang_tag = lang::current_lang_tag();
+  if let Some(response)=crate::nickname_display::lookup(request.original(),&lang_tag) {return Some(response)}
   if let Some(response)=crate::official::fixed(&lang_tag,request.original()) {return Some(response)}
   if let Some(response)=crate::chinese::direct(request.original(),&lang_tag) { return Some(response); }
 
@@ -48,6 +62,7 @@ pub fn translate(request: &translation::TranslationRequest) -> Option<translatio
 
   let stable_key = native_cache::key(&lang_tag, request);
   if let Some(response)=static_lookup(&lang_tag,request.original()) {return Some(response)}
+  if let Some(response)=refreshed_rules(&lang_tag,request) {return Some(response)}
   if let Some(response)=crate::official::lookup(&lang_tag,request.original()) {return Some(response)}
   if let Some(response) = native_cache::lookup(&stable_key) { return Some(response); }
 
@@ -56,18 +71,23 @@ pub fn translate(request: &translation::TranslationRequest) -> Option<translatio
   // spawn a task to perform the translation
   let request = request.clone();
   tasks::spawn(async move {
+    let _pending=native_cache::PendingGuard(stable_key.clone());
+    let result=tokio::time::timeout(broker_client::timeout()+std::time::Duration::from_secs(5),async {
     let _permit = tasks::translation_permit().await;
-    let response = std::panic::catch_unwind(|| do_translate_for_language(&request, &lang_tag)).ok().flatten()
+    let response = std::panic::catch_unwind(|| do_translate_for_language(&request, &lang_tag))
+      .unwrap_or_else(|_|{log::warn!("Local translation worker panicked; trying Broker");None})
       .filter(|response| native_cache::valid_translation(request.original(), &response.translated));
     let response = match response {
       Some(response) => Some(response),
       None => broker_client::translate_for(request.original(),&lang_tag,&stable_key.world).await,
     };
-    let response = if stable_key.world == native_cache::current_world() && lang_tag == lang::current_lang_tag() {
+    if stable_key.world == native_cache::current_world() && lang_tag == lang::current_lang_tag() {
       response
-    } else { None };
+    } else { None }
+    }).await;
+    if result.is_err() {log::warn!("Native translation deadline exceeded");}
     // The world/language key is captured before dispatch, so completions cannot leak.
-    native_cache::complete(stable_key, response);
+    native_cache::complete(stable_key, result.unwrap_or(None));
   });
 
   // return no translation for now
@@ -82,11 +102,13 @@ pub async fn translate_task(request: translation::TranslationRequest) {
 pub fn known(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
   if let Some(response)=crate::search::display_query(request.original()) { return Some(response); }
   let language = lang::current_lang_tag();
+  if let Some(response)=crate::nickname_display::lookup(request.original(),&language) {return Some(response)}
   crate::official::fixed(&language,request.original())
     .or_else(||crate::chinese::direct(request.original(),&language))
     .or_else(|| rulesets::translate_equipment(&language, request.original()))
     .or_else(|| simple::translate(&language, request.context()))
     .or_else(||static_lookup(&language,request.original()))
+    .or_else(||refreshed_rules(&language,request))
     .or_else(||crate::official::lookup(&language,request.original()))
     .or_else(|| native_cache::lookup(&native_cache::key(&language, request)))
 }
@@ -160,6 +182,20 @@ extern "C" fn cache_lookup(state: *mut std::ffi::c_void) -> i32 {
 mod immediate_tests {
   use super::*;
   use std::sync::atomic::Ordering;
+
+  #[test]
+  fn refreshed_rule_precedes_old_dynamic_translation() {
+    let path=std::env::temp_dir().join(format!("df-local-refresh-test-{}",std::process::id()));
+    std::fs::create_dir_all(&path).unwrap();
+    std::fs::write(path.join("index.toml"),"[[rulesets]]\n[rulesets.rules]\n\"Refresh fixture arrived\" = \"新版規則已抵達\"\n").unwrap();
+    rulesets::fixture_rules("en",&path);
+    let request=translation::TranslationRequest::fixture("Refresh fixture arrived",false,0);
+    native_cache::fixture_complete(native_cache::key("en",&request),translation::TranslationResponse{
+      translated:"舊快取".into(),alignment:Default::default()});
+    local_rules_refresh(std::ptr::null_mut());
+    assert_eq!(known(&request).unwrap().translated,"新版規則已抵達");
+    std::fs::remove_file(path.join("index.toml")).unwrap();std::fs::remove_dir(path).unwrap();
+  }
 
   #[test]
   fn exact_dictionary_returns_on_first_hook_call_without_a_worker() {

@@ -16,7 +16,7 @@ local env=setmetatable({
                 if kind=='end' then offset=#files[path] else offset=position end
                 return offset
             end,
-            read=function() return files[path]:sub(offset+1) end,
+            lines=function() return ((files[path] or '')..'\n'):gmatch('(.-)\n') end,read=function() return files[path]:sub(offset+1) end,
             write=function(_,...) files[path]=(files[path] or '')..table.concat({...}); writes=writes+1; return true end,
             close=function() return true end,
         }

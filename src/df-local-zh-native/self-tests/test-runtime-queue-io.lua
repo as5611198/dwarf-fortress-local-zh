@@ -148,6 +148,7 @@ local report_env = setmetatable({
     require=function(name) assert(name == 'plugins.eventful'); return events end,
     reqscript=function(name)
         if name=='df-local-zh-core/mod' then return runtime.reqscript(name) end
+        if name=='df-local-zh-status' then return {background_allowed=function() return true end,broker=function() return {} end} end
         assert(name == 'df-local-zh-runtime'); return runtime
     end,
 }, {__index=_G})

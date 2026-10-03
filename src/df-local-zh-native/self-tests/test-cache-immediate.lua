@@ -29,7 +29,7 @@ local env=setmetatable({
         if mode=='wb' then files[path]='' end
         local offset=0
         return {seek=function(_,kind,value) offset=kind=='end' and #files[path] or value;return offset end,
-            read=function() return files[path]:sub(offset+1) end,
+            lines=function() return ((files[path] or '')..'\n'):gmatch('(.-)\n') end,read=function() return files[path]:sub(offset+1) end,
             write=function(_,...)
                 files[path]=(files[path] or '')..table.concat({...})
                 if path==directory..'runtime-requests.jsonl' then requests=requests+1 end

@@ -53,8 +53,22 @@ fn sorted_matches(regex: &Regex, text: &str) -> Vec<String> {
   v.sort();
   v
 }
+// DF wraps worn item labels in braces. Named format tokens such as
+// {DWARF_NAME} remain opaque and must never enter this path.
+pub fn braced_item(source: &str) -> Option<&str> {
+  let inner=source.strip_prefix('{')?.strip_suffix('}')?;
+  (inner.as_bytes().first().is_some_and(u8::is_ascii_lowercase)
+    && inner.contains(' ') && inner.len()<=512
+    && inner.bytes().all(|b| b.is_ascii_alphanumeric() || b" -'()".contains(&b))).then_some(inner)
+}
 pub fn validate(source: &str, output: &str) -> Result<String> {
   let value = output.trim();
+  if let Some(inner)=braced_item(source) {
+    let translated=value.strip_prefix('{').and_then(|s|s.strip_suffix('}'))
+      .ok_or_else(||anyhow::anyhow!("item wrapper mismatch"))?;
+    validate(inner,translated)?;
+    return Ok(value.into());
+  }
   if value.is_empty() {
     bail!("empty translation")
   }
@@ -150,11 +164,11 @@ pub fn atomic(path: &Path, value: &Value) -> Result<()> {
   atomic_bytes(path, &bytes)
 }
 #[cfg(not(windows))]
-fn replace(from: &Path, to: &Path) -> Result<()> {
+pub fn replace(from: &Path, to: &Path) -> Result<()> {
   Ok(std::fs::rename(from, to)?)
 }
 #[cfg(windows)]
-fn replace(from: &Path, to: &Path) -> Result<()> {
+pub fn replace(from: &Path, to: &Path) -> Result<()> {
   use std::os::windows::ffi::OsStrExt;
   let f = from.as_os_str().encode_wide().chain([0]).collect::<Vec<_>>();
   let t = to.as_os_str().encode_wide().chain([0]).collect::<Vec<_>>();
@@ -193,6 +207,13 @@ pub fn append(path: &Path, value: &Value) -> Result<()> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn item_quality_braces_are_not_named_placeholders() {
+    assert!(validate("{olm Remains}", "{洞螈殘骸}").is_ok());
+    assert!(validate("{olm Remains}", "洞螈殘骸").is_err());
+    assert!(validate("{DWARF_NAME} likes quartzite.", "某人喜歡石英岩。").is_err());
+    assert!(validate("{DWARF_NAME} likes quartzite.", "{DWARF_NAME}喜歡石英岩。").is_ok());
+  }
   #[test]
   fn journal_identity_matches_javascript() {
     assert_eq!(

@@ -185,7 +185,8 @@ function poll(runtime)
     local pinned={}
     for _,row in ipairs(rows) do pinned[row.text]=true end
     for _,row in ipairs(rows) do
-        if not track(row,pinned).ready then pending=pending+1 end
+        local state=track(row,pinned)
+        if not state.ready and not state.error then pending=pending+1 end
     end
     local attempted=0
     for _=1,#rows do
@@ -194,11 +195,12 @@ function poll(runtime)
         local state=observed[row.text]
         if not state.ready and now>=state.next_try then
             attempted=attempted+1
-            local ok,result=pcall(runtime.prefetch,row.text,'foreground')
-            if not ok then
+            local ok,result,status,reason=pcall(runtime.prefetch,row.text,'foreground')
+            if not ok or status=='failed' then
                 if not state.error then
                     state.error=true;errors=errors+1
-                    log({text=row.text,field_id=row.field_id,type=row.type,error=tostring(result)})
+                    log({text=row.text,field_id=row.field_id,type=row.type,error=tostring(reason or result)})
+                    pending=math.max(0,pending-1)
                 end
                 state.next_try=now+5000
             elseif result then

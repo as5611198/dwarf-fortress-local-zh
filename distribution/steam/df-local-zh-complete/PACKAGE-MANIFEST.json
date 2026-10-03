@@ -1,11 +1,11 @@
 {
   "package": "df-local-zh-complete",
-  "version": "0.4.1",
-  "generatedAt": "2026-10-01T15:29:01.122Z",
+  "version": "0.5.0",
+  "generatedAt": "2026-10-03T01:38:10.276Z",
   "releaseMode": "standalone-bilingual",
   "runtime": "rust",
   "requiresNode": false,
-  "brokerSha256": "e8684cd9166084381ed6833e1720c9cc07d57426fe32219da0ca1c6ce23260db",
+  "brokerSha256": "ac026ba037522ccfd2b6301fbc1ca376c2af123a6d3c8087b7ec0dd093e07db6",
   "languages": [
     "zh-Hant",
     "zh-Hans"
@@ -657,6 +657,15 @@
     ]
   },
   "changes": [
+    "Remove macro shortcut collisions; preserve Enter newlines and IME editing; translate surname and profession after custom nicknames",
+    "Pre-release audit: runtime retry recovery, context isolation, bounded queues/caches, SDL ownership fixes and clipboard limits",
+    "Incremental atomic name exports, cached hot-path modules, terminal failure reporting and IME composition recovery",
+    "In-game copy/cut writes UTF-8 through the public SDL clipboard API; clipboard roundtrip regression added",
+    "TSF candidate pages retained during selection; bounded candidate box drawn after DFHack window backgrounds",
+    "Public SDL/IMM/TSF IME adapter and composition key ownership",
+    "UTF-8 literal draft editors, accepted-only nickname entry and local font fallback",
+    "Independent structured history, adventure journal reader and opt-in bounded local diagnostics",
+    "Real Microsoft Zhuyin and display-matrix acceptance remains pending",
     "CN->TW conversion with OpenCC and local terminology corrections",
     "Fixed missing CSV quoting in Macro, Save and Adventure down-fast rows; source vendor remains unchanged",
     "Hans original source retained; local Hant overrides converted with OpenCC T2S",
@@ -664,17 +673,17 @@
   ],
   "counts": {
     "zh-Hant": {
-      "simpleRows": 10848,
+      "simpleRows": 11366,
       "rulesetFiles": 147,
       "creatureRows": 4667
     },
     "zh-Hans": {
-      "simpleRows": 14290,
+      "simpleRows": 14808,
       "rulesetFiles": 147,
       "creatureRows": 4667
     }
   },
-  "nativeCoreSha256": "0c7f76ac1a1e46745fdca134151093f18cd2bb8afce9ecfec3e7ac8f69132728",
+  "nativeCoreSha256": "6252a117aa3647462bcad18c074568317fdb92f638eebb223d1376959db07f38",
   "files": [
     {
       "path": "ATTRIBUTION.md",
@@ -698,11 +707,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "558b9f6a6cc4b7ab76d0391817077878c3d00f7603e6f77c5a8c6ac5bdafd23d"
+      "sha256": "65dcd84e2a1d3daf736ca91599e344625463fc0ea405748163088fbbf2e3ec18"
     },
     {
       "path": "WORKSHOP-PUBLISHING.md",
-      "sha256": "9edda46d20a708f90328ed29f90d5ede1dade18386b6beae908872d9a632b61a"
+      "sha256": "03d9effa3c906e85ce1409e0bad606346143fdce5210acae7792ba7d31881c87"
     },
     {
       "path": "broker/LICENSE-STATUS.json",
@@ -710,7 +719,7 @@
     },
     {
       "path": "broker/config.json",
-      "sha256": "cf41e8edb06faa3ee4cbc32d13a0e5cc27712fcb06417f548a45538fb308ab7d"
+      "sha256": "9ad2ddea95241b26adff907d82eabbd231b2870a61ed3f3530e5d9ca57c7c312"
     },
     {
       "path": "broker/corrections.csv",
@@ -731,6 +740,14 @@
     {
       "path": "broker/data/announcement-rules/index.toml",
       "sha256": "8a2ce22f64362f09a8543b6dec56fda28f49f9f89318488919f04b1e781e6e73"
+    },
+    {
+      "path": "broker/data/arena-corrections-zh-Hans.csv",
+      "sha256": "6fb3e7059f35ac3a5bb5fb1bfc60938f14e7e7c64f3ed80664400cf5b5cceb31"
+    },
+    {
+      "path": "broker/data/arena-corrections-zh-Hant.csv",
+      "sha256": "5fd1bd943ba06b9f7e3222e62c467ddcfbf85e51a7cd435ef332a1c13bd9fdaa"
     },
     {
       "path": "broker/data/community-reviewed-zh-Hans.csv",
@@ -771,6 +788,10 @@
     {
       "path": "broker/data/fortress-ui.csv",
       "sha256": "50443877a2b80431eb2c1e71ce55080961fced1253f882852f2905f3b03ebc46"
+    },
+    {
+      "path": "broker/data/gameplay-glossary.json",
+      "sha256": "40c6ee5877bbc22e72c200e7253ea8d8003bd9961a98dc93f578fae5e87bccc2"
     },
     {
       "path": "broker/data/official-builtin-zh-Hans.csv",
@@ -821,12 +842,16 @@
       "sha256": "2a3b5f1c5623d96a32a7a6e4fd9783571695ba04ca4c58764c0e6d5990bdde1d"
     },
     {
+      "path": "broker/data/reviewed-text-keys.json",
+      "sha256": "65dbd3fb79c7779dc37c2d626a1e8a668179c6461300c3b1d6e3df6d8391fb25"
+    },
+    {
       "path": "broker/df-broker-launch.dll",
       "sha256": "65252375261e96f0e4a7169cab838aa7a18e26cd0953b7b5758020fd1ca0fd8e"
     },
     {
       "path": "broker/df-local-zh-broker.exe",
-      "sha256": "e8684cd9166084381ed6833e1720c9cc07d57426fe32219da0ca1c6ce23260db"
+      "sha256": "ac026ba037522ccfd2b6301fbc1ca376c2af123a6d3c8087b7ec0dd093e07db6"
     },
     {
       "path": "broker/glossary-zh-Hans.json",
@@ -1454,7 +1479,7 @@
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hans/visual_ui.toml",
-      "sha256": "8d045d28aab93b5d92602ce841199c712bd10751c7bb6b10e5c9162b5083f555"
+      "sha256": "49bf27074fc75db0154292c031b193979ae0c76a075c06eac8ef5df5d6327b4f"
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hans/workshop.toml",
@@ -2042,7 +2067,7 @@
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hant/visual_ui.toml",
-      "sha256": "7fd2dab1d94a19cb7d5441c8ab43341570b1515c23076011502d10b180e00d0c"
+      "sha256": "7f5f8b4834d71c6fe93054d32501cc4dd3bf2221c03565e1a4b62679e9a3161f"
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hant/workshop.toml",
@@ -2054,7 +2079,7 @@
     },
     {
       "path": "dfi18n-data/simple/zh-Hans/local-reviewed.csv",
-      "sha256": "c8e985287f61655a2d82c19a9e5577587eee00b51583757da200893dd330c196"
+      "sha256": "7ee5671d04ac32324d75b31938bf478a1625d5360c06661b7f264f9653be0d12"
     },
     {
       "path": "dfi18n-data/simple/zh-Hans/visual-blocks.csv",
@@ -2105,12 +2130,16 @@
       "sha256": "4846af9038ea232f5ca9e9ce3076f6e02d6da25e381d56d4bb0bd96e4e182fd9"
     },
     {
+      "path": "dfi18n-data/simple/zh-Hans/zzzzzzzz-arena-corrections.csv",
+      "sha256": "dafc685651b2bb3f6864d74898de86146b4de7eb60fd85e4259bcdd1c0cb79bd"
+    },
+    {
       "path": "dfi18n-data/simple/zh-Hant/00-upstream.csv",
       "sha256": "b19649d41eadd334c4424d9bed9c4be215eed63bd02a3da9425a2f4fb0fc5946"
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/local-reviewed.csv",
-      "sha256": "a1696a94dffe7f0f64e41f53345cc994de98fd614c9d28d6ce526ea546f86081"
+      "sha256": "1fd6d2804c7f8605ca11325b95e00bb385c5a1fbad9c28054e500524f55434aa"
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/visual-blocks.csv",
@@ -2161,16 +2190,24 @@
       "sha256": "d23a53df20a25da0481b9d17cf10d02d51cdc0946b0df7c97f47c9e095d74c23"
     },
     {
+      "path": "dfi18n-data/simple/zh-Hant/zzzzzzzz-arena-corrections.csv",
+      "sha256": "5c6ea43e90dd8b3fac366ad21ed0ff7efeef8d5ac6cfeffba151ee29d3fe1c10"
+    },
+    {
       "path": "info.txt",
-      "sha256": "89fc8880271acae72fc336504444c5adf7474d97e3f3ab89d1b62a58ea37b1f4"
+      "sha256": "898a19b7bd9541eec048316a895716eeabf1df731579a86afa0adfe995a58613"
     },
     {
       "path": "libs/df_local_zh_core.dll",
-      "sha256": "0c7f76ac1a1e46745fdca134151093f18cd2bb8afce9ecfec3e7ac8f69132728"
+      "sha256": "6252a117aa3647462bcad18c074568317fdb92f638eebb223d1376959db07f38"
     },
     {
       "path": "preview.png",
-      "sha256": "7a36253106f582c873a27d97131ae3176ad96726f9425a037b567870cd57ce2e"
+      "sha256": "0680f90d5fd1dee906adced8ec6bd1af3f81e39defcd306e9a13894a1a7218c7"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-adventure.lua",
+      "sha256": "2ea1ca9a4b8f29106e3b35d11913a6289e7e995befe5db182988b31f1279a73a"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-arena-corrections-test.lua",
@@ -2202,11 +2239,11 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-core/mod.lua",
-      "sha256": "627bc7248cb80ca6d493c71b94f34d2bac592269cfbb545b10ca02abe6199b1c"
+      "sha256": "a925fe5376e212e932da212bb3cbfa47fb3599975b1dc8dc3a802d145719f049"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-core/native.lua",
-      "sha256": "775c1a9ae0a0d0fe112ca10b7a947caf2d91afbe6e912b1c8202585d617e88ac"
+      "sha256": "9537480231f2fc3d4e269d3f743c5ee56d70521287b52d3070485cdcd7707374"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-creature-names.lua",
@@ -2225,8 +2262,16 @@
       "sha256": "51d548b3fecf56faeaf04fd339f94b8002ae3d3f68137b5ec26d5501315223f9"
     },
     {
+      "path": "scripts_modinstalled/df-local-zh-history.lua",
+      "sha256": "a278889afc62f177e39015722209f4ca72000978ee5316f290dc414d4f8635ce"
+    },
+    {
       "path": "scripts_modinstalled/df-local-zh-hover-text.lua",
       "sha256": "7ae3ab4a1a78a7df543808ff5ee7a71f3b5bd3b2e277522518607f4cb4a5a449"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-keybinding-labels.lua",
+      "sha256": "45913c6904eaa9c43def73c4373a796a61e946ebdc8dc5d18e163ea4fdb60a18"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-legends-filter-core.lua",
@@ -2234,7 +2279,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-legends-filter.lua",
-      "sha256": "0fb1b3032bddc4f8a92f9962dd6304e4ea4d26b70576c90601ea864403d39128"
+      "sha256": "30680195d698c0b1baeadeaae97da25b105aa324fb2aecfae4c65ee648664446"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-legends-list.lua",
@@ -2249,8 +2294,12 @@
       "sha256": "0663d4468a6ce092eb81071a33495f2c0be23010342df646167a41c3a00c08b0"
     },
     {
+      "path": "scripts_modinstalled/df-local-zh-local-diagnostics.lua",
+      "sha256": "bb61352e5605b5630ce66da4fdcfd630539387db013249c7024e37f2555f4ddc"
+    },
+    {
       "path": "scripts_modinstalled/df-local-zh-names-worker.lua",
-      "sha256": "ba817f9d05581d5a6b9d8fda41298361d71dfacbcaec81c37919261c726f4734"
+      "sha256": "72d45424c1633d4d1aebb845b55f5ecf30f68dc57b58e5d610fe7b432ccbad69"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-names.lua",
@@ -2270,7 +2319,11 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-native-prewarm.lua",
-      "sha256": "1876a49c77a9719da8f8f08d729a85205b08efe7d92453126f01e0883e0fdf22"
+      "sha256": "3ae4ef385473f168edf1ae40ffcb9d9f144167f6e114d1d7434460ffc3a2a08b"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-nickname-display.lua",
+      "sha256": "0e7c9a88d16c3fdadb638f90350d1e6f2c2f98fb6c76d6fa1e92f8ce1d87a594"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-paths.lua",
@@ -2278,23 +2331,27 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-prefetch.lua",
-      "sha256": "5c788f9a6775e6b025c016847a9d0acffb3b16967b787b9c32b0335416dec67f"
+      "sha256": "036af5a89ada6418a956a1220d69976319c13c327abf45a343b0880fd7719da1"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-rename.lua",
+      "sha256": "0d4948d31cba38505f34ce19634d72cc26e1aa651dd8566d464cd32b466126c0"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-reports.lua",
-      "sha256": "f9ee5b359f21c4d4080bc383ee5699e2ccc0d634f7b3cf3745c6f17adb7c509b"
+      "sha256": "7c9302cb2244f6d0b6135d06cf6c22067f158925e8c55135abc743fa638a9489"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-reviewed-text.lua",
-      "sha256": "9da17bbe7a2b8314df35c8c8f617320c9e50aaa171cfe164350e0f860f8e4be3"
+      "sha256": "5075bd5846aa8a0c0a47963144a1bf69fa22b9b4adade5bbb5a96926f1435762"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-runtime.lua",
-      "sha256": "ed905c005fdf50c2fa6e61cf69ff3f96f35da7508aed3d452490b7e1af28f902"
+      "sha256": "0fc6b13f350a8879d373678598921b42c93595f0f2523a8becfc5ec42d43146f"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-search-editor.lua",
-      "sha256": "bdd8fc64113cf55448379e16f7bb3c4327a14e8fb7b7fbbd09b90261d9d32cfb"
+      "sha256": "a4afdb62f5e8ba1004df5f80b5e66e5125fe05af5f198919ba2aff3043d81ab4"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-search-test.lua",
@@ -2302,15 +2359,15 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-search.lua",
-      "sha256": "a0ebfe2417abfd036527ff913e2c3838bc0aca8606cc32c67456639ab30d3492"
+      "sha256": "d924957b1d78e4afa6c3c701d27487fd4e11f9eb535470b675f0a421a7eee380"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-settings-test.lua",
-      "sha256": "c11c357cfc781bd29507a3de7d0424a2edfa81d8b1793b10cf0293acc80ab2ca"
+      "sha256": "7c21aec726f49827bf1d4c78699fc63b5c5353c44b833d0452de2987c25de23e"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-settings-ui.lua",
-      "sha256": "f12f4b56f0fc134618ec31e74b2490a2e26a3063d44bd111f85d6907f74bd987"
+      "sha256": "307e6a2a833b398a5de38d621c17b6cb2bf848534ed33a31f5626345d84a7ff5"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-settings.lua",
@@ -2333,16 +2390,20 @@
       "sha256": "b98994afb35b5d5f9110c37a27e9c9cb3ac07c0ef23e12409abd92fdcdc810dd"
     },
     {
+      "path": "scripts_modinstalled/df-local-zh-unicode.lua",
+      "sha256": "7710f07f71769314cfe066a7b7aa8d611a35ed214477c38282e3dcb9352499fb"
+    },
+    {
       "path": "scripts_modinstalled/df-local-zh-unit-prewarm.lua",
-      "sha256": "473ab282109d550312fb4ea37f5ff22252dedec38314fa467140c25a144a6d75"
+      "sha256": "5a10e559c0092eac57e183c9a5e9efec6657ccdd08926e4aa58ac8bd5ca6aee1"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-unit-text.lua",
-      "sha256": "dc6cf2a928fa61946407cc9286f8e7dd1bf8a8af070a0f3c5b3a6aea88d53307"
+      "sha256": "c7a23db341c3b92dac4e372a0c55f7c97526acecf02bf919e994dfe44a6ef719"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-visible-text.lua",
-      "sha256": "00644c85d10a0002225e16dedd30457e2e0d6a46b1dc2b9ddcc1de064485bea9"
+      "sha256": "00f88c123705d22dd7883464665fcffa054bdb4aeef1c2ce6525752a46df5bda"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-workbook-test.lua",
@@ -2350,15 +2411,75 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh.lua",
-      "sha256": "7668ef6f0b554d264516cad572e7aedf2e9d186a31b9701b28502ddbcaea284a"
+      "sha256": "31efc90f0b1da0351c6f48d773e19b922c5b00be103ebfe8d540fd067bbff6bd"
     },
     {
       "path": "scripts_modinstalled/dfi18n_loader.lua",
       "sha256": "b994c23a08d0ec82b0ac7994f7595f12d30ef5283bc12612a1f064f832f27931"
     },
     {
+      "path": "self-tests/arena-corrections.json",
+      "sha256": "a74650e0e312ab3cad274a0fa175a13990e8deb1dc629b0c00cdc3feca16449c"
+    },
+    {
       "path": "self-tests/creature-dictionaries.json",
       "sha256": "e226afb1678abdea2ad9f72a4021dc89f743da5f5872d3e187a2c46050e5db47"
+    },
+    {
+      "path": "self-tests/editor-boundaries.lua",
+      "sha256": "3f43649f3ab10085d8e63b95e1cd39ce9602579fff5c2353595a915c5c64fd75"
+    },
+    {
+      "path": "self-tests/extended-adapters.lua",
+      "sha256": "dd08e05c92999e1bfe23970277f5d97b9c15a54f320d70c7a360625a6fb86905"
+    },
+    {
+      "path": "self-tests/ime-clipboard.lua",
+      "sha256": "0d3aacfe3ea2cc7735bc1e862bd45f638130874e7aa4968cf4fda1d8686c05c1"
+    },
+    {
+      "path": "self-tests/ime-editor.lua",
+      "sha256": "105b39c2364dc261b072bf5e98e57572a752f344572f51e5a43d732f1e8cd43e"
+    },
+    {
+      "path": "self-tests/ime-render-order.lua",
+      "sha256": "3e245a3fd5d71bd4b69e35dd4d5744d346de3452561c57e1f0aa3dd78c0120ea"
+    },
+    {
+      "path": "self-tests/keybinding-labels.lua",
+      "sha256": "05c05a4de684b0d582bd1c7e8b81db01d7e68355b6b78ec71da1cd01018eb382"
+    },
+    {
+      "path": "self-tests/names-worker-performance.lua",
+      "sha256": "10ec32ce8437de3038459a09c8d2df27ccf78cc5dc5379c61a81e82e756edde4"
+    },
+    {
+      "path": "self-tests/nickname-display.lua",
+      "sha256": "85735a90807903f9cd234fa018e0eb188da811b0c88b39d339e825f67abbeee9"
+    },
+    {
+      "path": "self-tests/os-ime-acceptance.lua",
+      "sha256": "4b135072c91aefb6810ec4e167805cc74a376e599aa9cc73d2f170b415956a0c"
+    },
+    {
+      "path": "self-tests/rename-native-entry.lua",
+      "sha256": "8e1971ed569acc3179bd2693ff14a2b493986f107abbd679458660e1df67133a"
+    },
+    {
+      "path": "self-tests/runtime-response-recovery.lua",
+      "sha256": "fd86660179dc7fc4f1c811225ee3358d251b68014a83b3b08d8da63a944cbc34"
+    },
+    {
+      "path": "self-tests/runtime-reviewed-fallback.lua",
+      "sha256": "cf2411b3d9e1b63dfe01f85d1584cace90cd0763ae8ccdfb8e06a53ff0a583c0"
+    },
+    {
+      "path": "self-tests/search-literal-render.lua",
+      "sha256": "7ad0f33ddbc0a0fd3771b0a39721c4d3842e0a4718a0d502f26e27a930adb70d"
+    },
+    {
+      "path": "self-tests/shortcut-routing.lua",
+      "sha256": "f779d26e7720a18e1add95478097496f4d1ed17bc387d9b82fe62e44bd90cd0d"
     },
     {
       "path": "third-party-licenses/dfi18n-data-CC-BY-NC-4.0.md",

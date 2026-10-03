@@ -1,5 +1,5 @@
 use core::ffi;
-use std::collections::HashMap;
+use df_local_zh_broker::bounded::BoundedMap;
 use std::sync::{OnceLock, RwLock, RwLockReadGuard, RwLockWriteGuard};
 use std::{char, mem, ptr};
 
@@ -8,27 +8,28 @@ use crate::{cjk, df, glyph, hooks, text, types};
 // Reset all managed markups text boxes
 pub fn reset() {
   get_markups_mut().clear();
+  get_mtbs_mut().clear();
 }
 
 // All managed markups text boxes maps by their content string
-static MARKUPS: OnceLock<RwLock<HashMap<String, ManagedMarkupTextBox>>> = OnceLock::new();
+static MARKUPS: OnceLock<RwLock<BoundedMap<String, ManagedMarkupTextBox>>> = OnceLock::new();
 
 // Getting mutable access to the managed markups text boxes
-pub fn get_markups_mut() -> RwLockWriteGuard<'static, HashMap<String, ManagedMarkupTextBox>> {
-  MARKUPS.get_or_init(|| RwLock::new(HashMap::new())).write().unwrap()
+pub fn get_markups_mut() -> RwLockWriteGuard<'static, BoundedMap<String, ManagedMarkupTextBox>> {
+  MARKUPS.get_or_init(|| RwLock::new(BoundedMap::new(256))).write().unwrap()
 }
 
 // All markup text boxes maps by their address to original content string
-static MTBS: OnceLock<RwLock<HashMap<usize, String>>> = OnceLock::new();
+static MTBS: OnceLock<RwLock<BoundedMap<usize, String>>> = OnceLock::new();
 
 // Getting access to the markup text boxes
-pub fn get_mtbs() -> RwLockReadGuard<'static, HashMap<usize, String>> {
-  MTBS.get_or_init(|| RwLock::new(HashMap::new())).read().unwrap()
+pub fn get_mtbs() -> RwLockReadGuard<'static, BoundedMap<usize, String>> {
+  MTBS.get_or_init(|| RwLock::new(BoundedMap::new(2048))).read().unwrap()
 }
 
 // Getting mutable access to the markup text boxes
-pub fn get_mtbs_mut() -> RwLockWriteGuard<'static, HashMap<usize, String>> {
-  MTBS.get_or_init(|| RwLock::new(HashMap::new())).write().unwrap()
+pub fn get_mtbs_mut() -> RwLockWriteGuard<'static, BoundedMap<usize, String>> {
+  MTBS.get_or_init(|| RwLock::new(BoundedMap::new(2048))).write().unwrap()
 }
 
 #[allow(non_camel_case_types)]

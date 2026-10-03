@@ -3,12 +3,14 @@
 local json=require('json')
 local native=reqscript('df-local-zh-core/native')
 local paths=reqscript('df-local-zh-paths')
+local runtime,status_module
 
 function poll()
     local world=dfhack.isWorldLoaded() and dfhack.isMapLoaded() and dfhack.getSavePath() or ''
-    local runtime=reqscript('df-local-zh-runtime')
+    runtime=runtime or reqscript('df-local-zh-runtime')
     local language=runtime.language()
-    local paused=reqscript('df-local-zh-status').paused_background()
+    status_module=status_module or reqscript('df-local-zh-status')
+    local paused=status_module.paused_background()
     local filename=language=='zh-Hans' and '/native-prewarm-zh-Hans.json' or '/native-prewarm.json'
     native.native_prewarm_request(paths.broker_data()..filename,world,language,paused and 1 or 0)
 end

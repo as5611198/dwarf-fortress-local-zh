@@ -1,4 +1,5 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
+use df_local_zh_broker::bounded::BoundedMap;
 use std::ffi;
 use std::io::Read as _;
 use std::sync::{OnceLock, RwLock, RwLockReadGuard, RwLockWriteGuard};
@@ -14,20 +15,21 @@ pub const FONT_SCALE_FACTOR: f32 = 2.0;
 
 // Reset all loaded fonts along with cached glyph surfaces and textures
 pub fn reset() {
+  get_curses_glyph_textures_mut().clear();
   get_font_glyph_textures_mut().clear();
   get_font_glyph_surfaces_mut().clear();
   get_fonts_mut().clear();
 }
 
 // Curses glyph textures maps a renderer along with a character code to its SDL texture
-type CursesGlyphTextures = BTreeMap<(usize, u8), sdl::Texture<'static>>;
+type CursesGlyphTextures = BoundedMap<(usize, u8), sdl::Texture<'static>>;
 
 // All curses glyph textures
 static CURSES_GLYPH_TEXTURES: OnceLock<RwLock<CursesGlyphTextures>> = OnceLock::new();
 
 // Getting mutable access to the curses glyph textures
 pub fn get_curses_glyph_textures_mut() -> RwLockWriteGuard<'static, CursesGlyphTextures> {
-  CURSES_GLYPH_TEXTURES.get_or_init(|| RwLock::new(BTreeMap::new())).write().unwrap()
+  CURSES_GLYPH_TEXTURES.get_or_init(|| RwLock::new(BoundedMap::new(2048))).write().unwrap()
 }
 
 // Gets the SDL texture for a given CP437 codepoint using the curses font
@@ -36,17 +38,14 @@ pub fn get_curses_glyph_texture(renderer: &sdl::Renderer<'static>, code: u8) -> 
   let key = (renderer_id, code);
   let mut curses_glyph_textures = get_curses_glyph_textures_mut();
 
-  curses_glyph_textures
-    .entry(key)
-    .or_insert_with(|| {
-      let surface = df::enabler::get_curses_surface(code);
-      sdl::Texture::from_surface(renderer, &surface)
-    })
-    .clone()
+  if let Some(texture)=curses_glyph_textures.get(&key).filter(|t|!t.raw().is_null()) {return texture.clone()}
+  let surface=df::enabler::get_curses_surface(code);
+  let texture=sdl::Texture::from_surface(renderer,&surface);
+  curses_glyph_textures.insert(key,texture.clone());texture
 }
 
 // Glyph textures maps a renderer along with a character to its SDL texture
-type GlyphTexture = BTreeMap<(usize, char), sdl::Texture<'static>>;
+type GlyphTexture = BoundedMap<(usize, char), sdl::Texture<'static>>;
 
 // A collection of glyph textures grouped by language tag
 type FontGlyphTextures = HashMap<String, GlyphTexture>;
@@ -60,7 +59,7 @@ pub fn get_font_glyph_textures_mut() -> RwLockWriteGuard<'static, FontGlyphTextu
 }
 
 // Glyph surfaces maps a character to its SDL surface
-type GlyphSurfaces = BTreeMap<char, sdl::Surface<'static>>;
+type GlyphSurfaces = BoundedMap<char, sdl::Surface<'static>>;
 
 // A collection of glyph surfaces grouped by language tag
 type FontGlyphSurfaces = HashMap<String, GlyphSurfaces>;
@@ -74,15 +73,28 @@ pub fn get_font_glyph_surfaces_mut() -> RwLockWriteGuard<'static, FontGlyphSurfa
 }
 
 // All loaded fonts mapped by language tag
-static FONTS: OnceLock<RwLock<HashMap<String, fontdue::Font>>> = OnceLock::new();
+static FONTS: OnceLock<RwLock<HashMap<String, Vec<fontdue::Font>>>> = OnceLock::new();
+
+fn covering_font(chain:&[fontdue::Font],ch:char)->Option<usize> {
+  chain.iter().position(|font|font.lookup_glyph_index(ch)!=0)
+}
+// Privacy-safe coverage diagnostics: only a caller-supplied codepoint and index.
+#[unsafe(no_mangle)]
+extern "C" fn glyph_font_index(state:*mut ffi::c_void)->i32 {
+  let language=lua::check_string(state,1);
+  let point=lua::check_integer(state,2) as u32;
+  let fonts=get_fonts();
+  let index=char::from_u32(point).and_then(|ch|fonts.get(&language).and_then(|chain|covering_font(chain,ch)));
+  lua::push_integer(state,index.map(|i|i as isize).unwrap_or(-1));1
+}
 
 // Getting access to the loaded fonts
-pub fn get_fonts() -> RwLockReadGuard<'static, HashMap<String, fontdue::Font>> {
+pub fn get_fonts() -> RwLockReadGuard<'static, HashMap<String, Vec<fontdue::Font>>> {
   FONTS.get_or_init(|| RwLock::new(HashMap::new())).read().unwrap()
 }
 
 // Getting mutable access to the loaded fonts
-pub fn get_fonts_mut() -> RwLockWriteGuard<'static, HashMap<String, fontdue::Font>> {
+pub fn get_fonts_mut() -> RwLockWriteGuard<'static, HashMap<String, Vec<fontdue::Font>>> {
   FONTS.get_or_init(|| RwLock::new(HashMap::new())).write().unwrap()
 }
 
@@ -100,21 +112,39 @@ extern "C" fn add_font(lua_state: *mut ffi::c_void) -> i32 {
   }
 
   // parse the font data
-  if let Err(err) = fontdue::Font::from_bytes(data, fontdue::FontSettings::default()).map(|font| {
+  // Rendering uses individual codepoints, never GSUB indexed substitutions.
+  let settings=fontdue::FontSettings{load_substitutions:false,..Default::default()};
+  if let Err(err) = fontdue::Font::from_bytes(data, settings).map(|font| {
     // store the loaded font
     let mut fonts = get_fonts_mut();
-    fonts.insert(lang_tag.to_string(), font);
+    fonts.entry(lang_tag.to_string()).or_default().push(font);
+    drop(fonts);
     // initialize glyph surfaces and textures for the new font
     let mut font_glyph_surfaces = get_font_glyph_surfaces_mut();
-    font_glyph_surfaces.insert(lang_tag.to_string(), BTreeMap::new());
+    font_glyph_surfaces.insert(lang_tag.to_string(), BoundedMap::new(4096));
     let mut font_glyph_textures = get_font_glyph_textures_mut();
-    font_glyph_textures.insert(lang_tag.to_string(), BTreeMap::new());
+    font_glyph_textures.insert(lang_tag.to_string(), BoundedMap::new(4096));
     log::debug!(r#"Loaded font for language tag "{lang_tag}" from "{path_str}""#);
   }) {
     log::warn!(r#"Failed to parse font file "{path_str}": {err}"#);
     return 0;
   }
   0
+}
+
+#[cfg(test)]
+mod fallback_tests {
+  #[test]
+  fn windows_extension_b_font_parses_for_codepoint_rasterization() {
+    let path=std::path::Path::new("C:/Windows/Fonts/mingliub.ttc");
+    if !path.exists() {return}
+    let bytes=std::fs::read(path).unwrap();
+    let font=fontdue::Font::from_bytes(bytes,fontdue::FontSettings{load_substitutions:false,..Default::default()}).unwrap();
+    assert_ne!(font.lookup_glyph_index('\u{20000}'),0);
+    let (metrics,bitmap)=font.rasterize('\u{20000}',32.0);
+    assert!(metrics.width>0 && metrics.height>0 && metrics.advance_width>0.0 && metrics.advance_height>0.0);
+    assert!(bitmap.iter().any(|value|*value>0),"Fallback must produce visible glyph pixels");
+  }
 }
 
 // Gets the SDL surface for a given character glyph
@@ -132,7 +162,8 @@ pub fn get_glyph_surface(ch: char) -> sdl::Surface<'static> {
     // only rasterize and cache the glyph if not already done
     if !glyph_surfaces.contains_key(&ch) {
       // ensure the font for the current language tag is loaded
-      if let Some(font) = get_fonts().get(&lang_tag) {
+      let fonts=get_fonts();
+      if let Some(font) = fonts.get(&lang_tag).and_then(|chain|covering_font(chain,ch).map(|index|&chain[index])) {
         // calculate font size based on original curses font size and scale factor
         let orig_size = df::renderer::get_renderer_info().orig_size();
         let font_scale = FONT_SCALE_FACTOR;
@@ -157,6 +188,7 @@ pub fn get_glyph_surface(ch: char) -> sdl::Surface<'static> {
         // create the surface and fill in the pixel data
         let surface = sdl::Surface::new(buff_width, buff_height);
         surface.with_lock_mut(|buffer| {
+          if buffer.len()<(buff_size.max(0) as usize)*4 {return}
           // adjustment made to y-offset to better align glyphs vertically
           // TODO: make this configurable
           let y_offset = (font_size / 8.0).round() as i32;
@@ -217,7 +249,7 @@ pub fn get_glyph_texture(renderer: &sdl::Renderer<'static>, ch: char) -> sdl::Te
   if let Some(glyph_textures) = font_glyph_textures.get_mut(&lang_tag) {
     // only create and cache the texture if not already done
     let renderer_id = renderer.raw() as usize;
-    if !glyph_textures.contains_key(&(renderer_id, ch)) {
+    if glyph_textures.get(&(renderer_id, ch)).is_none_or(|t|t.raw().is_null()) {
       let surface = get_glyph_surface(ch);
       let texture = sdl::Texture::from_surface(renderer, &surface);
       glyph_textures.insert((renderer_id, ch), texture);

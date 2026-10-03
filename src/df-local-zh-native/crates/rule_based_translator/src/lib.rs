@@ -691,8 +691,9 @@ mod tests {
     let mut translator = Translator::default();
     translator.load_from_dir(path).unwrap();
     assert!(translator.dump().len() > 100);
-    let translated = translator.translate("five Notable Kills").expect("Actual kill rules must translate");
-    assert!(!translated.contains("Notable"), "{translated}");
+    for (source,want) in [("five Notable Kills","五 次重要擊殺"),("27 Notable Kills","27 次重要擊殺"),("one Notable Kill","一次重要擊殺")] {
+      assert_eq!(translator.translate(source).as_deref(),Some(want),"{source}");
+    }
   }
 
   #[test]

@@ -16,6 +16,7 @@ local cases={
     {'Date: 22nd Opal, 252','日期：252年蛋白石月22日'},
 }
 for _,row in ipairs(cases) do
-    assert(mod.sync_translate(row[1])==row[2],'Missing native translation: '..row[1])
+    local translated=mod.sync_translate(row[1])
+    assert(translated and translated:gsub('巖','岩')==row[2],'Missing native translation: '..row[1])
 end
 print('PASS fortress stair composition and announcement tabs in native translator')

@@ -1,5 +1,19 @@
 use std::{ffi, marker::PhantomData, ops::Deref, sync::Arc};
 
+#[cfg(test)]
+mod ownership_tests {
+  use super::*;
+  #[test]
+  fn borrowed_wrappers_release_their_allocation_without_owning_foreign_memory() {
+    for _ in 0..1000 {
+      let borrowed=Window::from_raw(std::ptr::null_mut());
+      let weak=Arc::downgrade(&borrowed.inner);
+      drop(borrowed);
+      assert!(weak.upgrade().is_none(),"Borrowed wrapper leaked its allocation");
+    }
+  }
+}
+
 use crate::*;
 
 const SDL_WINDOWPOS_UNDEFINED_MASK: i32 = 0x1FFF0000;
@@ -47,6 +61,7 @@ impl<'a> Window<'a> {
 
     let inner = WindowInner {
       ptr,
+      owned: true,
       _marker: PhantomData,
     };
 
@@ -57,12 +72,11 @@ impl<'a> Window<'a> {
   pub fn from_raw(ptr: *mut SDL_Window) -> Self {
     let inner = WindowInner {
       ptr,
+      owned: false,
       _marker: PhantomData,
     };
 
-    let boxed = Box::new(Window { inner: Arc::new(inner) });
-    let leaked = Box::leak(boxed);
-    leaked.clone()
+    Window { inner: Arc::new(inner) }
   }
 
   // Create a renderer for the window
@@ -75,6 +89,7 @@ impl<'a> Window<'a> {
 #[derive(Debug)]
 pub struct WindowInner<'a> {
   ptr: *mut SDL_Window,
+  owned: bool,
   _marker: PhantomData<&'a ()>,
 }
 
@@ -83,7 +98,7 @@ unsafe impl Sync for WindowInner<'static> {}
 impl Drop for WindowInner<'_> {
   // Destroy the SDL Window when the WindowInner is dropped
   fn drop(&mut self) {
-    unsafe { SDL_DestroyWindow(self.ptr) };
+    if self.owned { unsafe { SDL_DestroyWindow(self.ptr) }; }
   }
 }
 

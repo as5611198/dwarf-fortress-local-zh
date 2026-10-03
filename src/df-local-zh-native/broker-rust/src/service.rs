@@ -1,3 +1,4 @@
+use crate::bounded::BoundedMap;
 use crate::{
   common::*,
   equipment::Terms,
@@ -33,7 +34,7 @@ pub struct App {
   glossaries: HashMap<String, Value>,
   name_dictionary: Value,
   races: Value,
-  cache: Mutex<Dict>,
+  cache: Mutex<BoundedMap<String,String>>,
   fixed: HashMap<String, Dict>,
   pending: Mutex<Pending>,
   journal: Mutex<()>,
@@ -42,6 +43,13 @@ pub struct App {
   pub published: AtomicUsize,
   pub failed: AtomicUsize,
   pub attempted: AtomicUsize,
+  runtime_snapshot: Mutex<Value>,
+  registry_cache: Mutex<(Option<(std::time::SystemTime,u64)>,Arc<Value>)>,
+  prewarm_signature: Mutex<String>,
+}
+struct PendingGuard { app: Arc<App>, key: String }
+impl Drop for PendingGuard {
+  fn drop(&mut self) { self.app.pending.lock().unwrap().remove(&self.key); }
 }
 pub struct Prepared {
   pub text: String,
@@ -52,19 +60,18 @@ pub struct Prepared {
 impl Prepared {
   pub fn restore(&self, translation: &str, source: &str) -> Result<String> {
     let s = re(r"\{\{DF([NE])(\d+)\}\}").replace_all(translation, |c: &regex::Captures| {
-      let n = c[2].parse::<usize>().unwrap();
-      if &c[1] == "N" {
+      c[2].parse::<usize>().ok().and_then(|n| if &c[1] == "N" {
         self.numbers.get(n)
-      } else {
-        self.entities.get(n)
-      }
+      } else { self.entities.get(n) })
       .cloned()
       .unwrap_or(c[0].into())
     });
-    validate(source, &s)
+    if braced_item(source).is_some() { validate(source,&format!("{{{s}}}")) }
+    else { validate(source, &s) }
   }
 }
 pub fn prepare(source: &str, glossary: &Value) -> Prepared {
+  let source=braced_item(source).unwrap_or(source);
   let mut names = glossary
     .as_object()
     .map(|o| o.keys().filter(|k| !matches!(k.as_str(), "A" | "An" | "The")).cloned().collect::<Vec<_>>())
@@ -210,7 +217,7 @@ impl App {
       }
       fixed.insert(lang.into(), pins);
     }
-    let mut cache = Dict::new();
+    let mut cache = BoundedMap::new(16384);
     let journal_path = root.join("translations.jsonl");
     if journal_path.exists() {
       use std::io::BufRead;
@@ -271,6 +278,9 @@ impl App {
       published: AtomicUsize::new(0),
       failed: AtomicUsize::new(0),
       attempted: AtomicUsize::new(0),
+      runtime_snapshot: Mutex::new(json!({"foregroundActive":0,"backgroundActive":0,"foregroundQueued":0,"backgroundQueued":0,"unresolved":0})),
+      registry_cache:Mutex::new((None,Arc::new(json!({"entities":[]})))),
+      prewarm_signature:Mutex::new(String::new()),
     });
     app.publish_status()?;
     println!(
@@ -289,11 +299,15 @@ impl App {
       })
       .unwrap_or_else(|| json!({"world":"","language":self.settings.lock().unwrap().effective("")["language"]}))
   }
-  pub fn registry(&self, world: &str) -> Value {
-    read_json(&self.runtime.join("world-names.json"), 32 * 1024 * 1024)
-      .ok()
-      .filter(|r| r["world"] == world && r["entities"].is_array())
-      .unwrap_or(json!({"world":world,"entities":[]}))
+  pub fn registry(&self, world: &str) -> Arc<Value> {
+    let path=self.runtime.join("world-names.json");
+    let stamp=std::fs::metadata(&path).ok().and_then(|m|Some((m.modified().ok()?,m.len())));
+    let mut cache=self.registry_cache.lock().unwrap();
+    if stamp!=cache.0 {
+      let value=read_json(&path,32*1024*1024).ok().filter(|v|v["entities"].is_array());
+      if let Some(value)=value {*cache=(stamp,Arc::new(value));}
+    }
+    if cache.1["world"]==world {cache.1.clone()} else {Arc::new(json!({"world":world,"entities":[]}))}
   }
   fn known(&self, source: &str, lang: &str) -> Option<String> {
     if let Some(v) = self.fixed.get(lang)?.get(source) {
@@ -376,13 +390,15 @@ impl App {
       let lang = lang.to_string();
       let world = world.to_string();
       tokio::spawn(async move {
-        let result = app.process(&source, &lang, &world, priority).await;
+        let _pending=PendingGuard {app:app.clone(),key};
+        let deadline=Duration::from_millis(app.settings.lock().unwrap().effective(&world)["timeoutMs"].as_u64().unwrap_or(25000));
+        let result = tokio::time::timeout(deadline,app.process(&source, &lang, &world, priority)).await
+          .unwrap_or_else(|_|Err(anyhow::anyhow!("translation deadline exceeded")));
         let row = match result {
           Ok(s) => (true, s),
           Err(e) => (false, e.to_string()),
         };
         let _ = tx.send(Some(row));
-        app.pending.lock().unwrap().remove(&key);
       });
     }
     loop {
@@ -532,7 +548,15 @@ impl App {
     let lang = context["language"].as_str().unwrap_or("zh-Hant");
     let s = self.settings.lock().unwrap();
     let configured = s.effective(world)["apiEnabled"] == true && !s.selected(world).is_empty();
-    json!({"service":"df-local-zh","engine":"rust","version":"0.4.0","policy":POLICY,"language":lang,"providerConfigured":configured,"cached":self.cache.lock().unwrap().len(),"pending":self.pending.lock().unwrap().len(),"providerBatch":self.pool.stats(),"official":self.official.status(lang),"runtime":{"attempted":self.attempted.load(Ordering::Relaxed),"published":self.published.load(Ordering::Relaxed),"failed":self.failed.load(Ordering::Relaxed),"active":self.runtime_active.load(Ordering::Relaxed)}})
+    json!({"service":"df-local-zh","engine":"rust","version":"0.4.0","policy":POLICY,"language":lang,"providerConfigured":configured,"cached":self.cache.lock().unwrap().len(),"pending":self.pending.lock().unwrap().len(),"providerBatch":self.pool.stats(),"official":self.official.status(lang),"runtime":self.runtime_status()})
+  }
+  fn runtime_status(&self)->Value {
+    let mut status=self.runtime_snapshot.lock().unwrap().clone();
+    status["attempted"]=json!(self.attempted.load(Ordering::Relaxed));
+    status["published"]=json!(self.published.load(Ordering::Relaxed));
+    status["failed"]=json!(self.failed.load(Ordering::Relaxed));
+    status["active"]=json!(self.runtime_active.load(Ordering::Relaxed));
+    status
   }
   pub fn publish_status(&self) -> Result<()> {
     let context = self.context();
@@ -544,7 +568,7 @@ impl App {
     let paused = effective["backgroundTranslation"] != true || controls["backgroundPaused"] == true;
     let queued = self.pool.queued.load(Ordering::Relaxed);
     let active = self.pool.active.load(Ordering::Relaxed);
-    let status = json!({"version":1,"timestamp":now(),"world":world,"language":lang,"providerConfigured":effective["apiEnabled"]==true&&!settings.selected(world).is_empty(),"cached":self.cache.lock().unwrap().len(),"backgroundPaused":paused,"foregroundActive":active,"backgroundActive":0,"foregroundQueued":queued,"backgroundQueued":0,"providerQueued":queued,"providerActive":active,"runtime":{"attempted":self.attempted.load(Ordering::Relaxed),"published":self.published.load(Ordering::Relaxed),"failed":self.failed.load(Ordering::Relaxed),"foregroundActive":self.runtime_active.load(Ordering::Relaxed),"backgroundActive":0,"foregroundQueued":0,"backgroundQueued":0,"unresolved":self.failed.load(Ordering::Relaxed)}});
+    let status = json!({"version":1,"timestamp":now(),"world":world,"language":lang,"providerConfigured":effective["apiEnabled"]==true&&!settings.selected(world).is_empty(),"cached":self.cache.lock().unwrap().len(),"backgroundPaused":paused,"foregroundActive":active,"backgroundActive":0,"foregroundQueued":queued,"backgroundQueued":0,"providerQueued":queued,"providerActive":active,"runtime":self.runtime_status()});
     drop(settings);
     atomic(&self.runtime.join("broker-status.json"), &status)
   }
@@ -625,7 +649,7 @@ impl App {
       let links = request["links"].as_array().ok_or_else(|| anyhow::anyhow!("invalid links"))?;
       ensure!(links.len() <= 64, "invalid links");
       let ts =
-        re(r"\{\{DFL(\d+)\}\}").captures_iter(source).map(|c| c[1].parse::<usize>().unwrap()).collect::<Vec<_>>();
+        re(r"\{\{DFL(\d+)\}\}").captures_iter(source).map(|c| c[1].parse::<usize>()).collect::<std::result::Result<Vec<_>,_>>()?;
       ensure!(
         ts.len() == links.len()
           && ts.iter().copied().collect::<HashSet<_>>().len() == links.len()
@@ -730,6 +754,12 @@ impl App {
     if world.is_empty() {
       return Ok(());
     }
+    let mut signature=format!("{world}:{:?}:{:?}",self.official.status("zh-Hant"),self.official.status("zh-Hans"));
+    let mut inputs=vec![self.runtime.join("world-names.json")];
+    if let Some(game)=std::env::var_os("DF_LOCAL_ZH_GAME_ROOT") {inputs.push(PathBuf::from(game).join("dfi18n-data/cache/translation-cache.csv"));}
+    for input in inputs {let m=std::fs::metadata(input).ok();signature.push_str(&format!("{:?}",m.and_then(|m|Some((m.modified().ok()?,m.len())))));}
+    let mut previous=self.prewarm_signature.lock().unwrap();
+    if *previous==signature {return Ok(())}
     let registry = self.registry(world);
     let names = registry["entities"]
       .as_array()
@@ -816,6 +846,7 @@ impl App {
         atomic(&self.runtime.join(small), &data)?;
       }
     }
+    *previous=signature;
     Ok(())
   }
 }
@@ -878,7 +909,7 @@ impl Tail {
     self.modified = meta.modified().ok();
     file.seek(SeekFrom::Start(self.offset))?;
     let mut data = Vec::new();
-    file.take(4 * 1024 * 1024).read_to_end(&mut data)?;
+    file.take(64 * 1024).read_to_end(&mut data)?;
     self.offset += data.len() as u64;
     self.tail.extend(data);
     let mut rows = Vec::new();
@@ -898,16 +929,36 @@ impl Tail {
     Ok(rows)
   }
 }
+fn runtime_request_current(row: &Value, world: &str, visible: &HashSet<String>) -> bool {
+  if row["world"] != world {
+    return false;
+  }
+  // Fortress prose and background requests have no viewport identity. Only
+  // view-bound requests (including Legends identities) require visibility.
+  let view_bound = row.get("visibilityId").is_some()
+    || row.get("kind").is_some()
+    || row.get("figureId").is_some_and(|id| !id.is_null());
+  !view_bound || row["visibilityId"].as_str().is_some_and(|id| visible.contains(id))
+}
+
 pub async fn run_background(app: Arc<App>) {
   let mut last_id = String::new();
+  let mut settings_task:Option<tokio::task::JoinHandle<(String,Value)>>=None;
+  let mut settings_reply:Option<(String,Value)>=None;
+  let mut settings_reply_at=Instant::now()-Duration::from_secs(2);
+  let mut previous_visible=HashSet::new();
   let mut tail = Tail::default();
-  let mut completed = HashSet::new();
+  let mut deferred=false;
+  let mut completed = BoundedMap::new(32768);
   let mut jobs = HashMap::<String, Value>::new();
-  let mut inflight = HashSet::new();
-  let mut failures = HashMap::<String, Value>::new();
+  let mut inflight = HashMap::<String,Value>::new();
+  let mut scope=String::new();
+  let mut retry_generation=String::new();
+  let mut failures = BoundedMap::<String, Value>::new(4096);
   let (done_tx, mut done_rx) = tokio::sync::mpsc::channel::<(String, Value, Result<Value>)>(64);
   let mut status_at = Instant::now();
   let mut prewarm_at = Instant::now() - Duration::from_secs(10);
+  let mut prewarm_task:Option<tokio::task::JoinHandle<()>>=None;
   let mut shared_at = Instant::now() - Duration::from_secs(20);
   let mut auto_at = HashMap::<String, i64>::new();
   if let Ok(file) = std::fs::File::open(app.runtime.join("runtime-responses.jsonl")) {
@@ -924,7 +975,7 @@ pub async fn run_background(app: Arc<App>) {
           )
           .is_ok()
         {
-          completed.insert(runtime_key(&row));
+          completed.insert(runtime_key(&row),());
         }
       }
     }
@@ -934,7 +985,7 @@ pub async fn run_background(app: Arc<App>) {
     for line in std::io::BufReader::new(file).lines().map_while(Result::ok) {
       if let Ok(row) = serde_json::from_str::<Value>(&line) {
         let key = runtime_key(&row);
-        if row["key"] == key && row["attempts"].as_u64().is_some_and(|n| n <= 31) && !completed.contains(&key) {
+        if row["key"] == key && row["attempts"].as_u64().is_some_and(|n| n <= 31) && !completed.contains_key(&key) {
           failures.insert(key, row);
         }
       }
@@ -944,17 +995,19 @@ pub async fn run_background(app: Arc<App>) {
     while let Ok((key, row, result)) = done_rx.try_recv() {
       inflight.remove(&key);
       app.runtime_active.fetch_sub(1, Ordering::Relaxed);
+      let context=app.context();
+      if context["world"]!=row["world"] || context["language"].as_str().unwrap_or("zh-Hant")!=row["language"].as_str().unwrap_or("zh-Hant") {continue}
+      let result=result.and_then(|output| {
+        append(&app.runtime.join("runtime-responses.jsonl"), &output)?;
+        Ok(output)
+      });
       match result {
-        Ok(output) => {
-          if app.context()["world"] == row["world"]
-            && append(&app.runtime.join("runtime-responses.jsonl"), &output).is_ok()
-          {
-            completed.insert(key.clone());
+        Ok(_) => {
+            completed.insert(key.clone(),());
             failures.remove(&key);
             app.published.fetch_add(1, Ordering::Relaxed);
-          }
         }
-        Err(_) => {
+        Err(error) => {
           let settings = app.settings.lock().unwrap().effective(row["world"].as_str().unwrap_or(""));
           let count = failures.get(&key).and_then(|v| v["attempts"].as_u64()).unwrap_or(0) + 1;
           let mut failure = row.clone();
@@ -963,33 +1016,72 @@ pub async fn run_background(app: Arc<App>) {
           failure["retryAt"] = json!(
             now() + 300000.min(settings["retryBaseMs"].as_i64().unwrap_or(1000) * (1_i64 << (count - 1).min(20)))
           );
-          failure["reason"] = json!("translation failed");
-          let _ = append(&app.runtime.join("runtime-failures.jsonl"), &failure);
+          failure["reason"] = json!(error.to_string().chars().take(512).collect::<String>());
+          failure["terminal"]=json!(count>settings["maxRetries"].as_u64().unwrap_or(2));
+          failure["retryGeneration"]=json!(retry_generation);
+          if let Err(e)=append(&app.runtime.join("runtime-failures.jsonl"), &failure) {eprintln!("runtime failure journal: {e}")}
+          if failure["terminal"]!=true {jobs.insert(key.clone(),row);}
           failures.insert(key, failure);
           app.failed.fetch_add(1, Ordering::Relaxed);
         }
       }
     }
-    if let Ok(request) = read_json(&app.root.join("settings-request.json"), 32768) {
+    if settings_task.as_ref().is_some_and(|t|t.is_finished()) {
+      match settings_task.take().unwrap().await {
+        Ok((id,answer))=>{
+          settings_reply=Some((id,answer));
+          settings_reply_at=Instant::now()-Duration::from_secs(2);
+        },
+        Err(e)=>{eprintln!("settings worker: {e}");last_id.clear();},
+      }
+    }
+    if settings_reply.is_some() && settings_reply_at.elapsed()>=Duration::from_secs(1) {
+      let (id,answer)=settings_reply.as_ref().unwrap();
+      match atomic(&app.root.join("settings-response.json"),answer) {
+        Ok(())=>{
+          // Acknowledge only after delivery. Retry the saved reply, never the
+          // potentially non-idempotent settings operation, on a write failure.
+          if read_json(&app.root.join("settings-request.json"),32768).is_ok_and(|r|r["id"]==*id) {
+            if let Err(e)=atomic(&app.root.join("settings-request.json"),&json!({"version":1,"processed":id})) {eprintln!("settings acknowledgement: {e}");}
+          }
+          settings_reply=None;
+        }
+        Err(e)=>{eprintln!("settings response: {e}");}
+      }
+      settings_reply_at=Instant::now();
+    }
+    if settings_task.is_none() && settings_reply.is_none() {if let Ok(request) = read_json(&app.root.join("settings-request.json"), 32768) {
       if let Some(id) = request["id"].as_str() {
         if id != last_id {
           last_id = id.into();
-          let answer = app
-            .settings_request(&request)
-            .await
-            .unwrap_or_else(|_| json!({"version":1,"id":id,"ok":false,"error":"設定無效或連線失敗"}));
-          let _ = atomic(
-            &app.root.join("settings-request.json"),
-            &json!({"version":1,"processed":id}),
-          );
-          let _ = atomic(&app.root.join("settings-response.json"), &answer);
+          let a=app.clone();let id=id.to_string();
+          settings_task=Some(tokio::spawn(async move {
+            let answer=tokio::time::timeout(Duration::from_secs(125),a.settings_request(&request)).await
+              .ok().and_then(Result::ok).unwrap_or_else(||json!({"version":1,"id":id,"ok":false,"error":"設定無效或連線失敗"}));
+            (id,answer)
+          }));
         }
       }
-    }
+    }}
     let context = app.context();
     let world = context["world"].as_str().unwrap_or("");
     let language = context["language"].as_str().unwrap_or("zh-Hant");
+    let next_scope=format!("{world}\0{language}");
+    if scope!=next_scope {
+      scope=next_scope;tail=Tail::default();jobs.clear();
+      failures.retain(|_,row|row["world"]==world && row["language"].as_str().unwrap_or("zh-Hant")==language);
+    }
     let settings = app.settings.lock().unwrap().effective(world);
+    // The first visible prose may fail before the asynchronous world-name
+    // export is ready. A newly published registry is new translation context,
+    // so allow the bounded retry budget again without requiring a UI revisit.
+    let registry_revision=std::fs::metadata(app.runtime.join("world-names.json")).ok()
+      .and_then(|m|Some((m.modified().ok()?.duration_since(std::time::UNIX_EPOCH).ok()?.as_nanos().to_string(),m.len())));
+    let generation=hash(serde_json::to_vec(&json!([settings,app.settings.lock().unwrap().selected(world),registry_revision])).unwrap());
+    if generation!=retry_generation {
+      failures.retain(|_,row|row["retryGeneration"]==generation);
+      retry_generation=generation;tail=Tail::default();
+    }
     if settings["officialAutoDownload"] == true
       && now() - auto_at.get(language).copied().unwrap_or(0) > 6 * 60 * 60 * 1000
     {
@@ -1006,17 +1098,26 @@ pub async fn run_background(app: Arc<App>) {
       .and_then(|v| v["ids"].as_array().cloned())
       .unwrap_or_default();
     let visible = visible.iter().filter_map(Value::as_str).map(str::to_owned).collect::<HashSet<_>>();
-    jobs.retain(|_, row| row["world"] == world && visible.contains(row["visibilityId"].as_str().unwrap_or("")));
+    if visible!=previous_visible {tail=Tail::default();previous_visible=visible.clone();}
+    jobs.retain(|_, row| runtime_request_current(row, world, &visible) && row["language"].as_str().unwrap_or("zh-Hant")==language);
+    if deferred && jobs.len()<512 {tail=Tail::default();deferred=false;}
     if let Ok(rows) = tail.read(&app.runtime.join("runtime-requests.jsonl")) {
       for row in rows {
-        if row["world"] != world
+        if !runtime_request_current(&row, world, &visible)
+          || row["language"].as_str().unwrap_or("zh-Hant")!=language
           || row["text"].as_str().is_none_or(|s| s.is_empty() || s.len() > 8000)
-          || !visible.contains(row["visibilityId"].as_str().unwrap_or(""))
         {
           continue;
         }
         let key = runtime_key(&row);
-        if !completed.contains(&key) && !inflight.contains(&key) {
+        if !completed.contains_key(&key) && !inflight.contains_key(&key) && !failures.get(&key).is_some_and(|v|v["terminal"]==true) {
+          if jobs.len()>=1024 && !jobs.contains_key(&key) {
+            deferred=true;
+            if row["priority"]=="foreground" {
+              let background=jobs.iter().find(|(_,r)|r["priority"]!="foreground").map(|(k,_)|k.clone());
+              if let Some(background)=background {jobs.remove(&background);} else {continue}
+            } else {continue}
+          }
           jobs.insert(key, row);
         }
       }
@@ -1048,20 +1149,38 @@ pub async fn run_background(app: Arc<App>) {
       let row = jobs.remove(&key).unwrap();
       let a = app.clone();
       let tx = done_tx.clone();
-      inflight.insert(key.clone());
+      inflight.insert(key.clone(),row.clone());
       app.runtime_active.fetch_add(1, Ordering::Relaxed);
       app.attempted.fetch_add(1, Ordering::Relaxed);
       tokio::spawn(async move {
-        let result = a.runtime_row(&row).await;
+        let deadline=Duration::from_millis(a.settings.lock().unwrap().effective(row["world"].as_str().unwrap_or(""))["timeoutMs"].as_u64().unwrap_or(25000));
+        let request=row.clone();
+        let mut task=tokio::spawn(async move {a.runtime_row(&request).await});
+        let result=match tokio::time::timeout(deadline,&mut task).await {
+          Ok(Ok(result))=>result,
+          Ok(Err(_))=>Err(anyhow::anyhow!("runtime worker failed")),
+          Err(_)=>{task.abort();Err(anyhow::anyhow!("runtime deadline exceeded"))},
+        };
         let _ = tx.send((key, row, result)).await;
       });
     }
     if status_at.elapsed() > Duration::from_millis(500) {
+      let foreground=|row:&&Value|row["priority"]=="foreground";
+      let current=|row:&&Value|row["world"]==world && row["language"].as_str().unwrap_or("zh-Hant")==language;
+      let active_fg=inflight.values().filter(current).filter(foreground).count();
+      let active_total=inflight.values().filter(current).count();
+      let queued=jobs.iter().filter(|(key,_)|!failures.get(*key).is_some_and(|f|f["terminal"]==true)).map(|(_,row)|row).collect::<Vec<_>>();
+      let queued_fg=queued.iter().copied().filter(foreground).count();
+      *app.runtime_snapshot.lock().unwrap()=json!({"foregroundActive":active_fg,"backgroundActive":active_total-active_fg,
+        "foregroundQueued":queued_fg,"backgroundQueued":queued.len()-queued_fg,"unresolved":failures.values().filter(current).count(),"retryGeneration":retry_generation});
       let _ = app.publish_status();
       status_at = Instant::now();
     }
-    if prewarm_at.elapsed() > Duration::from_secs(5) {
-      let _ = app.prewarm();
+    if prewarm_at.elapsed() > Duration::from_secs(5) && prewarm_task.as_ref().is_none_or(|t|t.is_finished()) {
+      let a=app.clone();
+      prewarm_task=Some(tokio::task::spawn_blocking(move || {
+        if let Err(e)=a.prewarm() {eprintln!("prewarm export: {e}")}
+      }));
       prewarm_at = Instant::now();
     }
     if shared_at.elapsed() > Duration::from_secs(15) {
@@ -1078,6 +1197,30 @@ pub async fn run_background(app: Arc<App>) {
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn quality_item_templates_translate_the_inner_prose() {
+    let p=prepare("{olm Remains}", &json!({}));
+    assert_eq!(p.text,"olm Remains");
+    assert_eq!(p.restore("洞螈殘骸","{olm Remains}").unwrap(),"{洞螈殘骸}");
+    let p=prepare("{DWARF_NAME} likes quartzite.", &json!({}));
+    assert!(p.text.contains("{DWARF_NAME}"));
+  }
+  #[test]
+  fn runtime_visibility_preserves_world_and_legends_boundaries() {
+    let visible = HashSet::from([String::from("site:1")]);
+    let plain = json!({"world":"region1","text":"One sentence","priority":"background"});
+    assert!(runtime_request_current(&plain, "region1", &HashSet::new()));
+    assert!(!runtime_request_current(&plain, "region2", &visible));
+    let mut legend = json!({"world":"region1","kind":"legends-name","visibilityId":"site:1"});
+    assert!(runtime_request_current(&legend, "region1", &visible));
+    assert!(!runtime_request_current(&legend, "region1", &HashSet::new()));
+    assert!(!runtime_request_current(&legend, "region2", &visible));
+    legend.as_object_mut().unwrap().remove("visibilityId");
+    assert!(!runtime_request_current(&legend, "region1", &visible));
+    assert!(!runtime_request_current(&json!({"world":"region1","figureId":1}), "region1", &visible));
+    assert!(!runtime_request_current(&json!({"world":"region1","visibilityId":"offscreen"}), "region1", &visible));
+  }
+
   #[test]
   fn templates_protect_names_and_color_numbers() {
     let p = prepare("[C:7:0:1] Urist has 2 wounds.", &json!({"Urist":"烏瑞斯特"}));

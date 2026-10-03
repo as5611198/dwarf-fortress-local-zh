@@ -1306,6 +1306,12 @@ extern "C" size_t string_size(const void *ptr)
   return sp(ptr)->size();
 }
 
+// Public std::string accessor used by our UTF-8 naming adapter.
+extern "C" const char *string_data(const void *ptr)
+{
+    return static_cast<const string *>(ptr)->data();
+}
+
 // Convert a CP437 encoded C-style string by ptr to a UTF-8 encoded slice
 extern "C" size_t cp437_cstr_ptr_to_utf8_slice(const char *ptr, char *utf8_slice)
 {

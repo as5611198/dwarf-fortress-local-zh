@@ -1,4 +1,5 @@
 use std::collections::{HashMap, VecDeque};
+use df_local_zh_broker::bounded::BoundedMap;
 use std::sync::{Arc, Mutex, OnceLock, RwLock};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::ffi::{c_char,c_void,CString};
@@ -45,7 +46,7 @@ struct Node { children: HashMap<u8,usize>, values: Vec<String> }
 struct SearchIndex {
   literals: HashMap<String, String>,
   aliases: HashMap<String, Vec<String>>,
-  completed: HashMap<(String, String), String>,
+  completed: BoundedMap<(String, String), String>,
   preloaded: HashMap<(String, String), (String, Option<String>)>,
   nodes: Vec<Node>,
   memo: Mutex<SearchMemo>,
@@ -185,9 +186,15 @@ pub fn display_query(source: &str) -> Option<translation::TranslationResponse> {
 extern "C" fn search_columns(state: *mut c_void) -> i32 {
   let text=lua53_sys::check_string(state,1);
   if text.len()>512 { lua53_sys::push_integer(state,0);return 1; }
+  static WIDTHS:OnceLock<RwLock<BoundedMap<(String,i32,i32,String),usize>>>=OnceLock::new();
+  let size=crate::df::renderer::get_renderer_info().orig_size();
+  let key=(crate::lang::current_lang_tag(),size.width,size.height,text.clone());
+  let widths=WIDTHS.get_or_init(||RwLock::new(BoundedMap::new(512)));
+  if let Some(columns)=widths.read().unwrap().get(&key) {lua53_sys::push_integer(state,*columns as isize);return 1;}
   let mut row=crate::text::TextRow::new(crate::types::ColorPair::default());
   row.push_text(text);
-  lua53_sys::push_integer(state,row.columns() as isize);1
+  let columns=row.columns();widths.write().unwrap().insert(key,columns);
+  lua53_sys::push_integer(state,columns as isize);1
 }
 #[unsafe(no_mangle)]
 extern "C" fn search_set_query(state: *mut c_void) -> i32 {

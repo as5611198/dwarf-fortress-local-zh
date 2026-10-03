@@ -8,6 +8,7 @@ use crate::translation::{TextAlignment, TranslationResponse};
 static ENABLED: AtomicBool = AtomicBool::new(true);
 static TIMEOUT_MS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(25000);
 static ENDPOINT: OnceLock<RwLock<String>> = OnceLock::new();
+pub(crate) fn timeout()->Duration {Duration::from_millis(TIMEOUT_MS.load(Ordering::Relaxed))}
 fn endpoint() -> &'static RwLock<String> { ENDPOINT.get_or_init(|| RwLock::new("http://127.0.0.1:19753/v2/translate".into())) }
 
 fn request_payload(source: &str, language: &str, world: &str) -> serde_json::Value {
@@ -23,10 +24,16 @@ pub async fn translate_for(source: &str, language: &str, world: &str) -> Option<
   static CLIENT: OnceLock<reqwest::Client> = OnceLock::new();
   let client = CLIENT.get_or_init(|| reqwest::Client::builder().no_proxy().timeout(Duration::from_secs(60)).build().unwrap());
   let url = endpoint().read().unwrap().clone();
-  let response = client.post(url).timeout(Duration::from_millis(TIMEOUT_MS.load(Ordering::Relaxed)))
+  let mut response = client.post(url).timeout(timeout())
     .json(&request_payload(source,language,world)).send().await.ok()?;
   if !response.status().is_success() { return None; }
-  let body: serde_json::Value = response.json().await.ok()?;
+  if response.content_length().is_some_and(|n|n>131072) {return None}
+  let mut bytes=Vec::new();
+  while let Some(chunk)=response.chunk().await.ok()? {
+    if bytes.len()+chunk.len()>131072 {return None}
+    bytes.extend_from_slice(&chunk);
+  }
+  let body: serde_json::Value = serde_json::from_slice(&bytes).ok()?;
   let translated = body.get("translation")?.as_str()?;
   if !valid_translation(source, translated) { return None; }
   Some(TranslationResponse { translated: translated.into(), alignment: TextAlignment::Left })

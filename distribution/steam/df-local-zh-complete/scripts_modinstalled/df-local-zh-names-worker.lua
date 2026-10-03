@@ -4,6 +4,9 @@
 -- for large worlds. This worker keeps the same registry format but advances a
 -- bounded number of records per frame.
 local json = require('json')
+-- reqscript probes the filesystem even for loaded modules. Resolve once, not
+-- twice per entity in the per-frame export batch.
+local unicode = reqscript('df-local-zh-unicode')
 
 local state
 local completed_world
@@ -23,7 +26,7 @@ end
 
 local function text(value)
     if value == nil then return '' end
-    return dfhack.df2utf(tostring(value))
+    return unicode.decode(value)
 end
 
 local function add_row(s, kind, id, aliases, preferred, short_aliases)
@@ -125,12 +128,22 @@ local function process_group(s, group)
     return true
 end
 
-local function finish(s)
+local function close_exports(s)
+    for _,field in ipairs({'captured','output'}) do
+        if s and s[field] then pcall(s[field].close,s[field]);s[field]=nil end
+    end
+end
+
+local function begin_export(s)
     local paths = reqscript('df-local-zh-paths')
-    local directory = paths.broker_data()
-    local captured = io.open(directory .. '/captured-legends.jsonl', 'r')
-    if captured then
-        for line in captured:lines() do
+    s.directory=paths.broker_data()
+    s.captured=io.open(s.directory..'/captured-legends.jsonl','r')
+    s.phase='captured'
+end
+local function export_step(s)
+    if s.phase=='captured' then
+        local line=s.captured and s.captured:read('*l')
+        if line then
             local ok, item = pcall(json.decode, line)
             local row = ok and type(item) == 'table' and item.world == s.world
                 and type(item.id) == 'number' and s.by_id['figure:' .. item.id] or nil
@@ -147,14 +160,28 @@ local function finish(s)
                     end
                 end
             end
+            return
         end
-        captured:close()
+        close_exports(s)
+        table.sort(s.names)
+        s.output=assert(io.open(s.directory..'/active-firstnames.json.tmp','w'))
+        assert(s.output:write('['));s.phase='names';s.export_index=1
     end
-    table.sort(s.names)
-    local file = assert(io.open(directory .. '/active-firstnames.json', 'w'))
-    file:write(json.encode(s.names)); file:close()
-    local registry = assert(io.open(directory .. '/world-names.json', 'w'))
-    registry:write(json.encode({world=s.world, entities=s.entities})); registry:close()
+    local rows=s.phase=='names' and s.names or s.entities
+    local row=rows[s.export_index]
+    if row then
+        assert(s.output:write((s.export_index>1 and ',' or '')..json.encode(row,{pretty=false})))
+        s.export_index=s.export_index+1;return
+    end
+    local filename=s.phase=='names' and 'active-firstnames.json' or 'world-names.json'
+    assert(s.output:write(s.phase=='names' and ']' or ']}'));assert(s.output:close());s.output=nil
+    local native=reqscript('df-local-zh-core/native')
+    assert(native.local_export_commit(s.directory..'/'..filename..'.tmp',s.directory..'/'..filename))
+    if s.phase=='names' then
+        s.output=assert(io.open(s.directory..'/world-names.json.tmp','w'))
+        assert(s.output:write('{"world":'..json.encode(s.world,{pretty=false})..',"entities":['))
+        s.phase='entities';s.export_index=1;return
+    end
     completed_world = s.world
     print(('Exported %d distinct first names.'):format(#s.names))
     print(('Exported %d named entities and aliases.'):format(#s.entities))
@@ -162,10 +189,11 @@ local function finish(s)
     state = nil
 end
 
-local function step()
+local step
+local function step_impl()
     local s = state
     if not s then return end
-    if not dfhack.isWorldLoaded() or dfhack.getSavePath() ~= s.world then state = nil; return end
+    if not dfhack.isWorldLoaded() or dfhack.getSavePath() ~= s.world then close_exports(s);state = nil; return end
     local budget = BUDGET
     while budget > 0 do
         if s.phase == 'figures' then
@@ -174,12 +202,19 @@ local function step()
             else add_name(s, 'figure', value.id, value.name); s.index = s.index + 1; budget = budget - 1 end
         elseif s.phase == 'groups' then
             local group = s.groups[s.group_index]
-            if not group then finish(s); return end
-            if not process_group(s, group) then s.group_index, s.index = s.group_index + 1, 0 end
+            if not group then begin_export(s)
+            elseif not process_group(s, group) then s.group_index, s.index = s.group_index + 1, 0 end
             budget = budget - 1
+        else
+            export_step(s);budget=budget-1
+            if not state then return end
         end
     end
     dfhack.timeout(1, 'frames', step)
+end
+step=function()
+    local ok,err=pcall(step_impl)
+    if not ok then close_exports(state);state=nil;dfhack.printerr('df-local-zh name export: '..tostring(err)) end
 end
 
 function start()
@@ -192,6 +227,7 @@ function start()
 end
 
 function reset()
+    close_exports(state)
     state = nil
     completed_world = nil
 end

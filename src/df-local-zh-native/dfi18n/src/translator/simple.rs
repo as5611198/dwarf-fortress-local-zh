@@ -52,6 +52,61 @@ mod arena_tests {
   use super::*;
   use crate::{translator,translation,native_cache};
   #[test]
+  fn save_destination_labels_and_hints_are_centered_before_cached_responses() {
+    let path=std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+      .join("../../data-patches/simple/zh-Hant/local-reviewed.csv");
+    let mut candidate=SimpleDictionary::new();
+    load_csv(path,|row:Entry| {
+      candidate.insert(row.text,(row.translation,parse_tags(&row.tags)));
+    }).unwrap();
+    for (source,want) in [
+      ("Save to this timeline","儲存至目前時間線"),
+      ("Save to new timeline","儲存至新時間線"),
+      ("Save to new folder (same timeline)","儲存至新資料夾（同一時間線）"),
+      ("Do this if you want to keep the old save.","若要保留舊存檔，請選擇此項。"),
+      ("May interfere with existing saves.","可能影響現有存檔。"),
+      ("Recommended!","推薦！"),
+    ] {
+      let (text,tags)=candidate.get(source).expect("Save destination menu needs reviewed centered entries");
+      assert_eq!(text,want);
+      assert_eq!(tags.get("REVIEWED").map(String::as_str),Some("1"));
+      merge_dictionary(get_dicts_mut().entry("en".into()).or_default(),HashMap::from([(source.into(),(text.clone(),tags.clone()))]));
+      let request=translation::TranslationRequest::fixture(source,false,0);
+      native_cache::fixture_complete(native_cache::key("en",&request),translation::TranslationResponse {
+        translated:"舊靠左補譯".into(),alignment:translation::TextAlignment::Left});
+      let response=translator::known(&request).unwrap();
+      assert_eq!(response.translated,want);
+      assert_eq!(response.alignment,translation::TextAlignment::Center);
+      assert_eq!(translator::translate(&request).unwrap(),response);
+    }
+  }
+  #[test]
+  fn perseverance_subtitles_are_reviewed_centered_and_override_model_cache() {
+    let path=std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+      .join("../../data-patches/simple/zh-Hant/local-reviewed.csv");
+    let mut candidate=SimpleDictionary::new();
+    load_csv(path,|row:Entry| {
+      candidate.insert(row.text,(row.translation,parse_tags(&row.tags)));
+    }).unwrap();
+    for (subject,want) in [("Greed","貪欲"),("Avarice","貪婪"),("Jealousy","嫉妒"),("Cupidity","貪財"),("Gluttony","貪食")] {
+      let source=format!("Histories of {subject} and Perseverance");
+      let (text,tags)=candidate.get(&source).expect("Every random Perseverance subtitle needs a fixed entry");
+      assert_eq!(text,&format!("{want}與堅毅的歷史"));
+      assert_eq!(tags.get("ALIGNMENT").map(String::as_str),Some("CENTER"));
+      assert_eq!(tags.get("REVIEWED").map(String::as_str),Some("1"));
+      merge_dictionary(get_dicts_mut().entry("en".into()).or_default(),HashMap::from([(source.clone(),(text.clone(),tags.clone()))]));
+      let request=translation::TranslationRequest::fixture(&source,false,0);
+      native_cache::fixture_complete(native_cache::key("en",&request),translation::TranslationResponse {
+        translated:"嫉妒與毅力史".into(),alignment:translation::TextAlignment::Left});
+      let before=crate::tasks::SUBMISSIONS.load(std::sync::atomic::Ordering::SeqCst);
+      let response=translator::known(&request).unwrap();
+      assert_eq!(response.translated,*text);
+      assert_eq!(response.alignment,translation::TextAlignment::Center);
+      assert_eq!(translator::translate(&request).unwrap(),response);
+      assert_eq!(crate::tasks::SUBMISSIONS.load(std::sync::atomic::Ordering::SeqCst),before);
+    }
+  }
+  #[test]
   fn reviewed_terms_survive_runtime_alias_import() {
     let mut dict=HashMap::from([("Needs setting".into(),("需要復位".into(),parse_tags("[REVIEWED:1]")))]);
     merge_dictionary(&mut dict,HashMap::from([("Needs setting".into(),("需要設定".into(),HashMap::new()))]));

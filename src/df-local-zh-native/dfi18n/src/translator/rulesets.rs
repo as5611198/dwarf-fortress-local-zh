@@ -93,8 +93,8 @@ mod equipment_tests {
     let mut translator = Translator::default();
     translator.load_from_dir(path).unwrap();
     let terms = equipment_terms(translator.dump());
-    assert_eq!(equipment_name("Iron picks [3]", &terms).as_deref(), Some("鐵十字鎬 [3]"));
-    assert_eq!(equipment_name("steel great picks [2]", &terms).as_deref(), Some("鋼大十字鎬 [2]"));
+    assert_eq!(equipment_name("Iron picks [3]", &terms).as_deref(), Some("鐵鶴嘴鋤 [3]"));
+    assert_eq!(equipment_name("steel great axes [2]", &terms).as_deref(), Some("鋼巨斧 [2]"));
     assert_eq!(equipment_name("wooden carving knives [5]", &terms).as_deref(), Some("木製切肉刀 [5]"));
     assert_eq!(equipment_name("He picks up a stone.", &terms), None);
   }
@@ -206,6 +206,13 @@ fn get_translators() -> RwLockReadGuard<'static, HashMap<String, Translator>> {
 // Getting mutable access to the translators registry
 fn get_translators_mut() -> RwLockWriteGuard<'static, HashMap<String, Translator>> {
   TRANSLATORS.get_or_init(|| RwLock::new(HashMap::new())).write().unwrap()
+}
+
+#[cfg(test)]
+pub(crate) fn fixture_rules(language:&str,path:&std::path::Path) {
+  let mut translator=Translator::default();
+  translator.load_from_dir(path).unwrap();
+  get_translators_mut().insert(language.into(),translator);
 }
 
 // Load rulesets from a directory for a specific language

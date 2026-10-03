@@ -37,12 +37,196 @@ fn files(d: &std::path::Path) -> std::path::PathBuf {
   atomic(&source.join("config.json"),&json!({"port":19754,"language":"zh-Hant","staticDictionariesByLanguage":{"zh-Hant":["hant.csv"],"zh-Hans":["hans.csv"]}})).unwrap();
   source.join("config.json")
 }
+
+async fn single_runtime_sentence_reaches_provider(priority: &str) {
+  use axum::{Json, Router, routing::post};
+  let d = tempfile::tempdir().unwrap();
+  let cfg = files(d.path());
+  let root = d.path().join("state");
+  let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+  let address = listener.local_addr().unwrap();
+  let requests = Arc::new(AtomicUsize::new(0));
+  let observed = requests.clone();
+  let server = tokio::spawn(async move {
+    axum::serve(listener, Router::new().route("/chat/completions", post(move |Json(body): Json<Value>| {
+      let observed = observed.clone();
+      async move {
+        observed.fetch_add(1, Ordering::Relaxed);
+        let input: Value = serde_json::from_str(body["messages"][1]["content"].as_str().unwrap()).unwrap();
+        let items = input["items"].as_array().unwrap();
+        assert_eq!(items.len(), 1, "A singleton must not wait for a second sentence");
+        Json(json!({"choices":[{"message":{"content":json!({"translations":[{
+          "id":items[0]["id"],"translation":"只有這一句等待翻譯。"
+        }]}).to_string()}}]}))
+      }
+    }))).await.unwrap();
+  });
+  let app = App::load(&cfg, &root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global",
+    "profiles":[{"id":"fixture","enabled":true,"baseUrl":format!("http://{address}"),"model":"fixture"}],
+    "settings":{"apiProfile":"fixture"}})).unwrap();
+  atomic(&root.join("active-context.json"), &json!({"version":1,"world":"region-test","language":"zh-Hant"})).unwrap();
+  atomic(&root.join("data/runtime-visible.json"), &json!({"world":"region-test","ids":[]})).unwrap();
+  append(&root.join("data/runtime-requests.jsonl"), &json!({"world":"region-test","language":"zh-Hant",
+    "text":"A lone sentence awaits translation.","priority":priority})).unwrap();
+  let worker = tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  let started = Instant::now();
+  let completion = tokio::time::timeout(Duration::from_secs(2), async {
+    loop {
+      if let Ok(text) = std::fs::read_to_string(root.join("data/runtime-responses.jsonl")) {
+        if let Some(line) = text.lines().find(|line| !line.is_empty()) {
+          break serde_json::from_str::<Value>(line).unwrap();
+        }
+      }
+      tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+  }).await;
+  worker.abort();
+  server.abort();
+  let row = completion.expect("One ordinary sentence must dispatch even when the Legends visibility list is empty");
+  assert_eq!(row["translation"], "只有這一句等待翻譯。");
+  assert_eq!(requests.load(Ordering::Relaxed), 1);
+  assert_eq!(app.published.load(Ordering::Relaxed), 1);
+  println!("SINGLE_RUNTIME {priority}: {} ms, one provider request", started.elapsed().as_millis());
+}
+
+#[tokio::test]
+async fn single_foreground_runtime_sentence_dispatches_without_legends_visibility() {
+  single_runtime_sentence_reaches_provider("foreground").await;
+}
+
+#[tokio::test]
+async fn runtime_language_switch_replays_the_previously_inactive_journal() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"region-test","language":"zh-Hant"})).unwrap();
+  append(&root.join("data/runtime-requests.jsonl"),&json!({"world":"region-test","language":"zh-Hans","text":"Wounds","priority":"foreground"})).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  tokio::time::sleep(Duration::from_millis(250)).await;
+  assert_eq!(app.published.load(Ordering::Relaxed),0,"Inactive language must not dispatch");
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"region-test","language":"zh-Hans"})).unwrap();
+  let result=tokio::time::timeout(Duration::from_secs(2),async {
+    while app.published.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(10)).await;}
+  }).await;
+  worker.abort();result.expect("A context switch must reconsider deferred journal rows");
+}
+
+#[tokio::test]
+async fn paused_runtime_queue_reports_real_backlog_without_provider_work() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"backgroundTranslation":false}})).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"region-test","language":"zh-Hant"})).unwrap();
+  for text in ["Health","Wounds"] {
+    append(&root.join("data/runtime-requests.jsonl"),&json!({"world":"region-test","language":"zh-Hant","text":text,"priority":"background"})).unwrap();
+  }
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  tokio::time::sleep(Duration::from_millis(650)).await;
+  let status=read_json(&root.join("data/broker-status.json"),32768).unwrap();worker.abort();
+  assert_eq!(status["runtime"]["backgroundQueued"],2,"Queued is not the count of HTTP requests");
+  assert_eq!(status["runtime"]["foregroundActive"],0);
+}
+
+#[tokio::test]
+async fn runtime_visibility_change_reconsiders_a_previously_hidden_sentence() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"visibility-test","language":"zh-Hant"})).unwrap();
+  append(&root.join("data/runtime-requests.jsonl"),&json!({"world":"visibility-test","language":"zh-Hant",
+    "text":"Wounds","priority":"foreground","visibilityId":"view-1"})).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  tokio::time::sleep(Duration::from_millis(250)).await;
+  assert_eq!(app.published.load(Ordering::Relaxed),0);
+  atomic(&root.join("data/runtime-visible.json"),&json!({"world":"visibility-test","ids":["view-1"]})).unwrap();
+  let result=tokio::time::timeout(Duration::from_secs(2),async {
+    while app.published.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(20)).await;}
+  }).await;
+  worker.abort();result.expect("Returning to a view must replay its skipped requests");
+}
+
+#[tokio::test]
+async fn runtime_settings_response_write_failure_retains_the_request_until_delivery() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  // A directory at the response path simulates denied/failed atomic replacement.
+  std::fs::create_dir(root.join("settings-response.json")).unwrap();
+  atomic(&root.join("settings-request.json"),&json!({"id":"write-failure","action":"snapshot"})).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  tokio::time::sleep(Duration::from_millis(450)).await;
+  let retained=read_json(&root.join("settings-request.json"),32768).unwrap()["id"]=="write-failure";
+  std::fs::remove_dir(root.join("settings-response.json")).unwrap();
+  let result=tokio::time::timeout(Duration::from_secs(3),async {
+    loop {
+      if read_json(&root.join("settings-response.json"),32768).is_ok_and(|r|r["id"]=="write-failure") {break}
+      tokio::time::sleep(Duration::from_millis(20)).await;
+    }
+  }).await;
+  worker.abort();
+  assert!(retained,"Never acknowledge a request before its response is durable");
+  result.expect("Delivery must retry without repeating the settings operation");
+}
+
+#[tokio::test]
+async fn single_background_runtime_sentence_dispatches_without_legends_visibility() {
+  single_runtime_sentence_reaches_provider("background").await;
+}
+#[tokio::test]
+async fn runtime_failed_sentence_is_retried_without_another_journal_request() {
+  use axum::{Json,Router,routing::post};
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let listener=tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();let address=listener.local_addr().unwrap();
+  let requests=Arc::new(AtomicUsize::new(0));let observed=requests.clone();
+  let server=tokio::spawn(async move {axum::serve(listener,Router::new().route("/chat/completions",post(move || {
+    let observed=observed.clone();async move {
+      let n=observed.fetch_add(1,Ordering::Relaxed);
+      Json(json!({"choices":[{"message":{"content":json!({"translations":[{"id":"0","translation":if n==0 {"Still English"}else{"他很樂觀。"}}]}).to_string()}}]}))
+    }
+  }))).await.unwrap()});
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","profiles":[{"id":"fixture","enabled":true,"baseUrl":format!("http://{address}"),"model":"fixture"}],"settings":{"apiProfile":"fixture","retryBaseMs":100,"maxRetries":1}})).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"retry-test","language":"zh-Hant"})).unwrap();
+  append(&root.join("data/runtime-requests.jsonl"),&json!({"world":"retry-test","language":"zh-Hant","text":"He is optimistic.","priority":"foreground"})).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  let result=tokio::time::timeout(Duration::from_secs(3),async {
+    while app.published.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(20)).await;}
+  }).await;
+  worker.abort();server.abort();
+  result.expect("A failed job must be requeued without another UI request");
+  assert_eq!(requests.load(Ordering::Relaxed),2);
+}
 #[tokio::test]
 async fn full_published_package_loads_with_isolated_state() {
   let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../distribution/steam/df-local-zh-complete");
   let d = tempfile::tempdir().unwrap();
   let app = App::load(&root.join("broker/config.json"), d.path()).unwrap();
   assert_eq!(app.translate("Wounds", "zh-Hant", "", 0).await.unwrap(), "傷口");
+}
+
+#[tokio::test]
+async fn completed_name_registry_retries_terminal_prose_once() {
+  use axum::{Json,Router,routing::post};
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let listener=tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();let address=listener.local_addr().unwrap();
+  let count=Arc::new(AtomicUsize::new(0));let seen=count.clone();
+  let server=tokio::spawn(async move {axum::serve(listener,Router::new().route("/chat/completions",post(move || {
+    let seen=seen.clone();async move {
+      let n=seen.fetch_add(1,Ordering::Relaxed);
+      Json(json!({"choices":[{"message":{"content":json!({"translations":[{"id":"0","translation":if n==0 {"Still English"} else {"一支探險隊抵達了。"}}]}).to_string()}}]}))
+    }
+  }))).await.unwrap()});
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","profiles":[{"id":"fixture","enabled":true,"baseUrl":format!("http://{address}"),"model":"fixture"}],"settings":{"apiProfile":"fixture","maxRetries":0}})).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"registry-test","language":"zh-Hant"})).unwrap();
+  append(&root.join("data/runtime-requests.jsonl"),&json!({"world":"registry-test","language":"zh-Hant","text":"An expedition has arrived.","priority":"foreground"})).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  tokio::time::timeout(Duration::from_secs(2),async {while app.failed.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(20)).await;}}).await.unwrap();
+  tokio::time::sleep(Duration::from_millis(350)).await;
+  assert_eq!(count.load(Ordering::Relaxed),1,"Terminal validation errors must not spin");
+  atomic(&root.join("data/world-names.json"),&json!({"version":1,"world":"registry-test","entities":[]})).unwrap();
+  let result=tokio::time::timeout(Duration::from_secs(2),async {while app.published.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(20)).await;}}).await;
+  worker.abort();server.abort();
+  result.expect("New name context must reconsider prose rejected before export finished");
+  assert_eq!(count.load(Ordering::Relaxed),2);
 }
 #[tokio::test]
 async fn offline_bilingual_reload_fixed_priority_and_no_mutation() {

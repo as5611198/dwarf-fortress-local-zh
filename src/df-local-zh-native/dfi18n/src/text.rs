@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use df_local_zh_broker::bounded::BoundedMap;
 use std::ops::{Deref, DerefMut};
 use std::sync::{OnceLock, RwLock};
 
@@ -16,11 +16,11 @@ pub fn reset() {
 }
 
 // Texts cache maps TranslationRequest key to TextBlock
-static TEXTS: OnceLock<RwLock<HashMap<String, TextBlock>>> = OnceLock::new();
+static TEXTS: OnceLock<RwLock<BoundedMap<String, TextBlock>>> = OnceLock::new();
 
 // Getting the write lock for the texts cache
-fn get_texts_mut() -> std::sync::RwLockWriteGuard<'static, HashMap<String, TextBlock>> {
-  TEXTS.get_or_init(|| RwLock::new(HashMap::new())).write().unwrap()
+fn get_texts_mut() -> std::sync::RwLockWriteGuard<'static, BoundedMap<String, TextBlock>> {
+  TEXTS.get_or_init(|| RwLock::new(BoundedMap::new(1024))).write().unwrap()
 }
 
 // A fragment of text with associated color information
@@ -197,10 +197,11 @@ impl TextBlock {
 
   pub fn get(request: &translation::TranslationRequest) -> Self {
     let color_pair = request.color_pair().unwrap_or_default();
+    let response=translator::translate(request);
 
     if request.is_markup() {
       // attempt translation to get translated markup and fallback to original markup
-      let markup = if let Some(response) = translator::translate(&request) {
+      let markup = if let Some(response) = response {
         response.translated
       } else {
         request.original().to_owned()
@@ -211,7 +212,7 @@ impl TextBlock {
     } else {
       // early return for untranslatable content or translation is not available (do not cache content that is not translated)
       let original = request.original();
-      if translator::should_skip_translation(original) || translator::translate(request).is_none() {
+      if response.is_none() {
         let mut untranslated_text_block = Self::from_original(original, color_pair);
 
         // set double line height when needed
@@ -224,7 +225,6 @@ impl TextBlock {
     }
 
     // check cache first
-    let response = translator::translate(request);
     let key = format!("{}:{response:?}", request.key());
     let mut texts = get_texts_mut();
     if let Some(cached) = texts.get(&key) {
@@ -232,7 +232,7 @@ impl TextBlock {
     }
 
     // attempt to create a new TextBlock if not cached
-    let text_block = Self::from_request(request);
+    let text_block = Self::from_request(request,response);
     texts.insert(key, text_block.clone());
     // log::debug!("Insert new TextBlock into cache: {text_block:#?}"); // XXX
 
@@ -240,7 +240,7 @@ impl TextBlock {
   }
 
   // Create a new TextBlock from a TranslationRequest
-  fn from_request(request: &translation::TranslationRequest) -> Self {
+  fn from_request(request: &translation::TranslationRequest,response:Option<translation::TranslationResponse>) -> Self {
     let color_pair = request.color_pair().unwrap_or_default();
 
     // Create a TextBlock from the original text
@@ -253,7 +253,7 @@ impl TextBlock {
     }
 
     // if the translation is available
-    if let Some(response) = translator::translate(request) {
+    if let Some(response) = response {
       // prepare the translated TextRow
       let mut row = TextRow::new(color_pair);
       row.push_text(response.translated);

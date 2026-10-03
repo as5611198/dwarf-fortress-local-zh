@@ -25,7 +25,7 @@ local env=setmetatable({
         if mode=='rb' and not files[path] then return nil end
         local offset=0;if mode=='wb' then files[path]='' end
         return {seek=function(_,kind,position) offset=kind=='end' and #files[path] or position;return offset end,
-            read=function() return files[path]:sub(offset+1) end,
+            lines=function() return ((files[path] or '')..'\n'):gmatch('(.-)\n') end,read=function() return files[path]:sub(offset+1) end,
             write=function(_,...) files[path]=(files[path] or '')..table.concat({...});return true end,
             close=function() return true end}
     end},

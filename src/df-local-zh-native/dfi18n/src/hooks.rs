@@ -20,8 +20,10 @@ fn addst(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, just: u8, 
     content: string.clone(),
   });
 
-  logging::log_text(&request, &bt, string_ptr);
-  let text_block = match crate::display_rows::lookup(string_ptr as usize,&string,request.coordinate()) {
+  let display_row = crate::display_rows::lookup(string_ptr as usize,&string,request.coordinate());
+  if display_row.as_ref().is_some_and(|row|row.literal) {logging::trace_text(&request)}
+  else {logging::log_text(&request, &bt, string_ptr)}
+  let text_block = match display_row {
     Some(row)=>text::TextBlock::display_row(&request,row.translation,row.width),
     None=>text::TextBlock::get(&request),
   };
@@ -48,8 +50,10 @@ fn addst_flag(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, just:
     flag: sflag,
   });
 
-  logging::log_text(&request, &bt, string_ptr);
-  let text_block = match crate::display_rows::lookup(string_ptr as usize,&string,request.coordinate()) {
+  let display_row = crate::display_rows::lookup(string_ptr as usize,&string,request.coordinate());
+  if display_row.as_ref().is_some_and(|row|row.literal) {logging::trace_text(&request)}
+  else {logging::log_text(&request, &bt, string_ptr)}
+  let text_block = match display_row {
     Some(row)=>text::TextBlock::display_row(&request,row.translation,row.width),
     None=>text::TextBlock::get(&request),
   };
@@ -86,7 +90,8 @@ fn addcoloredst(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, col
   let string_bytes = unsafe { ffi::CStr::from_ptr(string_ptr as *const ffi::c_char) }.to_bytes();
   let color_bytes = unsafe { ffi::CStr::from_ptr(color_string_ptr as *const ffi::c_char) }.to_bytes();
   let mut mtb_string: Vec<u8> = Vec::new();
-  string_bytes.iter().zip(color_bytes.iter()).for_each(|(s, c)| {
+    cp437_string::character_spans(string_bytes).for_each(|(offset, s)| {
+      let c=color_bytes.get(offset).copied().unwrap_or(7);
     // add change color markup if different
     let curr_color = (c & 7, (c & 56) >> 3, (c & 64) >> 6);
     if Some(curr_color) != prev_color {
@@ -95,7 +100,7 @@ fn addcoloredst(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, col
     }
 
     // add character
-    mtb_string.push(*s);
+      mtb_string.extend_from_slice(s);
   });
   mtb_string.push(0); // null-terminate
 
@@ -140,8 +145,13 @@ fn top_addst(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, just: 
     top_content: string.clone(),
   });
 
-  logging::log_text(&request, &bt, string_ptr);
-  let text_block = text::TextBlock::get(&request);
+  let display_row = crate::display_rows::lookup(string_ptr as usize,&string,request.coordinate());
+  if display_row.as_ref().is_some_and(|row|row.literal) {logging::trace_text(&request)}
+  else {logging::log_text(&request, &bt, string_ptr)}
+  let text_block = match display_row {
+    Some(row)=>text::TextBlock::display_row(&request,row.translation,row.width),
+    None=>text::TextBlock::get(&request),
+  };
   let columns = text_block.columns();
   let id = text_block.add_to_screen(screen::Layer::Upper, request.coordinate());
 
@@ -202,7 +212,7 @@ fn update_tile(renderer_ptr: *const ffi::c_void, x: i32, y: i32) {
 
         let sdl_renderer = df::renderer::get_sdl_info().renderer();
         let logo_texture = logo::get_logo_texture();
-        sdl_renderer.copy(logo_texture, None, Some(&rect));
+        sdl_renderer.copy(&logo_texture, None, Some(&rect));
       }
     }
   }
@@ -436,6 +446,14 @@ hook! {
 }
 
 pub fn attach_all() -> Result<()> {
+  #[cfg(windows)] {
+    use winapi::um::libloaderapi::{GetModuleHandleA,GetProcAddress};
+    let module=unsafe {GetModuleHandleA(c"SDL2.dll".as_ptr())};
+    anyhow::ensure!(!module.is_null(),"SDL2 module missing");
+    let pointer=unsafe {GetProcAddress(module,c"SDL_DestroyRenderer".as_ptr())};
+    anyhow::ensure!(!pointer.is_null(),"SDL_DestroyRenderer missing");
+    attach_destroy_renderer(pointer as *const ffi::c_void)?;
+  }
   crate::search::attach()?;
   crate::search_input::attach()?;
   attach_addst(memory::get_raw_pointer_by_key("addst")?)?;
@@ -451,6 +469,12 @@ pub fn attach_all() -> Result<()> {
 
   Ok(())
 }
+
+fn destroy_renderer(renderer:*mut sdl::SDL_Renderer) {
+  sdl::invalidate_renderer_textures(renderer);
+  call_destroy_renderer(renderer);
+}
+hook! {fn destroy_renderer(renderer:*mut sdl::SDL_Renderer);}
 
 // handle translation for help markup text boxes, return true if handled
 fn handle_help_mtb(string_ptr: *const ffi::c_void, bt: &str) -> bool {

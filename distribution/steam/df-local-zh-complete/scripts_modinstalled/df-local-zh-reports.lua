@@ -6,15 +6,44 @@
 local eventful = require('plugins.eventful')
 local runtime = reqscript('df-local-zh-runtime')
 local mod = reqscript('df-local-zh-core/mod')
+local status = reqscript('df-local-zh-status')
+
+-- These entries can be rediscovered by the rotating report scan. Live display
+-- records are deliberately retained until their original text is restored.
+local function bounded(capacity,on_evict)
+    local values,slots,positions,cursor={},{},{},1
+    return setmetatable({}, {
+        __index=values,
+        __pairs=function() return next,values,nil end,
+        __newindex=function(_,key,value)
+            if value==nil then
+                if positions[key] then slots[positions[key]]=nil;positions[key]=nil end
+                values[key]=nil;return
+            end
+            if not positions[key] then
+                local old=slots[cursor]
+                if old then
+                    if on_evict then on_evict(values[old]) end
+                    values[old]=nil;positions[old]=nil
+                end
+                slots[cursor]=key;positions[key]=cursor;cursor=cursor%capacity+1
+            end
+            values[key]=value
+        end,
+    })
+end
+local function pending_window()
+    return bounded(128,function(job) if job.cancel then job.cancel() end end)
+end
 
 local started = false
 local active_world
 local active_language
-local seen = {}
-local pending = {}
+local seen = bounded(8192)
+local pending = pending_window()
 local backfill_index = 0
 local generation = 0
-local display_translations,display_records,display_cursors = {},{},{}
+local display_translations,display_records,display_cursors = bounded(4096),{},bounded(2048)
 
 local function field(value,name)
     local ok,result=pcall(function() return value[name] end)
@@ -76,12 +105,12 @@ local function restore_display()
         local old=display_records[tostring(owner)..':'..property]
         if old and owner[property]==old.key then owner[property]=old.source end
     end,true)
-    display_records,display_cursors={},{}
+    display_records,display_cursors={},bounded(2048)
 end
 
 local function cancel_pending()
     for _,job in pairs(pending) do if job.cancel then job.cancel() end end
-    pending = {}
+    pending = pending_window()
 end
 
 local function reset_world()
@@ -92,9 +121,9 @@ local function reset_world()
         cancel_pending()
         active_world = world
         active_language=language
-        seen = {}
+        seen = bounded(8192)
         backfill_index = 0
-        display_translations={}
+        display_translations=bounded(4096)
     end
     return world
 end
@@ -193,8 +222,7 @@ end
 
 local function backfill()
     if not reset_world() or not dfhack.isMapLoaded() then return end
-    local ok,status=pcall(reqscript,'df-local-zh-status')
-    if ok then
+    if status then
         if not status.background_allowed() then return end
         if status.claim_background and not status.claim_background('reports') then return end
         local b=status.broker();local r=b and b.runtime or {}
@@ -235,9 +263,9 @@ function stop()
     generation = generation + 1
     active_world = nil
     cancel_pending()
-    seen = {}
+    seen = bounded(8192)
     backfill_index = 0
-    display_translations={}
+    display_translations=bounded(4096)
 end
 
 start()

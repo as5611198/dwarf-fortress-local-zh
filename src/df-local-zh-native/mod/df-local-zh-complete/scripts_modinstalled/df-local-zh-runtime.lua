@@ -3,6 +3,11 @@
 local json = require('json')
 local native = reqscript('df-local-zh-core/native')
 local mod = reqscript('df-local-zh-core/mod')
+local modules={}
+local function module(name)
+    if not modules[name] then modules[name]=reqscript(name) end
+    return modules[name]
+end
 
 local paths = reqscript('df-local-zh-paths')
 local directory = paths.broker_data() .. '/'
@@ -11,22 +16,46 @@ local responses_path = directory .. 'runtime-responses.jsonl'
 local visibility_path = directory .. 'runtime-visible.json'
 local one_row_path = directory .. 'runtime-one.csv'
 local response_offset = 0
-local ready = {}
-local ready_text = {}
-local pending = {}
-local pending_priority = {}
-local native_probe = {}
-local prefetch_published = {}
-local short_ready = {}
-local short_staged = {}
-local paragraph_ready = {}
-local literal_ready = {}
-local colored_ready = {}
-local colored_staged = {}
-local alias_text = {}
-local display_sources, display_names, display_fragments, display_saved = {}, {}, {}, {}
-local display_native = {}
-local announcement_staged,announcement_ready = {},{}
+local response_error
+-- FIFO windows only hold reconstructible display state. Persisted responses
+-- and native dictionaries remain the source of truth after an eviction.
+local function cache(capacity)
+    capacity=capacity or 4096
+    local values,slots,positions,cursor={},{},{},1
+    return setmetatable({}, {
+        __index=values,
+        __newindex=function(_,key,value)
+            if value==nil then
+                if positions[key] then slots[positions[key]]=nil;positions[key]=nil end
+                values[key]=nil;return
+            end
+            if not positions[key] then
+                local old=slots[cursor]
+                if old then values[old]=nil;positions[old]=nil end
+                slots[cursor]=key;positions[key]=cursor;cursor=cursor%capacity+1
+            end
+            values[key]=value
+        end,
+        __pairs=function() return next,values,nil end,
+    })
+end
+local failure_offset,failures,failure_generation=0,cache(),nil
+local ready = cache()
+local ready_text = cache()
+local pending = cache()
+local pending_priority = cache()
+local native_probe = cache()
+local prefetch_published = cache()
+local short_ready = cache()
+local short_staged = cache()
+local paragraph_ready = cache()
+local literal_ready = cache()
+local colored_ready = cache()
+local colored_staged = cache()
+local alias_text = cache()
+local display_sources, display_names, display_fragments, display_saved = cache(), cache(), cache(), cache(16384)
+local display_native = cache()
+local announcement_staged,announcement_ready = cache(),cache()
 local display_path = directory .. 'unit-display-cache.jsonl'
 local restore_display
 local display_initialized = false
@@ -135,7 +164,8 @@ local function load_rows(rows, path)
     end
     local file = assert(io.open(path, 'wb'))
     assert(file:write(table.concat(lines))); assert(file:close())
-    native.load_simple_dict(current_language, path)
+    local loaded,err=native.load_simple_dict(current_language, path)
+    if loaded==false then error(err or 'Native dictionary rejected response rows') end
 end
 
 local function display_record(kind, source, translated, color, key)
@@ -202,12 +232,13 @@ local function remember_display(kind, source, translated, color, key)
 end
 
 local function load_display()
-    display_sources, display_names, display_fragments, display_saved = {}, {}, {}, {}
-    display_native = {}
+    display_sources, display_names, display_fragments, display_saved = cache(), cache(), cache(), cache(16384)
+    display_native = cache()
     local file = io.open(display_path, 'rb')
     if file then
-        local content = file:read('*a'); file:close()
-        for line in content:gmatch('(.-)\n') do
+        -- The history is append-only; stream it so old worlds do not allocate
+        -- a second copy of the entire journal during a save transition.
+        for line in file:lines() do
             local ok, value = pcall(json.decode, line)
             if ok and type(value) == 'table' and value.version == 1 and
                     value.world == (current_world or false) and (value.language or 'zh-Hant')==current_language and
@@ -216,6 +247,7 @@ local function load_display()
                 if row then display_saved[retain_display(row)] = row.key or row.translation end
             end
         end
+        file:close()
     end
     -- Only aliases and viewed prose need Lua restoration. Bulk rows belong to the DLL.
     local function read_export(filename)
@@ -318,7 +350,11 @@ function on_translation(source, callback)
     translation_watchers[source] = watchers
     local entry = {callback=callback}
     watchers[#watchers+1] = entry
-    return function() entry.callback = nil end
+    return function()
+        entry.callback=nil
+        for i=#watchers,1,-1 do if not watchers[i].callback then table.remove(watchers,i) end end
+        if #watchers==0 and translation_watchers[source]==watchers then translation_watchers[source]=nil end
+    end
 end
 
 local function notify_translation(source, translated)
@@ -335,37 +371,60 @@ end
 function poll()
     local active_world = world()
     if not display_initialized or active_world ~= current_world then
-        display_initialized = true
+        display_initialized = false
         current_world = active_world
-        ready = {}
-        ready_text = {}
+        ready = cache()
+        ready_text = cache()
         translation_watchers = {}
-        pending = {}
-        pending_priority = {}
+        pending = cache()
+        pending_priority = cache()
         visible_serialized = nil
         visible_ids = {}
-        native_probe = {}
-        prefetch_published = {}
-        short_ready = {}
-        short_staged = {}
-        paragraph_ready = {}
-        literal_ready = {}
-        colored_ready = {}
-        colored_staged = {}
-        announcement_staged,announcement_ready = {},{}
-        alias_text = {}
+        native_probe = cache()
+        prefetch_published = cache()
+        short_ready = cache()
+        short_staged = cache()
+        paragraph_ready = cache()
+        literal_ready = cache()
+        colored_ready = cache()
+        colored_staged = cache()
+        announcement_staged,announcement_ready = cache(),cache()
+        alias_text = cache()
         response_offset = 0
+        failure_offset,failures,failure_generation=0,cache(),nil
         load_display()
         restore_display()
+        display_initialized = true
     end
     if not active_world then return end
+
+    local failure_file=io.open(directory..'runtime-failures.jsonl','rb')
+    if failure_file then
+        local status=module('df-local-zh-status').broker()
+        local generation=status and status.runtime and status.runtime.retryGeneration
+        if generation~=failure_generation then failure_offset,failures,failure_generation=0,cache(),generation end
+        if failure_offset>failure_file:seek('end') then failure_offset=0 end
+        failure_file:seek('set',failure_offset)
+        local text=failure_file:read(262144) or '';failure_file:close()
+        local consumed=0
+        for line in text:gmatch('(.-)\n') do
+            consumed=consumed+#line+1
+            local ok,row=pcall(json.decode,line)
+            if ok and type(row)=='table' and row.world==active_world and (row.language or 'zh-Hant')==current_language and
+                    row.retryGeneration==generation and type(row.text)=='string' then
+                local id=row.visibilityId or row.text
+                failures[id]=row.terminal and row.reason or nil
+            end
+        end
+        failure_offset=failure_offset+(consumed>0 and consumed or (#text==262144 and #text or 0))
+    end
 
     local file = io.open(responses_path, 'rb')
     if not file then return end
     local size = file:seek('end')
     if response_offset > size then response_offset = 0 end
     file:seek('set', response_offset)
-    local content = file:read('*a')
+    local content = file:read(262144) or ''
     file:close()
 
     local consumed, restored, translations = 0, {}, {}
@@ -397,8 +456,24 @@ function poll()
         end
     end
     if #translations > 0 then
-        local loaded = pcall(load_rows, translations, directory .. 'runtime-restored.csv')
+        local loaded,err = pcall(load_rows, translations, directory .. 'runtime-restored.csv')
+        if not loaded then
+            if response_error~=tostring(err) then
+                response_error=tostring(err)
+                dfhack.printerr('df-local-zh-runtime response import: '..response_error)
+            end
+            return false -- Keep the cursor; the next poll must retry this batch.
+        end
         if loaded then
+            for _, row in ipairs(restored) do
+                if mod.sync_translate(row.key) ~= row.translation then
+                    if response_error~='dictionary verification failed' then
+                        response_error='dictionary verification failed'
+                        dfhack.printerr('df-local-zh-runtime response import: '..response_error)
+                    end
+                    return false
+                end
+            end
             for _, row in ipairs(restored) do
                 if mod.sync_translate(row.key) == row.translation then
                     local id = identity(row.text,
@@ -415,6 +490,10 @@ function poll()
             end
         end
     end
+    response_error=nil
+    -- Valid rows are far below this limit; discard an overlong corrupt line
+    -- instead of rereading the same unterminated bytes forever.
+    if consumed==0 and #content==262144 then consumed=#content end
     response_offset = response_offset + consumed
 end
 
@@ -458,6 +537,7 @@ function request(source, figure_id, entity_kind, priority)
     if active_world ~= current_world then poll() end
     local id = identity(source, figure_id, entity_kind)
     if ready[id] then return ready[id], 'ready' end
+    if failures[id] then return nil,'failed',failures[id] end
     if figure_id==nil then
         local saved=display_sources[source] or display_native[source]
         if saved then
@@ -516,8 +596,8 @@ function prefetch(source,priority)
     end
     if #source<=160 and not (ready_text[source] or display_sources[source] or display_native[source]) and
             display_ready() then return true end
-    local key=request(source,nil,nil,priority or 'background')
-    if not key then return false end
+    local key,state,reason=request(source,nil,nil,priority or 'background')
+    if not key then return false,state,reason end
     local translated=ready_text[source] or mod.sync_translate(key)
     if type(translated)=='string' and source:find('{DWARF_NAME}',1,true) then
         local remainder,tokens=translated:gsub('{DWARF_NAME}','')
@@ -552,7 +632,7 @@ function translation(source)
     if world() ~= current_world then poll() end
     local preferred=native.official_library_lookup and native.official_library_lookup(source)
     if preferred then return preferred end
-    local fixed=reqscript('df-local-zh-reviewed-text').translation(source,current_language)
+    local fixed=module('df-local-zh-reviewed-text').translation(source,current_language)
     if fixed then return fixed end
     local saved=ready_text[source] or display_sources[source] or display_native[source]
     if saved then return saved end
@@ -573,8 +653,8 @@ function unit_translation(source)
     if world() ~= current_world then poll() end
     local preferred=native.official_library_lookup and native.official_library_lookup(source)
     if preferred then return localize(preferred) end
-    local fixed=reqscript('df-local-zh-reviewed-text').translation(source,current_language)
-    local prewarm=reqscript('df-local-zh-unit-prewarm')
+    local fixed=module('df-local-zh-reviewed-text').translation(source,current_language)
+    local prewarm=module('df-local-zh-unit-prewarm')
     prewarm.remember(source)
     local text = fixed or prewarm.fixed_translation(source) or ready_text[source] or display_sources[source] or translation(source)
     if text then text=localize(text);remember_display('source', source, text) end
@@ -584,7 +664,7 @@ end
 function unit_name_translation(source)
     if world() ~= current_world then poll() end
     -- Static species labels are global; personal names retain world-scoped routing.
-    local fixed=reqscript('df-local-zh-creature-names').translation(source,current_language)
+    local fixed=module('df-local-zh-creature-names').translation(source,current_language)
     local synchronous=fixed and mod.sync_translate(source)
     -- Homonyms such as pike mean a fish here, but a weapon in equipment UI.
     local text = fixed and (synchronous==fixed and synchronous or fixed) or
@@ -856,7 +936,9 @@ function start()
     local function legends_tick()
         local ok, err = pcall(legends.poll, bridge)
         if not ok then dfhack.printerr('df-local-zh-legends: ' .. tostring(err)) end
-        dfhack.timeout(1, 'frames', legends_tick)
+        -- Legends pages do not need a per-render-frame scan; keep the reader
+        -- responsive without competing with the game's render loop.
+        dfhack.timeout(4, 'frames', legends_tick)
     end
     tick()
     legends_tick()

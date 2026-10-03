@@ -24,7 +24,7 @@ local function restart()
             return {seek=function(_,kind,position)
                 if kind=='end' then offset=#files[path] else offset=position end
                 return offset
-            end,read=function() return files[path]:sub(offset+1) end,
+            end,lines=function() return ((files[path] or '')..'\n'):gmatch('(.-)\n') end,read=function() return files[path]:sub(offset+1) end,
             write=function(_,...)
                 files[path]=(files[path] or '')..table.concat({...})
                 if path==directory..'runtime-requests.jsonl' then requests=requests+1 end

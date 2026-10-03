@@ -1,4 +1,5 @@
 pub mod common;
+pub mod bounded;
 pub mod display;
 pub mod equipment;
 pub mod official;

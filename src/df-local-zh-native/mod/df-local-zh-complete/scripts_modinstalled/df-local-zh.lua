@@ -95,6 +95,20 @@ local function start_settings()
     pcall(dfhack.run_command,'overlay','enable','df-local-zh-settings-ui.settings')
 end
 
+local function start_keybinding_labels()
+    local ok, adapter = pcall(reqscript, 'df-local-zh-keybinding-labels')
+    if not ok then dfhack.printerr(tostring(adapter));return end
+    adapter.start()
+end
+
+local function start_extended_readers()
+    for _,entry in ipairs({{'df-local-zh-history','history'},{'df-local-zh-adventure','adventure'}}) do
+        local ok,err=pcall(reqscript,entry[1])
+        if ok then pcall(dfhack.run_command,'overlay','enable',entry[1]..'.'..entry[2])
+        else dfhack.printerr(tostring(err)) end
+    end
+end
+
 local function disable_english_legends_filter()
     if dfhack.isWorldLoaded() and require('plugins.overlay').isOverlayEnabled('exportlegends.histfigfilter') then
         pcall(dfhack.run_command, 'overlay disable exportlegends.histfigfilter')
@@ -128,6 +142,8 @@ dfhack.onStateChange.df_local_zh = function(code)
         start_status_ui()
         start_search()
         start_settings()
+        start_keybinding_labels()
+        start_extended_readers()
         adapters_started=true
         end
         disable_english_legends_filter()
@@ -152,4 +168,6 @@ start_title_overlay()
 start_status_ui()
 start_search()
 start_settings()
+start_keybinding_labels()
+start_extended_readers()
 adapters_started=true

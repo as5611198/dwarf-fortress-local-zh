@@ -18,9 +18,14 @@ local env=setmetatable({
         timeout=function(_,_,fn) timers[#timers+1]=fn end},
     io={open=function(path,mode)
         if mode=='r' then return nil end
-        return {write=function(_,content) files[path]=content; return true end,close=function() return true end}
+        files[path]=''
+        return {write=function(_,content) files[path]=files[path]..content; return true end,close=function() return true end}
     end},
-    reqscript=function(name) assert(name=='df-local-zh-paths'); return {broker_data=function() return 'fixture' end} end,
+    reqscript=function(name)
+        if name=='df-local-zh-unicode' then return {decode=function(s) return s end} end
+        if name=='df-local-zh-core/native' then return {local_export_commit=function(from,to) files[to]=files[from];files[from]=nil;return true end} end
+        assert(name=='df-local-zh-paths'); return {broker_data=function() return 'fixture' end}
+    end,
 },{__index=_G})
 assert(loadfile(root..'/hack/scripts/df-local-zh-names-worker.lua','t',env))()
 env.start()

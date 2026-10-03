@@ -3,6 +3,7 @@
 local world, page, boxes, cursor, title_cursor, published, prepared, source_cache, title_delay
 local plain_boxes={}
 local plain_layouts={}
+local nickname_display
 local pairs_to_translate={
     {'raw_thought_str','thought_box','/Thoughts'},
     {'thoughts_raw_memory_str','thoughts_memory_box','/Thoughts'},
@@ -314,9 +315,15 @@ function poll(runtime)
 end
 
 function start(runtime)
-    require('repeat-util').scheduleUnlessAlreadyScheduled('df-local-zh-unit-text',1,'frames',function()
+    nickname_display=nickname_display or reqscript('df-local-zh-nickname-display')
+    -- Unit sheets can contain many rolling rows. Twenty-frame polling keeps
+    -- the display translation available without competing with the render
+    -- loop in large worlds. A later poll still observes changed pages.
+    require('repeat-util').scheduleUnlessAlreadyScheduled('df-local-zh-unit-text',20,'frames',function()
         local ok,err=pcall(poll,runtime)
         if not ok then dfhack.printerr('df-local-zh-unit-text: '..tostring(err)) end
+        local name_ok,name_err=pcall(nickname_display.poll,runtime)
+        if not name_ok then dfhack.printerr('df-local-zh-nickname-display: '..tostring(name_err)) end
     end)
 end
 

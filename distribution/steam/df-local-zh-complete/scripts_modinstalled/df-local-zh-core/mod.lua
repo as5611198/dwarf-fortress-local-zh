@@ -85,13 +85,24 @@ local function load_font(dir)
   for _, lang_tag in ipairs(find_dirs(dir)) do
     local lang_dir = dir .. '/' .. lang_tag
     p("is searching for \"%s\" font from: \"%s\"...", lang_tag, lang_dir)
-    for _, file in ipairs(find_files(lang_dir, 'otf')) do
+    local font_files=find_files(lang_dir,'otf')
+    table.sort(font_files)
+    for _, file in ipairs(font_files) do
       p("is loading \"%s\" font from: \"%s\"...", lang_tag, file)
       native.add_font(lang_tag, file)
       -- set the first loaded language tag as the default language tag
       if not first_lang_tag then
         first_lang_tag = lang_tag
         change_lang_tag(lang_tag)
+      end
+    end
+    -- Optional OS fonts remain on the player's PC and are never redistributed.
+    local windows=os.getenv('WINDIR')
+    if windows then
+      for _,name in ipairs({'mingliub.ttc','msjh.ttc'}) do
+        local fallback=windows..'/Fonts/'..name
+        local file=io.open(fallback,'rb')
+        if file then file:close();native.add_font(lang_tag,fallback) end
       end
     end
   end

@@ -15,7 +15,7 @@ local native_result
 local runtime={on_translation=function(text,callback)
     local entry={callback=callback}
     callbacks[text]=entry
-    if not delayed and not failing[text] then callback('公告譯文') end
+    if not delayed and not failing[text] then entry.callback=nil;callback('公告譯文') end
     return function() entry.callback=nil;cancelled=cancelled+1 end
 end,publish_native=function(rows)
     for _,row in ipairs(rows) do published[row.text]=row.translation end
@@ -133,6 +133,18 @@ events.onReport.df_local_zh_reports(5)
 stale('前一世界的公告。')
 assert(not published[reports[4].text],'A late callback from another world must not publish')
 assert(cancelled>0,'World changes must cancel outstanding subscriptions')
+
+-- Offline providers must not retain one subscription for every historical report.
+for id=100,399 do
+    reports[id]={id=id,text='Offline report '..id}
+    events.onReport.df_local_zh_reports(id)
+end
+local live=0
+for _,entry in pairs(callbacks) do if entry.callback then live=live+1 end end
+assert(live<=128,'Offline report subscriptions must stay bounded')
+assert(callbacks['Offline report 100'].callback==nil,'Eviction must cancel the old listener')
+events.onReport.df_local_zh_reports(100)
+assert(callbacks['Offline report 100'].callback,'Deferred reports must be eligible for another pass')
 
 env.stop()
 local before=#queued

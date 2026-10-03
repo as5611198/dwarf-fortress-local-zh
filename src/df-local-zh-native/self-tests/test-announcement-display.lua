@@ -20,6 +20,7 @@ local env=setmetatable({
         timeout=function() end,printerr=error},
     require=function(name) assert(name=='plugins.eventful');return events end,
     reqscript=function(name)
+        if name=='df-local-zh-status' then return {background_allowed=function() return true end,broker=function() return {} end} end
         if name=='df-local-zh-core/mod' then return {async_translate=function() return nil end} end
         assert(name=='df-local-zh-runtime')
         return {prefetch=function() return false end,publish_native=function() return true end,

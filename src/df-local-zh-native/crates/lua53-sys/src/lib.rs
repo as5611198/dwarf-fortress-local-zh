@@ -46,12 +46,21 @@ pub fn check_string(state: *mut ffi::c_void, index: ffi::c_int) -> String {
 }
 
 // Check and return a string (converted from CP437 code page) from the Lua stack
+// Lua strings used by DFHack are usually legacy CP437, but the UTF-8 search
+// bridge deliberately passes validated CJK text through unchanged.  Keep the
+// same boundary rule here: otherwise UTF-8 bytes such as E9 83 9D (郝) are
+// decoded one byte at a time as CP437 and render as Θâ¥.
+pub fn decode_cp437_or_utf8(slice: &[u8]) -> String {
+  if let Some(text)=cp437_string::chinese_utf8(slice) { return text.to_owned(); }
+  let cstring = CString::new(slice).unwrap();
+  cp437_string::c_string_to_string(cstring.as_ptr())
+}
+
 pub fn check_cp437_string(state: *mut ffi::c_void, index: ffi::c_int) -> String {
   let mut size: usize = 0;
   let str_ptr = unsafe { luaL_checklstring(state, index, &mut size as *mut usize) };
   let slice = unsafe { std::slice::from_raw_parts(str_ptr as *const u8, size) };
-  let cstring = CString::new(slice).unwrap();
-  cp437_string::c_string_to_string(cstring.as_ptr())
+  decode_cp437_or_utf8(slice)
 }
 
 // Push nil onto the Lua stack
@@ -72,4 +81,19 @@ pub fn push_string(state: *mut ffi::c_void, value: &str) {
 // Push a boolean onto the Lua stack
 pub fn push_boolean(state: *mut ffi::c_void, value: bool) {
   unsafe { lua_pushboolean(state, value as ffi::c_int) }
+}
+
+#[cfg(test)]
+mod tests {
+  use super::decode_cp437_or_utf8;
+
+  #[test]
+  fn validated_utf8_clipboard_text_is_not_reinterpreted_as_cp437() {
+    assert_eq!(decode_cp437_or_utf8("郝gjsok184".as_bytes()), "郝gjsok184");
+  }
+
+  #[test]
+  fn legacy_cp437_clipboard_text_still_decodes() {
+    assert_eq!(decode_cp437_or_utf8(&[0x82, b' ', b'A']), "é A");
+  }
 }

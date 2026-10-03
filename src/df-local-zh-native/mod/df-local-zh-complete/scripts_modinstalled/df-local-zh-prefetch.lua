@@ -3,8 +3,11 @@ local json=require('json')
 local paths=reqscript('df-local-zh-paths')
 local unit_prewarm=reqscript('df-local-zh-unit-prewarm')
 local visible=reqscript('df-local-zh-visible-text')
+local status_module
 local active_world,groups,group_cursor,seen,queue,cursor,counts,errors
 local unit_cursors={}
+local seen_slots,seen_cursor={},1
+local retry_generation,active_language
 local function field(value,name)
     local ok,result=pcall(function() return value[name] end)
     return ok and result or nil
@@ -12,6 +15,7 @@ end
 local function reset()
     groups,group_cursor,seen,queue,cursor,counts,errors={},1,{},{},1,{},{}
     unit_cursors={}
+    seen_slots,seen_cursor={},1
 end
 reset()
 
@@ -26,6 +30,9 @@ local function add(text,category,field_id)
     if unit_prewarm.fixed_translation(text) then return end
     if #text>8000 or not text:match('[A-Za-z]') or seen[text] or #queue>=128 then return end
     if text:match('^L[%w]+_*$') and text:find('%d') or text:find('DFLIVE_',1,true) then return end
+    local old=seen_slots[seen_cursor]
+    if old then seen[old]=nil end
+    seen_slots[seen_cursor]=text;seen_cursor=seen_cursor%8192+1
     seen[text]=true;queue[#queue+1]={text=text,category=category,field_id=field_id}
     counts[category]=counts[category] or {collected=0,ready=0}
     counts[category].collected=counts[category].collected+1
@@ -161,10 +168,15 @@ function poll(runtime)
     if not current or not dfhack.isMapLoaded() then return end
     if #groups==0 then initialize() end
     visible.poll(runtime)
-    local status=reqscript('df-local-zh-status')
+    status_module=status_module or reqscript('df-local-zh-status')
+    local status=status_module
+    local b=status.broker();local r=b and b.runtime or {}
+    if b and (retry_generation~=r.retryGeneration or active_language~=b.language) then
+        retry_generation,active_language=r.retryGeneration,b.language
+        reset();initialize()
+    end
     if not status.background_allowed() then return end
     if status.claim_background and not status.claim_background('sources') then return end
-    local b=status.broker();local r=b and b.runtime or {}
     if (r.backgroundQueued or 0)+(b and b.backgroundQueued or 0)>24 then return end
     if #queue<128 then
         for _=1,3 do
@@ -186,22 +198,28 @@ function poll(runtime)
         if #queue==0 then break end
         if cursor>#queue then cursor=1 end
         local row=queue[cursor];cursor=cursor+1
-        if not row.ready and runtime.prefetch(row.text) then
+        local translated,state,reason=runtime.prefetch(row.text)
+        if translated then
             counts[row.category].ready=counts[row.category].ready+1
             log({version=1,world=active_world,text=row.text,type=row.category,
                 field_id=row.field_id,status='ready'})
+            table.remove(queue,cursor-1);cursor=cursor-1
+        elseif state=='failed' then
+            counts[row.category].failed=(counts[row.category].failed or 0)+1
+            log({version=1,world=active_world,text=row.text,type=row.category,status='failed',error=reason})
             table.remove(queue,cursor-1);cursor=cursor-1
         end
     end
 end
 
 function status()
-    local result={world=active_world,collected=0,ready=0,categories=counts,errors=0,scope='local-observed'}
+    local result={world=active_world,collected=0,ready=0,failed=0,categories=counts,errors=0,scope='local-observed'}
     for _,row in pairs(counts) do
         result.ready=result.ready+row.ready;result.collected=result.collected+row.collected
+        result.failed=result.failed+(row.failed or 0)
     end
     for _ in pairs(errors) do result.errors=result.errors+1 end
-    result.pending=result.collected-result.ready
+    result.pending=result.collected-result.ready-result.failed
     result.visible=visible.status()
     return result
 end
