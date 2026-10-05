@@ -154,6 +154,6 @@ function poll(runtime)
     for _,row in ipairs(rows) do
         row.key = row.source and runtime.short_lookup(row.source,true,nil,row.width,row.id,
             row.kind ~= 'figure' and row.kind or nil) or nil
-        if not row.key then row.key = runtime.pending_key() end
+        -- Keep native identities readable until a verified translation is ready.
     end
 end

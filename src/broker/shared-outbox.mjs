@@ -24,7 +24,13 @@ export class SharedOutbox {
   }
   status(scope=this.statusScope()) {return {schema:1,enabled:this.isEnabled(scope),pending:this.state.entries.length,sent:this.state.sent??0,
     lastSuccess:this.state.lastSuccess??'',phase:this.phase,...(this.error?{error:this.error}:{})};}
-  async publish(scope=this.statusScope()){await this.atomic('status.json',this.status(scope));}
+  publish(scope=this.statusScope()) {
+    // Consent changes and settings apply can publish concurrently. Windows
+    // rejects overlapping replacement of the destination even with unique
+    // temporary names. Keep status writes ordered independently of mutate().
+    const job=(this.statusWrites??Promise.resolve()).then(()=>this.atomic('status.json',this.status(scope)));
+    this.statusWrites=job.catch(()=>{});return job;
+  }
   async capture(input,scope='') {
     if(this.stopped || !this.isEnabled(scope))return false;
     let entry;try{entry=validateContribution(input);}catch{return false;}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile, rm } from 'node:fs/promises';
+import { mkdtemp, writeFile, rm, mkdir } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { start, createBrokerServer } from '../server.mjs';
@@ -36,6 +36,11 @@ test('Broker loads only dictionaries for its selected language and serves litera
     await writeFile(join(directory, 'hant.csv'), 'text,translation,tags\nIron items,鐵製品,\n');
     await writeFile(join(directory, 'hans.csv'), 'text,translation,tags\nIron items,铁制品,\n');
     for (const language of ['zh-Hant', 'zh-Hans']) {
+      // This verifies local dictionary selection; cloud jobs must not outlive
+      // server.close() and recreate files while the fixture is being removed.
+      const state=join(directory,'state-'+language);
+      await mkdir(state,{recursive:true});
+      await writeFile(join(state,'settings.json'),JSON.stringify({version:1,defaults:{language,apiEnabled:false,officialAutoDownload:false},saves:{}}));
       await writeFile(join(directory, 'config.json'), JSON.stringify({ language, port: 0,
         dataDirectory: 'state-'+language, staticDictionaryLanguage: 'zh-Hant',
         staticDictionaries: ['hant.csv'],

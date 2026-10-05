@@ -10,6 +10,28 @@ import {TranslationBroker} from '../broker.mjs';
 const mod=await import('../shared-outbox.mjs').catch(()=>({}));
 const row={schema:1,rules:'df-zh-3',language:'zh-Hant',context:'general',kind:'exact',origin:'vanilla',text:'He feels lonely after being unable to socialize.',translation:'他因為無法社交而感到孤單。',model:'fixture-model',license:'CC0-1.0'};
 async function setup(t,options={}){assert.equal(typeof mod.SharedOutbox,'function');const directory=await mkdtemp(join(tmpdir(),'df-share-'));t.after(()=>rm(directory,{recursive:true,force:true}));const outbox=new mod.SharedOutbox({directory,isEnabled:()=>true,...options});await outbox.load();return {outbox,directory};}
+test('concurrent status publications serialize Windows replacement and recover after failure',async t=>{
+  const {outbox,directory}=await setup(t);
+  const original=outbox.atomic.bind(outbox);
+  let active=0,peak=0,entered,release;
+  const started=new Promise(resolve=>{entered=resolve;});
+  const gate=new Promise(resolve=>{release=resolve;});
+  outbox.atomic=async(name,value)=>{
+    active++;peak=Math.max(peak,active);entered();
+    try {await gate;return await original(name,value);} finally {active--;}
+  };
+  const first=outbox.publish();await started;
+  outbox.phase='complete';const second=outbox.publish();
+  await new Promise(resolve=>setImmediate(resolve));release();
+  const results=await Promise.allSettled([first,second]);
+  assert.equal(peak,1,'concurrent status renames can fail with EPERM on Windows');
+  assert.ok(results.every(result=>result.status==='fulfilled'));
+  assert.equal(JSON.parse(await readFile(join(directory,'shared/status.json'),'utf8')).phase,'complete');
+  outbox.atomic=async()=>{throw Error('disk unavailable');};
+  await assert.rejects(outbox.publish(),/disk unavailable/);
+  outbox.atomic=original;outbox.phase='idle';await outbox.publish();
+  assert.equal(JSON.parse(await readFile(join(directory,'shared/status.json'),'utf8')).phase,'idle');
+});
 test('consent defaults off and disabled scopes never queue or upload',async t=>{
   assert.equal(DEFAULT_SETTINGS.sharedContributions,false);let calls=0;const {outbox}=await setup(t,{isEnabled:()=>false,fetcher:async()=>{calls++;}});
   assert.equal(await outbox.capture(row,''),false);await outbox.flush();assert.equal(calls,0);assert.equal(outbox.status().pending,0);

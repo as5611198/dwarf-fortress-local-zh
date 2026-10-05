@@ -15,8 +15,152 @@ local requests_path = directory .. 'runtime-requests.jsonl'
 local responses_path = directory .. 'runtime-responses.jsonl'
 local visibility_path = directory .. 'runtime-visible.json'
 local one_row_path = directory .. 'runtime-one.csv'
-local response_offset = 0
 local response_error
+local JOURNAL_READ_BUDGET, JOURNAL_RECORD_LIMIT = 262144, 8*1024*1024
+local function journal_state() return {offset=0,chunks={},bytes=0,discarding=false} end
+local response_state, failure_state = journal_state(), journal_state()
+local response_batch
+local journal_errors, journal_warnings = {}, {}
+-- DFHack's JSON decoder concatenates every decoded character, making long
+-- strings quadratic. Decode strings in runs and substitute interned tokens;
+-- keep the established decoder for JSON structure/numbers/booleans/null.
+-- Equal decoded strings share a token so duplicate object keys still use the
+-- decoder's last-value semantics, including differently escaped equal keys.
+local function decode_journal(line)
+    assert(utf8.len(line) and not line:find('\237[\160-\191][\128-\191]'),'invalid journal UTF-8')
+    local strings, tokens, pieces = {}, {}, {}
+    local escapes={['"']='"',['\\']='\\',['/']='/',b='\b',f='\f',n='\n',r='\r',t='\t'}
+    local at,count=1,0
+    while at<=#line do
+        local opening=line:find('"',at,true)
+        if not opening then pieces[#pieces+1]=line:sub(at);break end
+        pieces[#pieces+1]=line:sub(at,opening-1)
+        local chunks,cursor={},opening+1
+        while true do
+            local special=line:find('["\\%z\1-\31]',cursor)
+            assert(special,'unterminated journal string')
+            chunks[#chunks+1]=line:sub(cursor,special-1)
+            local byte=line:byte(special)
+            if byte==34 then
+                local value=table.concat(chunks)
+                local token=tokens[value]
+                if not token then count=count+1;token='J'..count;tokens[value]=token;strings[token]=value end
+                pieces[#pieces+1]='"'..token..'"'
+                at=special+1;break
+            end
+            assert(byte==92,'unescaped journal control character')
+            local escaped=line:sub(special+1,special+1)
+            if escapes[escaped] then
+                chunks[#chunks+1]=escapes[escaped];cursor=special+2
+            else
+                assert(escaped=='u','invalid journal escape')
+                local hex=line:sub(special+2,special+5)
+                assert(#hex==4 and hex:match('^%x%x%x%x$'),'invalid journal Unicode escape')
+                local codepoint=tonumber(hex,16)
+                cursor=special+6
+                if codepoint>=0xD800 and codepoint<=0xDBFF then
+                    local low=line:sub(cursor+2,cursor+5)
+                    assert(line:sub(cursor,cursor+1)=='\\u' and #low==4 and low:match('^%x%x%x%x$'),'missing low surrogate')
+                    low=tonumber(low,16)
+                    assert(low>=0xDC00 and low<=0xDFFF,'invalid low surrogate')
+                    codepoint=0x10000+(codepoint-0xD800)*0x400+low-0xDC00;cursor=cursor+6
+                else
+                    assert(codepoint<0xDC00 or codepoint>0xDFFF,'unpaired low surrogate')
+                end
+                chunks[#chunks+1]=utf8.char(codepoint)
+            end
+        end
+    end
+    local function restore(value,depth)
+        assert(depth<=128,'journal nesting limit')
+        if type(value)=='string' then return assert(strings[value],'unknown journal string token') end
+        if type(value)~='table' then return value end
+        local restored={}
+        for key,entry in pairs(value) do restored[restore(key,depth+1)]=restore(entry,depth+1) end
+        return setmetatable(restored,getmetatable(value))
+    end
+    return restore(json.decode(table.concat(pieces)),0)
+end
+local function journal_error(path,err)
+    err=err and tostring(err) or nil
+    if err and journal_errors[path]~=err then
+        dfhack.printerr('df-local-zh-runtime journal '..path..': '..err)
+    end
+    journal_errors[path]=err
+end
+local function journal_warning(path,count)
+    local warning=journal_warnings[path] or {count=0}
+    warning.count=warning.count+count
+    local now=os.time()
+    if warning.count>0 and (not warning.at or now-warning.at>=5) then
+        dfhack.printerr('df-local-zh-runtime journal '..path..': skipped '..warning.count..' invalid or oversized rows')
+        warning.count,warning.at=0,now
+    end
+    journal_warnings[path]=warning
+end
+
+-- Stage each bounded read. The caller commits the state only after its rows
+-- have been consumed, so native import failures never discard completed work.
+local function read_journal(path,state)
+    local opened,file,err,code=pcall(io.open,path,'rb')
+    if not opened then journal_error(path,file);return end
+    if not file then
+        if code==2 or err==nil then
+            journal_error(path,nil)
+            return {rows={},state=journal_state(),reset=state.offset>0,missing=true}
+        end
+        journal_error(path,err);return
+    end
+    local read_ok,data,start,reset=pcall(function()
+        local size,seek_err=file:seek('end')
+        assert(size,seek_err or 'journal size unavailable')
+        local restart=size<state.offset
+        local offset=restart and 0 or state.offset
+        local position,position_err=file:seek('set',offset)
+        assert(position==offset,position_err or 'journal seek failed')
+        local content,read_err=file:read(JOURNAL_READ_BUDGET)
+        assert(content~=nil or (read_err==nil and offset==size),read_err or 'journal truncated during read')
+        return content or '',offset,restart
+    end)
+    local close_ok,closed,close_err=pcall(file.close,file)
+    if not read_ok then journal_error(path,data);return end
+    if not close_ok or not closed then journal_error(path,close_err or closed or 'journal close failed');return end
+    journal_error(path,nil)
+    local next_state=journal_state()
+    next_state.offset=start+#data
+    if not reset then
+        next_state.bytes,next_state.discarding=state.bytes,state.discarding
+        for i,chunk in ipairs(state.chunks) do next_state.chunks[i]=chunk end
+    end
+    local rows,rejected,at={},0,1
+    while at<=#data do
+        -- Plain forward search is linear even if a large chunk has no newline.
+        local boundary=data:find('\n',at,true)
+        local last=boundary and boundary-1 or #data
+        if next_state.discarding then
+            if boundary then next_state.discarding=false end
+        elseif next_state.bytes+last-at+1>JOURNAL_RECORD_LIMIT then
+            next_state.chunks,next_state.bytes={},0
+            next_state.discarding=not boundary
+            rejected=rejected+1
+        else
+            next_state.chunks[#next_state.chunks+1]=data:sub(at,last)
+            next_state.bytes=next_state.bytes+last-at+1
+            if boundary then
+                local line=table.concat(next_state.chunks)
+                next_state.chunks,next_state.bytes={},0
+                if line:find('%S') then
+                    local ok,row=pcall(decode_journal,line)
+                    if ok then rows[#rows+1]=row else rejected=rejected+1 end
+                end
+            end
+        end
+        if not boundary then break end
+        at=boundary+1
+    end
+    journal_warning(path,rejected)
+    return {rows=rows,state=next_state,reset=reset}
+end
 -- FIFO windows only hold reconstructible display state. Persisted responses
 -- and native dictionaries remain the source of truth after an eviction.
 local function cache(capacity)
@@ -39,7 +183,7 @@ local function cache(capacity)
         __pairs=function() return next,values,nil end,
     })
 end
-local failure_offset,failures,failure_generation=0,cache(),nil
+local failures,failure_generation=cache(),nil
 local ready = cache()
 local ready_text = cache()
 local pending = cache()
@@ -74,6 +218,7 @@ local function localize(text)
 end
 
 function language() return current_language end
+function narrative_mode() return current_language..':'..tostring(api_enabled) end
 function localize_text(text) return localize(text) end
 function display_rows(rows)
     return native.native_display_rows_set(json.encode(rows,{pretty=false}))
@@ -163,7 +308,10 @@ local function load_rows(rows, path)
         lines[#lines+1] = csv_field(row.text) .. ',' .. csv_field(localize(row.translation)) .. ',\n'
     end
     local file = assert(io.open(path, 'wb'))
-    assert(file:write(table.concat(lines))); assert(file:close())
+    local write_ok,written,write_err=pcall(file.write,file,table.concat(lines))
+    local close_ok,closed,close_err=pcall(file.close,file)
+    assert(write_ok and written,write_err or written or 'Response CSV write failed')
+    assert(close_ok and closed,close_err or closed or 'Response CSV close failed')
     local loaded,err=native.load_simple_dict(current_language, path)
     if loaded==false then error(err or 'Native dictionary rejected response rows') end
 end
@@ -228,7 +376,9 @@ local function remember_display(kind, source, translated, color, key)
     local row = display_record(kind, source, translated, color, key)
     if not row then return end
     local id = retain_display(row)
-    if display_saved[id] ~= (key or translated) then save_display({row}) end
+    if display_saved[id] ~= (key or translated) then
+        save_display({row})
+    end
 end
 
 local function load_display()
@@ -390,48 +540,42 @@ function poll()
         colored_staged = cache()
         announcement_staged,announcement_ready = cache(),cache()
         alias_text = cache()
-        response_offset = 0
-        failure_offset,failures,failure_generation=0,cache(),nil
+        response_state,failure_state=journal_state(),journal_state()
+        response_batch,response_error=nil,nil
+        failures,failure_generation=cache(),nil
         load_display()
         restore_display()
         display_initialized = true
     end
     if not active_world then return end
 
-    local failure_file=io.open(directory..'runtime-failures.jsonl','rb')
-    if failure_file then
+    local failure_batch=read_journal(directory..'runtime-failures.jsonl',failure_state)
+    local generation=failure_generation
+    if failure_batch and not failure_batch.missing then
         local status=module('df-local-zh-status').broker()
-        local generation=status and status.runtime and status.runtime.retryGeneration
-        if generation~=failure_generation then failure_offset,failures,failure_generation=0,cache(),generation end
-        if failure_offset>failure_file:seek('end') then failure_offset=0 end
-        failure_file:seek('set',failure_offset)
-        local text=failure_file:read(262144) or '';failure_file:close()
-        local consumed=0
-        for line in text:gmatch('(.-)\n') do
-            consumed=consumed+#line+1
-            local ok,row=pcall(json.decode,line)
-            if ok and type(row)=='table' and row.world==active_world and (row.language or 'zh-Hant')==current_language and
+        generation=status and status.runtime and status.runtime.retryGeneration
+        if generation~=failure_generation then
+            failure_state,failures,failure_generation=journal_state(),cache(),generation
+            failure_batch=read_journal(directory..'runtime-failures.jsonl',failure_state)
+        end
+    end
+    if failure_batch then
+        if failure_batch.reset then failures=cache() end
+        for _,row in ipairs(failure_batch.rows) do
+            if type(row)=='table' and row.world==active_world and (row.language or 'zh-Hant')==current_language and
                     row.retryGeneration==generation and type(row.text)=='string' then
                 local id=row.visibilityId or row.text
                 failures[id]=row.terminal and row.reason or nil
             end
         end
-        failure_offset=failure_offset+(consumed>0 and consumed or (#text==262144 and #text or 0))
+        failure_state=failure_batch.state
     end
 
-    local file = io.open(responses_path, 'rb')
-    if not file then return end
-    local size = file:seek('end')
-    if response_offset > size then response_offset = 0 end
-    file:seek('set', response_offset)
-    local content = file:read(262144) or ''
-    file:close()
-
-    local consumed, restored, translations = 0, {}, {}
-    for line in content:gmatch('(.-)\n') do
-        consumed = consumed + #line + 1
-        local ok, row = pcall(json.decode, line)
-        if ok and type(row) == 'table' and row.world == active_world and (row.language or 'zh-Hant')==current_language and
+    response_batch=response_batch or read_journal(responses_path,response_state)
+    if not response_batch then return end
+    local restored, translations, paragraphs, restored_indices = {}, {}, {}, {}
+    for _,row in ipairs(response_batch.rows) do
+        if type(row) == 'table' and row.world == active_world and (row.language or 'zh-Hant')==current_language and
                 type(row.text) == 'string' and type(row.translation) == 'string' and
                 type(row.key) == 'string' and #row.key == 71 and
                 row.key:match('^DFLIVE_[0-9a-f]+$') and
@@ -446,55 +590,55 @@ function poll()
                 row.figureId >= 0 and row.figureId == math.floor(row.figureId))) then
             if row.kind == 'legends-paragraph' and type(row.requestLinks) == 'table' and
                     type(row.links) == 'table' and #row.links == #row.requestLinks then
-                local id = paragraph_identity(row.text, row.requestLinks, row.subjectId)
-                paragraph_ready[id] = {translation=row.translation, links=row.links}
-                pending[id] = nil
+                local valid=module('df-local-zh-offline-narrative').valid_result(row.text,row.requestLinks,row)
+                if valid then paragraphs[#paragraphs+1]=row else journal_warning(responses_path,1) end
             elseif row.kind == nil or row.kind == 'legends-name' then
-                restored[#restored+1] = row
-                translations[#translations+1] = {text=row.key, translation=row.translation}
+                -- The native dictionary keeps the latest value for each key.
+                -- Verifying an older revision would otherwise retry forever.
+                local index=restored_indices[row.key] or #restored+1
+                restored_indices[row.key]=index
+                restored[index] = row
+                translations[index] = {text=row.key, translation=row.translation}
             end
         end
     end
     if #translations > 0 then
-        local loaded,err = pcall(load_rows, translations, directory .. 'runtime-restored.csv')
+        local loaded,err = pcall(function()
+            load_rows(translations, directory .. 'runtime-restored.csv')
+            for _,row in ipairs(restored) do
+                assert(mod.sync_translate(row.key)==row.translation,'dictionary verification failed')
+            end
+        end)
         if not loaded then
             if response_error~=tostring(err) then
                 response_error=tostring(err)
                 dfhack.printerr('df-local-zh-runtime response import: '..response_error)
             end
-            return false -- Keep the cursor; the next poll must retry this batch.
+            return false -- Retain this complete batch, including its partial tail.
         end
-        if loaded then
-            for _, row in ipairs(restored) do
-                if mod.sync_translate(row.key) ~= row.translation then
-                    if response_error~='dictionary verification failed' then
-                        response_error='dictionary verification failed'
-                        dfhack.printerr('df-local-zh-runtime response import: '..response_error)
-                    end
-                    return false
-                end
+        for _, row in ipairs(restored) do
+            local id = identity(row.text,
+                row.kind == 'legends-name' and row.entityId or row.figureId,
+                row.kind == 'legends-name' and row.entityKind or nil)
+            if ready[id]~=row.key or ready_text[id]~=row.translation then
+                short_ready[id],short_staged[id]=nil,nil
             end
-            for _, row in ipairs(restored) do
-                if mod.sync_translate(row.key) == row.translation then
-                    local id = identity(row.text,
-                        row.kind == 'legends-name' and row.entityId or row.figureId,
-                        row.kind == 'legends-name' and row.entityKind or nil)
-                    if ready[id] ~= row.key then short_ready[id] = nil;short_staged[id] = nil end
-                    ready[id] = row.key
-                    ready_text[id] = row.translation
-                    pending[id] = nil
-                    if row.kind == nil and row.figureId == nil then
-                        notify_translation(row.text, row.translation)
-                    end
-                end
+            ready[id] = row.key
+            ready_text[id] = row.translation
+            pending[id] = nil
+            if row.kind == nil and row.figureId == nil then
+                notify_translation(row.text, row.translation)
             end
         end
     end
+    for _,row in ipairs(paragraphs) do
+        local id=paragraph_identity(row.text,row.requestLinks,row.subjectId)
+        paragraph_ready[id]={translation=row.translation,links=row.links}
+        pending[id]=nil
+    end
     response_error=nil
-    -- Valid rows are far below this limit; discard an overlong corrupt line
-    -- instead of rereading the same unterminated bytes forever.
-    if consumed==0 and #content==262144 then consumed=#content end
-    response_offset = response_offset + consumed
+    response_state=response_batch.state
+    response_batch=nil
 end
 
 local function append_request(row)
@@ -511,12 +655,30 @@ local function append_request(row)
     return true
 end
 
-function paragraph_lookup(source, links, subject_id)
+function paragraph_lookup(source, links, subject_id, local_source, literals)
+    local offline=module('df-local-zh-offline-narrative')
+    if not offline.valid(source,links) then return nil,'invalid' end
     local active_world = world()
     if not active_world then return nil, 'invalid' end
     if active_world ~= current_world then poll() end
     local id = paragraph_identity(source, links, subject_id)
+    -- Local paragraphs bypass batching and keep native clickable identities.
+    local immediate
+    if local_source and offline.literal_source(local_source,literals)==source then
+        immediate=offline.translate_literal(local_source,links,literals,native.local_lookup)
+    end
+    immediate=immediate or offline.translate(source,links,native.local_lookup)
+    if immediate then return immediate,'ready' end
     if paragraph_ready[id] then return paragraph_ready[id], 'ready' end
+    if not api_enabled then
+        local original={translation=source,links={},native_fallback=true}
+        for i,link in ipairs(links) do original.links[i]={translation=link.text} end
+        return original,'ready'
+    end
+    if failures[id] then
+        pending[id]=nil
+        return nil,'failed',failures[id]
+    end
     local now = os.time()
     if pending[id] and now - pending[id] < 20 then return nil, 'pending' end
     if #source > 8000 or #links > 64 then return nil, 'invalid' end
@@ -568,8 +730,8 @@ function request(source, figure_id, entity_kind, priority)
         notify_translation(source,existing)
         return source, 'ready'
     end
-    if waiting and not promote then return nil, 'pending' end
     if not api_enabled or priority=='background' and not background_enabled then return nil,'disabled' end
+    if waiting and not promote then return nil, 'pending' end
 
     local row={world=active_world, language=current_language, text=source,
         namePolicy=figure_id~=nil and 'native-v2' or nil,priority=priority}
@@ -625,11 +787,15 @@ end
 
 function lookup(source, figure_id, entity_kind)
     if world() ~= current_world then poll() end
-    return ready[identity(source, figure_id, entity_kind)] or request(source, figure_id, entity_kind)
+    local key=ready[identity(source, figure_id, entity_kind)]
+    if key then return key,'ready' end
+    return request(source, figure_id, entity_kind)
 end
 
 function translation(source)
     if world() ~= current_world then poll() end
+    local installed=native.local_lookup and native.local_lookup(source)
+    if installed then return installed end
     local preferred=native.official_library_lookup and native.official_library_lookup(source)
     if preferred then return preferred end
     local fixed=module('df-local-zh-reviewed-text').translation(source,current_language)
@@ -651,6 +817,8 @@ end
 
 function unit_translation(source)
     if world() ~= current_world then poll() end
+    local installed=native.local_lookup and native.local_lookup(source)
+    if installed then return installed end
     local preferred=native.official_library_lookup and native.official_library_lookup(source)
     if preferred then return localize(preferred) end
     local fixed=module('df-local-zh-reviewed-text').translation(source,current_language)
@@ -713,7 +881,8 @@ function native_ready(source,translated)
     return mod.async_translate(source)==localize(translated)
 end
 
-function pending_key()
+function pending_key(status)
+    if not api_enabled or (status~='queued' and status~='pending') then return nil end
     if not pending_loaded then
         local ok, loaded = pcall(load_translation, pending_short_key, '翻譯中')
         if not ok or not loaded then return nil end
@@ -837,16 +1006,16 @@ function literal_key(translation)
     return key
 end
 
-local function color_alias(translation, color)
+local function color_alias(translation, color, literal)
     if type(color)~='string' or #color~=1 or color:byte()>127 then return nil end
-    local id=color..translation
+    local id=(literal and 'literal:' or '')..color..translation
     if colored_ready[id] then
-        remember_display('fragment',nil,translation,color:byte(),colored_ready[id])
+        if not literal then remember_display('fragment',nil,translation,color:byte(),colored_ready[id]) end
         return colored_ready[id]
     end
     local key=colored_staged[id]
     if not key then
-        key=make_alias(translation,true,nil,nil,nil,color)
+        key=make_alias(translation,true,nil,nil,nil,color,literal)
         if not key then return nil end
         colored_staged[id]=key
     end
@@ -854,7 +1023,7 @@ local function color_alias(translation, color)
     if mod.async_translate(tag..key)~=tag..translation then return nil end
     colored_staged[id]=nil
     colored_ready[id]=key
-    remember_display('fragment', nil, translation, color:byte(),key)
+    if not literal then remember_display('fragment', nil, translation, color:byte(),key) end
     return key
 end
 
@@ -862,6 +1031,15 @@ function colored_key(translation, color)
     translation=localize(translation)
     if not display_initialized or world() ~= current_world then poll() end
     return color_alias(translation, color)
+end
+
+-- Only callers that already validated literal identity slots may use this.
+-- These transient aliases are bounded and never persisted as prose fragments.
+function literal_colored_key(translation,color)
+    if type(translation)~='string' or #translation>24000 or translation:find('[{}%[%]]') then return nil end
+    translation=localize(translation)
+    if not display_initialized or world()~=current_world then poll() end
+    return color_alias(translation,color,true)
 end
 
 function draw_key(x,y,color,background,key,flag)
@@ -883,16 +1061,16 @@ function short_lookup(source, expand, alignment, max_width, figure_id, entity_ki
         ':' .. tostring(max_width or '')
     local id = identity(source, figure_id, entity_kind)
     local cached = short_ready[id] and short_ready[id][mode]
-    if cached ~= nil then return cached or nil end
+    if cached ~= nil then return cached or nil,cached and 'ready' or 'unavailable' end
     local staged=short_staged[id] and short_staged[id][mode]
     if staged then
-        if mod.async_translate(staged.key)~=staged.translation then return nil end
+        if mod.async_translate(staged.key)~=staged.translation then return nil,'rendering' end
         short_ready[id]=short_ready[id] or {};short_ready[id][mode]=staged.key
         short_staged[id][mode]=nil
-        return staged.key
+        return staged.key,'ready'
     end
-    local key = lookup(source, figure_id, entity_kind)
-    if not key then return nil end
+    local key,status,reason = lookup(source, figure_id, entity_kind)
+    if not key then return nil,status,reason end
     local alias = make_alias(ready_text[id] or mod.sync_translate(key), expand, alignment, max_width, #source)
     short_ready[id] = short_ready[id] or {}
     if alias then
@@ -900,11 +1078,15 @@ function short_lookup(source, expand, alignment, max_width, figure_id, entity_ki
         if mod.async_translate(alias)~=text then
             short_staged[id]=short_staged[id] or {}
             short_staged[id][mode]={key=alias,translation=text}
-            return nil
+            return nil,'rendering'
         end
     end
     short_ready[id][mode] = alias
-    return alias or nil
+    return alias or nil,alias and 'ready' or 'unavailable'
+end
+
+function restore_legends(page)
+    return module('df-local-zh-legends').restore_native(page)
 end
 
 function adopt_running()
@@ -917,14 +1099,15 @@ function start()
     local legends = reqscript('df-local-zh-legends')
     local unit_text = reqscript('df-local-zh-unit-text')
     reqscript('df-local-zh-hover-text').start(_ENV)
-    local unit_bridge = {translation=unit_translation,colored_key=colored_key,announcement_key=announcement_key,
+    local unit_bridge = {translation=unit_translation,colored_key=colored_key,literal_colored_key=literal_colored_key,announcement_key=announcement_key,
         publish=publish,display_rows=display_rows,
         name_translation=unit_name_translation,observe=reqscript('df-local-zh-prefetch').observe}
     reqscript('df-local-zh-unit-prewarm').start({translation=background_translation,colored_key=colored_key})
     reqscript('df-local-zh-native-prewarm').start()
     reqscript('df-local-zh-prefetch').start({prefetch=prefetch})
     local bridge = {short_lookup = short_lookup, pending_key = pending_key,
-        paragraph_lookup=paragraph_lookup, literal_key=literal_key,
+        paragraph_lookup=paragraph_lookup, literal_key=literal_key,narrative_mode=narrative_mode,
+        restore_legends=restore_legends,
         set_visible=set_visible,visibility_id=visibility_id,
         paragraph_visibility_id=paragraph_visibility_id}
     local function tick()

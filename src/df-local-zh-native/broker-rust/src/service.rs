@@ -4,6 +4,8 @@ use crate::{
   equipment::Terms,
   official::Official,
   provider::Pool,
+  registry::Registry,
+  translation_cache::TranslationCache,
   settings::{Settings, clipboard},
   shared::Shared,
 };
@@ -19,6 +21,7 @@ use std::{
   time::{Duration, Instant},
 };
 use tokio::sync::watch;
+pub use crate::journal_tail::Tail;
 type Dict = HashMap<String, String>;
 type Pending = HashMap<String, watch::Receiver<Option<(bool, String)>>>;
 pub struct App {
@@ -32,20 +35,21 @@ pub struct App {
   pub shared: Arc<Shared>,
   builtins: HashMap<String, Dict>,
   numeric: HashMap<String, crate::numeric_templates::NumericTemplates>,
+  prose: HashMap<String, crate::offline_prose::OfflineProse>,
+  finite: HashMap<String, rule_based_translator::finite::FiniteIndex>,
   glossaries: HashMap<String, Value>,
   name_dictionary: Value,
   races: Value,
-  cache: Mutex<BoundedMap<String,String>>,
+  cache: Mutex<TranslationCache>,
   fixed: HashMap<String, Dict>,
   pending: Mutex<Pending>,
-  journal: Mutex<()>,
   equipment: HashMap<String, Terms>,
   pub runtime_active: AtomicUsize,
   pub published: AtomicUsize,
   pub failed: AtomicUsize,
   pub attempted: AtomicUsize,
   runtime_snapshot: Mutex<Value>,
-  registry_cache: Mutex<(Option<(std::time::SystemTime,u64)>,Arc<Value>)>,
+  registry_cache: Mutex<(Option<(std::time::SystemTime,u64)>,Arc<Registry>)>,
   prewarm_signature: Mutex<String>,
 }
 struct PendingGuard { app: Arc<App>, key: String }
@@ -125,17 +129,29 @@ pub fn prepare(source: &str, glossary: &Value) -> Prepared {
     entities,
   }
 }
-fn csv_dict(path: &Path, target: &mut Dict) -> Result<()> {
+fn csv_dict(path: &Path, target: &mut Dict, reviewed: &mut HashSet<String>, prose:&mut crate::offline_prose::OfflineProse) -> Result<()> {
   let bytes = std::fs::read(path)?;
   let bytes = bytes.strip_prefix(&[239, 187, 191]).unwrap_or(&bytes);
   let mut reader = csv::ReaderBuilder::new().flexible(true).from_reader(bytes);
   let headers = reader.headers()?.clone();
   let a = headers.iter().position(|s| s == "text").unwrap_or(0);
   let b = headers.iter().position(|s| s == "translation").unwrap_or(1);
+  let tags=headers.iter().position(|s|s=="tags");
   for row in reader.records() {
     let row = row?;
     if let (Some(text), Some(value)) = (row.get(a), row.get(b)) {
       if let Ok(value) = validate(text, value) {
+        let tag=tags.and_then(|i|row.get(i)).unwrap_or("");
+        let is_reviewed=tag.contains("[REVIEWED:1]");
+        // Match the native dictionary: community rows cannot undo reviewed
+        // translations, while newer reviewed corrections can replace them.
+        if reviewed.contains(text) && !is_reviewed {continue;}
+        if is_reviewed {reviewed.insert(text.into());}
+        let kind=if is_reviewed {
+          ["sentence","value","ability","tail","emotion","reason","appearance"].into_iter().find(|kind|tag.contains(&format!("[PROSE:{kind}]")))
+        }else{None};
+        // Untagged dictionary additions must not erase installed reviewed prose.
+        if let Some(kind)=kind {prose.insert(text,&value,kind);}
         target.insert(text.into(), value);
       }
     }
@@ -156,14 +172,22 @@ impl App {
     let shared = Shared::load(root, settings.clone())?;
     let mut builtins = HashMap::new();
     let mut numeric = HashMap::new();
+    let mut prose = HashMap::new();
+    let mut finite = HashMap::new();
     let mut glossaries = HashMap::new();
     let mut fixed = HashMap::new();
     let mut equipment = HashMap::new();
     for lang in ["zh-Hant", "zh-Hans"] {
       if let Some(p) = config["equipmentRulesDirectory"].as_str() {
         equipment.insert(lang.into(), Terms::load(&source.join(p).join(lang))?);
+        let mut translator=rule_based_translator::Translator::default();
+        translator.load_from_dir(source.join(p).join(lang))?;
+        finite.insert(lang.into(),rule_based_translator::finite::FiniteIndex::compile(translator.dump()));
       }
       let mut dict = Dict::new();
+      let mut reviewed = HashSet::new();
+      let mut paragraphs=crate::offline_prose::OfflineProse::default();
+      paragraphs.set_language(lang);
       let simple = source.join("../dfi18n-data/simple").join(lang);
       if simple.is_dir() {
         let mut files = std::fs::read_dir(simple)?
@@ -173,7 +197,7 @@ impl App {
           .collect::<Vec<_>>();
         files.sort();
         for p in files {
-          csv_dict(&p, &mut dict)?;
+          csv_dict(&p, &mut dict, &mut reviewed, &mut paragraphs)?;
         }
       }
       let mut files = Vec::new();
@@ -186,7 +210,7 @@ impl App {
       files.extend(config["staticDictionariesByLanguage"][lang].as_array().cloned().unwrap_or_default());
       for v in files {
         if let Some(p) = v.as_str() {
-          csv_dict(&source.join(p), &mut dict)?;
+          csv_dict(&source.join(p), &mut dict, &mut reviewed, &mut paragraphs)?;
         }
       }
       // Corrected rules remain higher priority than the shared layer.
@@ -197,6 +221,7 @@ impl App {
       let mut templates = crate::numeric_templates::NumericTemplates::default();
       for (source, translated) in &dict { templates.insert(source, translated); }
       numeric.insert(lang.into(), templates);
+      prose.insert(lang.into(),paragraphs);
       builtins.insert(lang.into(), dict);
       let glossary_path = config["glossaryPathsByLanguage"][lang].as_str().or(config["glossaryPath"].as_str());
       let mut glossary = if let Some(p) = glossary_path {
@@ -222,35 +247,7 @@ impl App {
       }
       fixed.insert(lang.into(), pins);
     }
-    let mut cache = BoundedMap::new(16384);
-    let journal_path = root.join("translations.jsonl");
-    if journal_path.exists() {
-      use std::io::BufRead;
-      for line in std::io::BufReader::new(std::fs::File::open(journal_path)?).lines() {
-        let Ok(line) = line else { continue };
-        let Ok(row) = serde_json::from_str::<Value>(&line) else {
-          continue;
-        };
-        let lang = row["language"].as_str().unwrap_or("");
-        let kind = row["kind"].as_str().unwrap_or("");
-        let source = row["source"].as_str().unwrap_or("");
-        if row["policy"] != POLICY
-          || !language(lang)
-          || !["exact", "numeric", "entity", "name", "link", "phonetic"].contains(&kind)
-          || row["key"] != cache_key(source, lang, kind)
-        {
-          continue;
-        }
-        let validation = if matches!(kind, "name" | "link") {
-          row["preferred"].as_str().unwrap_or("")
-        } else {
-          source
-        };
-        if let Ok(value) = validate(validation, row["translation"].as_str().unwrap_or("")) {
-          cache.insert(row["key"].as_str().unwrap().into(), value);
-        }
-      }
-    }
+    let cache = TranslationCache::open(root)?;
     let name_dictionary = read_json(&source.join("name-dictionary.json"), 8 * 1024 * 1024).unwrap_or(json!({}));
     let mut races = json!({});
     if let Some(path) = config["raceMap"].as_str() {
@@ -272,20 +269,21 @@ impl App {
       shared,
       builtins,
       numeric,
+      prose,
+      finite,
       glossaries,
       name_dictionary,
       races,
       cache: Mutex::new(cache),
       fixed,
       pending: Mutex::new(HashMap::new()),
-      journal: Mutex::new(()),
       equipment,
       runtime_active: AtomicUsize::new(0),
       published: AtomicUsize::new(0),
       failed: AtomicUsize::new(0),
       attempted: AtomicUsize::new(0),
-      runtime_snapshot: Mutex::new(json!({"foregroundActive":0,"backgroundActive":0,"foregroundQueued":0,"backgroundQueued":0,"unresolved":0})),
-      registry_cache:Mutex::new((None,Arc::new(json!({"entities":[]})))),
+      runtime_snapshot: Mutex::new(json!({"foregroundActive":0,"backgroundActive":0,"foregroundQueued":0,"backgroundQueued":0,"unresolved":0,"history":{"state":"loading","attempts":0}})),
+      registry_cache:Mutex::new((None,Arc::new(Registry::empty("")))),
       prewarm_signature:Mutex::new(String::new()),
     });
     app.publish_status()?;
@@ -306,25 +304,48 @@ impl App {
       .unwrap_or_else(|| json!({"world":"","language":self.settings.lock().unwrap().effective("")["language"]}))
   }
   pub fn registry(&self, world: &str) -> Arc<Value> {
+    self.indexed_registry(world).value.clone()
+  }
+  fn indexed_registry(&self, world: &str) -> Arc<Registry> {
     let path=self.runtime.join("world-names.json");
-    let stamp=std::fs::metadata(&path).ok().and_then(|m|Some((m.modified().ok()?,m.len())));
+    // Observe the revision under the same lock as replacement. A caller that
+    // waited for a newer snapshot must not apply an older NotFound observation.
     let mut cache=self.registry_cache.lock().unwrap();
-    if stamp!=cache.0 {
+    let metadata=std::fs::metadata(&path);
+    let removed=metadata.as_ref().is_err_and(|e| e.kind()==std::io::ErrorKind::NotFound);
+    let stamp=metadata.ok().and_then(|m|Some((m.modified().ok()?,m.len())));
+    if removed && cache.0.is_some() {
+      *cache=(None,Arc::new(Registry::empty("")));
+    } else if stamp!=cache.0 {
       let value=read_json(&path,32*1024*1024).ok().filter(|v|v["entities"].is_array());
-      if let Some(value)=value {*cache=(stamp,Arc::new(value));}
+      if let Some(value)=value {*cache=(stamp,Arc::new(Registry::new(value)));}
     }
-    if cache.1["world"]==world {cache.1.clone()} else {Arc::new(json!({"world":world,"entities":[]}))}
+    if cache.1.value["world"]==world {cache.1.clone()} else {Arc::new(Registry::empty(world))}
   }
   fn known(&self, source: &str, lang: &str) -> Option<String> {
     if let Some(v) = self.fixed.get(lang)?.get(source) {
       return Some(v.clone());
     }
+    if let Some(v)=crate::offline_history::lookup_with_terms(source,&|s|self.builtins.get(lang)?.get(s).cloned()
+      .or_else(||self.equipment.get(lang)?.translate(s)),lang=="zh-Hans") {return Some(v);}
     if let Some(v) = self.equipment.get(lang).and_then(|t| t.translate(source)) {
       return Some(v);
     }
+    if let Some(v)=self.prose.get(lang).and_then(|p|p.lookup(source)) {return Some(v);}
+    if let Some(v)=crate::offline_combat::lookup(source,&|s|self.builtins.get(lang)?.get(s).cloned()
+      .or_else(||self.equipment.get(lang)?.translate(s)),lang=="zh-Hans") {return Some(v);}
+    if let Some(v)=crate::offline_items::lookup(source,&|s|self.builtins.get(lang)?.get(s).cloned()
+      .or_else(||self.equipment.get(lang)?.preference_material(s))
+      .or_else(||self.equipment.get(lang)?.translate(s))
+      .or_else(||self.finite.get(lang)?.lookup(s).map(str::to_owned)),lang=="zh-Hans") {return Some(v);}
+    if let Some(v)=crate::offline_preferences::lookup(source,&|s|self.builtins.get(lang)?.get(s).cloned()
+      .or_else(||self.equipment.get(lang)?.preference_material(s))
+      .or_else(||self.equipment.get(lang)?.translate(s))
+      .or_else(||self.finite.get(lang)?.lookup(s).map(str::to_owned)),lang=="zh-Hans") {return Some(v);}
     if let Some(v) = self.builtins.get(lang)?.get(source) {
       return Some(v.clone());
     }
+    if let Some(v)=self.finite.get(lang).and_then(|f|f.lookup(source)) {return Some(v.into());}
     if let Some((value, _)) = self.numeric.get(lang).and_then(|n| n.lookup(source)) {
       return Some(value);
     }
@@ -348,22 +369,11 @@ impl App {
     }
     self.official.lookup(source, lang, "exact").or_else(|| self.official.lookup(source, lang, "entity"))
   }
-  fn cached(&self, source: &str, lang: &str, kind: &str) -> Option<String> {
-    self.cache.lock().unwrap().get(&cache_key(source, lang, kind)).cloned()
+  fn cached(&self, source: &str, lang: &str, kind: &str) -> Result<Option<String>> {
+    self.cache.lock().unwrap().get(source, lang, kind)
   }
   fn save_cache(&self, source: &str, lang: &str, kind: &str, value: &str, preferred: Option<&str>) -> Result<()> {
-    let _guard = self.journal.lock().unwrap();
-    let key = cache_key(source, lang, kind);
-    if self.cache.lock().unwrap().get(&key).is_some_and(|s| s == value) {
-      return Ok(());
-    }
-    let mut row = json!({"key":key,"policy":POLICY,"kind":kind,"source":source,"language":lang,"translation":value,"timestamp":iso()});
-    if let Some(p) = preferred {
-      row["preferred"] = json!(p);
-    }
-    append(&self.root.join("translations.jsonl"), &row)?;
-    self.cache.lock().unwrap().insert(key, value.into());
-    Ok(())
+    self.cache.lock().unwrap().save(source, lang, kind, value, preferred)
   }
   pub async fn translate(self: &Arc<Self>, source: &str, lang: &str, world: &str, priority: u8) -> Result<String> {
     ensure!(
@@ -422,19 +432,15 @@ impl App {
       !re(r"^(?:He|She) is not distracted after being unable to (?:be|pray to)$").is_match(source.trim()),
       "incomplete display fragment"
     );
-    let registry = self.registry(world);
+    let registry = self.indexed_registry(world);
     let mut name_glossary = json!({});
     if !world.is_empty() {
-      for row in registry["entities"].as_array().unwrap() {
+      for row in registry.matching(source) {
         if let Some(aliases) = row["aliases"].as_array() {
-          let matched =
-            aliases.iter().filter_map(Value::as_str).any(|a| !matches!(a, "A" | "An" | "The") && mentions(source, a));
-          if matched {
-            let name = self.canonical(row, lang, world, priority).await?;
-            for alias in aliases.iter().filter_map(Value::as_str) {
-              if !matches!(alias, "A" | "An" | "The") || source.trim() == alias {
-                name_glossary[alias] = json!(name);
-              }
+          let name = self.canonical(row, lang, world, priority).await?;
+          for alias in aliases.iter().filter_map(Value::as_str) {
+            if !matches!(alias, "A" | "An" | "The") || source.trim() == alias {
+              name_glossary[alias] = json!(name);
             }
           }
         }
@@ -450,12 +456,12 @@ impl App {
     if let Some(shared) = self.official.lookup(&prepared.text, lang, &prepared.kind) {
       return prepared.restore(&shared, source);
     }
-    if let Some(cached) = self.cached(&prepared.text, lang, &prepared.kind) {
+    if let Some(cached) = self.cached(&prepared.text, lang, &prepared.kind)? {
       if let Ok(value) = prepared.restore(&cached, source) {
         return Ok(value);
       }
     }
-    if let Some(cached) = self.cached(source, lang, "exact") {
+    if let Some(cached) = self.cached(source, lang, "exact")? {
       if name_glossary.as_object().unwrap().values().all(|v| cached.contains(v.as_str().unwrap_or(""))) {
         return Ok(cached);
       }
@@ -516,13 +522,13 @@ impl App {
       if native { format!("native-v2:{id}") } else { id.into() },
       preferred
     ]))?;
-    if let Some(v) = self.cached(&identity, lang, "name") {
+    if let Some(v) = self.cached(&identity, lang, "name")? {
       return Ok(v);
     }
     let value = if let Some(v) = self.name_dictionary[preferred].as_str() {
       convert(v, lang)
-    } else if !native && self.cached(preferred, lang, "exact").is_some() {
-      self.cached(preferred, lang, "exact").unwrap()
+    } else if let Some(value) = if native { None } else { self.cached(preferred, lang, "exact")? } {
+      value
     } else {
       let (s, profiles) = {
         let settings = self.settings.lock().unwrap();
@@ -542,12 +548,8 @@ impl App {
     Ok(value)
   }
   pub async fn pin(self: &Arc<Self>, id: &str, lang: &str, world: &str) -> Result<String> {
-    let r = self.registry(world);
-    let row = r["entities"]
-      .as_array()
-      .unwrap()
-      .iter()
-      .find(|r| r["id"] == id)
+    let r = self.indexed_registry(world);
+    let row = r.by_id(id)
       .ok_or_else(|| anyhow::anyhow!("unknown figure"))?;
     self.canonical(row, lang, world, 0).await
   }
@@ -644,8 +646,7 @@ impl App {
       "invalid runtime request"
     );
     let priority = if request["priority"] == "foreground" { 0 } else { 2 };
-    let registry = self.registry(world);
-    let entities = registry["entities"].as_array().unwrap();
+    let registry = self.indexed_registry(world);
     let payload = if request["kind"] == "legends-name" {
       ensure!(request["namePolicy"] == "native-v2", "invalid name policy");
       let id = format!(
@@ -653,7 +654,7 @@ impl App {
         request["entityKind"].as_str().unwrap_or(""),
         request["entityId"]
       );
-      let row = entities.iter().find(|r| r["id"] == id).ok_or_else(|| anyhow::anyhow!("name identity mismatch"))?;
+      let row = registry.by_id(&id).ok_or_else(|| anyhow::anyhow!("name identity mismatch"))?;
       ensure!(
         row["aliases"].as_array().is_some_and(|a| a.iter().any(|v| v == source))
           && (row["nativeName"].as_str().unwrap_or_else(|| row["aliases"][0].as_str().unwrap_or("")) == source),
@@ -695,7 +696,7 @@ impl App {
           .filter(|s| !s.is_empty() && s.len() <= 2000)
           .ok_or_else(|| anyhow::anyhow!("invalid links"))?;
         let id = format!("{}:{}", kinds[t], link["id"]);
-        let value = if let Some(row) = entities.iter().find(|r| r["id"] == id) {
+        let value = if let Some(row) = registry.by_id(&id) {
           ensure!(
             aliases(text)
               || row["aliases"]
@@ -725,7 +726,7 @@ impl App {
     } else if let Some(figure) = request["figureId"].as_u64() {
       ensure!(request["namePolicy"] == "native-v2", "invalid name policy");
       let id = format!("figure:{figure}");
-      let row = entities.iter().find(|r| r["id"] == id).ok_or_else(|| anyhow::anyhow!("caption identity mismatch"))?;
+      let row = registry.by_id(&id).ok_or_else(|| anyhow::anyhow!("caption identity mismatch"))?;
       let pattern = re(r#"^(.*), "([^"]+)", (.+)$"#);
       let matched = pattern.captures(source).ok_or_else(|| anyhow::anyhow!("caption identity mismatch"))?;
       let norm = |s: &str| s.to_lowercase().chars().filter(|c| c.is_alphanumeric()).collect::<String>();
@@ -895,56 +896,6 @@ pub fn runtime_key(row: &Value) -> String {
   bytes.extend_from_slice(&serde_json::to_vec(&data).unwrap());
   format!("DFLIVE_{}", hash(bytes))
 }
-pub struct Tail {
-  offset: u64,
-  tail: Vec<u8>,
-  modified: Option<std::time::SystemTime>,
-}
-impl Default for Tail {
-  fn default() -> Self {
-    Self {
-      offset: 0,
-      tail: Vec::new(),
-      modified: None,
-    }
-  }
-}
-impl Tail {
-  pub fn read(&mut self, path: &Path) -> Result<Vec<Value>> {
-    use std::io::{Read, Seek, SeekFrom};
-    let Ok(mut file) = std::fs::File::open(path) else {
-      return Ok(Vec::new());
-    };
-    let meta = file.metadata()?;
-    if meta.len() < self.offset
-      || (meta.len() == self.offset && self.modified.is_some() && meta.modified().ok() != self.modified)
-    {
-      self.offset = 0;
-      self.tail.clear();
-    }
-    self.modified = meta.modified().ok();
-    file.seek(SeekFrom::Start(self.offset))?;
-    let mut data = Vec::new();
-    file.take(64 * 1024).read_to_end(&mut data)?;
-    self.offset += data.len() as u64;
-    self.tail.extend(data);
-    let mut rows = Vec::new();
-    if let Some(end) = self.tail.iter().rposition(|c| *c == b'\n') {
-      for line in self.tail[..end].split(|c| *c == b'\n') {
-        if line.len() <= 32768 {
-          if let Ok(v) = serde_json::from_slice(line) {
-            rows.push(v);
-          }
-        }
-      }
-      self.tail.drain(..=end);
-    }
-    if self.tail.len() > 32768 {
-      self.tail.clear();
-    }
-    Ok(rows)
-  }
-}
 fn runtime_request_current(row: &Value, world: &str, visible: &HashSet<String>) -> bool {
   if row["world"] != world {
     return false;
@@ -964,6 +915,9 @@ pub async fn run_background(app: Arc<App>) {
   let mut settings_reply_at=Instant::now()-Duration::from_secs(2);
   let mut previous_visible=HashSet::new();
   let mut tail = Tail::default();
+  let mut request_read_failed=false;
+  let mut journal_rejections=0u64;
+  let mut journal_warning_at=Instant::now()-Duration::from_secs(5);
   let mut deferred=false;
   let mut completed = BoundedMap::new(32768);
   let mut jobs = HashMap::<String, Value>::new();
@@ -977,37 +931,16 @@ pub async fn run_background(app: Arc<App>) {
   let mut prewarm_task:Option<tokio::task::JoinHandle<()>>=None;
   let mut shared_at = Instant::now() - Duration::from_secs(20);
   let mut auto_at = HashMap::<String, i64>::new();
-  if let Ok(file) = std::fs::File::open(app.runtime.join("runtime-responses.jsonl")) {
-    use std::io::BufRead;
-    for line in std::io::BufReader::new(file).lines().map_while(Result::ok) {
-      if let Ok(mut row) = serde_json::from_str::<Value>(&line) {
-        if row["kind"] == "legends-paragraph" {
-          row["links"] = row["requestLinks"].clone();
-        }
-        if row["key"] == runtime_key(&row)
-          && validate(
-            row["text"].as_str().unwrap_or(""),
-            row["translation"].as_str().unwrap_or(""),
-          )
-          .is_ok()
-        {
-          completed.insert(runtime_key(&row),());
-        }
-      }
-    }
-  }
-  if let Ok(file) = std::fs::File::open(app.runtime.join("runtime-failures.jsonl")) {
-    use std::io::BufRead;
-    for line in std::io::BufReader::new(file).lines().map_while(Result::ok) {
-      if let Ok(row) = serde_json::from_str::<Value>(&line) {
-        let key = runtime_key(&row);
-        if row["key"] == key && row["attempts"].as_u64().is_some_and(|n| n <= 31) && !completed.contains_key(&key) {
-          failures.insert(key, row);
-        }
-      }
-    }
-  }
+  let mut history=crate::runtime_history::Recovery::new();
   loop {
+    if let Some(snapshot)=history.poll(&app.runtime).await {
+      completed=snapshot.completed;failures=snapshot.failures;
+      // Queued work was only staged during recovery. Re-read it using the
+      // restored ledger and the current world/language/retry generation.
+      jobs.clear();tail=Tail::default();deferred=false;
+      scope.clear();retry_generation.clear();previous_visible.clear();
+      status_at=Instant::now()-Duration::from_secs(1);
+    }
     while let Ok((key, row, result)) = done_rx.try_recv() {
       inflight.remove(&key);
       app.runtime_active.fetch_sub(1, Ordering::Relaxed);
@@ -1118,33 +1051,45 @@ pub async fn run_background(app: Arc<App>) {
     if visible!=previous_visible {tail=Tail::default();previous_visible=visible.clone();}
     jobs.retain(|_, row| runtime_request_current(row, world, &visible) && row["language"].as_str().unwrap_or("zh-Hant")==language);
     if deferred && jobs.len()<512 {tail=Tail::default();deferred=false;}
-    if let Ok(rows) = tail.read(&app.runtime.join("runtime-requests.jsonl")) {
-      for row in rows {
-        if !runtime_request_current(&row, world, &visible)
-          || row["language"].as_str().unwrap_or("zh-Hant")!=language
-          || row["text"].as_str().is_none_or(|s| s.is_empty() || s.len() > 8000)
-        {
-          continue;
-        }
-        let key = runtime_key(&row);
-        if !completed.contains_key(&key) && !inflight.contains_key(&key) && !failures.get(&key).is_some_and(|v|v["terminal"]==true) {
-          if jobs.len()>=1024 && !jobs.contains_key(&key) {
-            deferred=true;
-            if row["priority"]=="foreground" {
-              let background=jobs.iter().find(|(_,r)|r["priority"]!="foreground").map(|(k,_)|k.clone());
-              if let Some(background)=background {jobs.remove(&background);} else {continue}
-            } else {continue}
+    match tail.read(&app.runtime.join("runtime-requests.jsonl")) {
+      Ok(rows)=>{
+        request_read_failed=false;
+        for row in rows {
+          if !runtime_request_current(&row, world, &visible)
+            || row["language"].as_str().unwrap_or("zh-Hant")!=language
+            || row["text"].as_str().is_none_or(|s| s.is_empty() || s.len() > 8000)
+          {
+            continue;
           }
-          jobs.insert(key, row);
+          let key = runtime_key(&row);
+          if !completed.contains_key(&key) && !inflight.contains_key(&key) && !failures.get(&key).is_some_and(|v|v["terminal"]==true) {
+            if jobs.len()>=1024 && !jobs.contains_key(&key) {
+              deferred=true;
+              if row["priority"]=="foreground" {
+                let background=jobs.iter().find(|(_,r)|r["priority"]!="foreground").map(|(k,_)|k.clone());
+                if let Some(background)=background {jobs.remove(&background);} else {continue}
+              } else {continue}
+            }
+            jobs.insert(key, row);
+          }
         }
       }
+      Err(error)=>{
+        if !request_read_failed {eprintln!("runtime request journal read failed: {error}");}
+        request_read_failed=true;
+      }
+    }
+    journal_rejections=journal_rejections.saturating_add(tail.take_rejected());
+    if journal_rejections>0 && journal_warning_at.elapsed()>=Duration::from_secs(5) {
+      eprintln!("runtime request journal skipped {journal_rejections} invalid or oversized rows");
+      journal_rejections=0;journal_warning_at=Instant::now();
     }
     let paused = settings["backgroundTranslation"] != true
       || read_json(&app.runtime.join("translation-controls.json"), 8192).is_ok_and(|v| v["backgroundPaused"] == true);
     let mut keys = jobs.keys().cloned().collect::<Vec<_>>();
     keys.sort_by_key(|k| if jobs[k]["priority"] == "foreground" { 0 } else { 2 });
     for key in keys {
-      if inflight.len() >= 16 {
+      if !history.ready() || inflight.len() >= 16 {
         break;
       }
       let row = &jobs[&key];
@@ -1189,7 +1134,8 @@ pub async fn run_background(app: Arc<App>) {
       let queued=jobs.iter().filter(|(key,_)|!failures.get(*key).is_some_and(|f|f["terminal"]==true)).map(|(_,row)|row).collect::<Vec<_>>();
       let queued_fg=queued.iter().copied().filter(foreground).count();
       *app.runtime_snapshot.lock().unwrap()=json!({"foregroundActive":active_fg,"backgroundActive":active_total-active_fg,
-        "foregroundQueued":queued_fg,"backgroundQueued":queued.len()-queued_fg,"unresolved":failures.values().filter(current).count(),"retryGeneration":retry_generation});
+        "foregroundQueued":queued_fg,"backgroundQueued":queued.len()-queued_fg,"unresolved":failures.values().filter(current).count(),"retryGeneration":retry_generation,
+        "history":history.status()});
       let _ = app.publish_status();
       status_at = Instant::now();
     }
@@ -1213,6 +1159,20 @@ pub async fn run_background(app: Arc<App>) {
 }
 #[cfg(test)]
 mod tests {
+  #[tokio::test]
+  async fn reviewed_dictionary_survives_later_community_rows() {
+    let dir = tempfile::tempdir().unwrap();
+    let config = dir.path().join("config.json");
+    std::fs::write(&config, r#"{"staticDictionaryLanguage":"zh-Hant","staticDictionaries":["reviewed.csv","community.csv","correction.csv"]}"#).unwrap();
+    std::fs::write(dir.path().join("reviewed.csv"), "text,translation,tags\nExcitement,尋求刺激,[REVIEWED:1]\nLabel,舊審核,[REVIEWED:1]\n").unwrap();
+    std::fs::write(dir.path().join("community.csv"), "text,translation,tags\nExcitement,興奮,\nLabel,未審核,\nOther,其他,\n").unwrap();
+    std::fs::write(dir.path().join("correction.csv"), "text,translation,tags\nLabel,新審核,[REVIEWED:1]\n").unwrap();
+    let app=super::App::load(&config,&dir.path().join("state")).unwrap();
+    let dict=&app.builtins["zh-Hant"];
+    assert_eq!(dict["Excitement"], "尋求刺激");
+    assert_eq!(dict["Label"], "新審核");
+    assert_eq!(dict["Other"], "其他");
+  }
   use super::*;
   #[test]
   fn quality_item_templates_translate_the_inner_prose() {

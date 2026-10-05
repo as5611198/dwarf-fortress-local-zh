@@ -1,10 +1,11 @@
 [package]
 name = "df-local-zh-broker"
-version = "0.5.2"
+version = "0.5.11"
 edition = "2024"
 license = "MIT"
 
 [dependencies]
+aho-corasick = "1"
 anyhow = "1"
 axum = "0.8"
 base64 = "0.22"
@@ -13,6 +14,8 @@ csv = "1"
 ed25519-dalek = { version = "2", features = ["pkcs8", "pem"] }
 ferrous-opencc = "0.4"
 regex = "1"
+rusqlite = { version = "0.40.2", features = ["bundled"] }
+rule_based_translator = { path = "../crates/rule_based_translator" }
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["preserve_order"] }

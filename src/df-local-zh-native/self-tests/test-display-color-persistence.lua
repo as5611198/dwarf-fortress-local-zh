@@ -233,4 +233,18 @@ saved_loads=loads
 runtime.draw_key(1,2,9,0,restored_title)
 assert(drawn[#drawn].key~=restored_title and loads==saved_loads,
     'A no-world title color must survive process restart')
-print('PASS overlay color persistence, native readiness, palette isolation, world scope and title restart')
+local literal='A𠮷 Smith喜歡銀。'
+local journal_before=files[journal]
+assert(runtime.colored_key(literal,string.char(7))==nil,'Normal prose must still reject English')
+color_ready=false
+assert(runtime.literal_colored_key(literal,string.char(7))==nil,'Literal aliases also need native readiness')
+color_ready=true
+local literal_alias=assert(runtime.literal_colored_key(literal,string.char(7)))
+assert(dictionary['[C:7:0:0]'..literal_alias]=='[C:7:0:0]'..literal)
+assert(runtime.colored_key(literal,string.char(7))==nil,'Literal cache must not bypass normal prose validation')
+saved_loads=loads
+assert(runtime.literal_colored_key(literal,string.char(7))==literal_alias and loads==saved_loads)
+assert(files[journal]==journal_before,'Literal names must not be persisted as reusable prose fragments')
+assert(not runtime.literal_colored_key('{DWARF_NAME}喜歡銀。',string.char(7)))
+assert(not runtime.literal_colored_key('[C:7:0:0]A Smith',string.char(7)))
+print('PASS overlay colors, native readiness, world scope, literal name isolation and bounded reuse')

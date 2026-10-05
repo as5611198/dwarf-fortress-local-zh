@@ -6,10 +6,12 @@
 
 以下是開發者流程：在 `src/broker` 執行 `npm ci --ignore-scripts`。在 `src/df-local-zh-native` 設定 `$env:RUSTFLAGS='-C target-feature=+crt-static'`，執行 `cargo build --target x86_64-pc-windows-msvc --release -p df-local-zh-broker -p df_local_zh_core`，使所有相依套件採一致的靜態 CRT。Broker 啟動 DLL 由 `src/broker/launcher.cpp` 使用 MSVC `/std:c++17 /LD /MT /EHsc` 建置。確認 EXE/DLL 的系統依賴，再組包；不可沿用舊 Node 啟動器。
 
+若 MSVC LNK1104 指向實際存在但超長的相依套件路徑，設定 `CARGO_TARGET_DIR` 為較短的可寫路徑再建置；組包的 `--native-dll`／`--broker-exe` 也須指向實際產物。2026-10-04 持久快取候選版使用了獨立短路徑，詳見 [驗證紀錄](CACHE-PERSISTENCE-20261004.md)，不能沿用原 target 中較舊的 Broker。
+
 從倉庫根目錄執行：
 
 ```powershell
-node src/broker/prepare-standalone-package.mjs --version=0.5.2 --native-dll=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df_local_zh_core.dll --broker-exe=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df-local-zh-broker.exe
+node src/broker/prepare-standalone-package.mjs --version=0.5.11 --native-dll=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df_local_zh_core.dll --broker-exe=src/df-local-zh-native/target/x86_64-pc-windows-msvc/release/df-local-zh-broker.exe
 node src/broker/validate-workshop-package.mjs distribution/steam/df-local-zh-complete
 cd src/broker
 npm test
@@ -22,6 +24,8 @@ npm test
 已發布的項目：[3811313433](https://steamcommunity.com/sharedfiles/filedetails/?id=3811313433)。後續更新必須使用這個 publishedfileid，避免重複建立項目。
 
 更新 VDF 的 contentfolder、previewfile、版本與描述；初次建立時 publishedfileid 為 0。上傳成功後以 Steam 回傳的 ID 作後續更新。
+
+只更新內容並保留既有公共封面／簡介時，VDF 僅填 appid、publishedfileid、contentfolder、changenote，省略 previewfile、title、description、visibility。0.5.11 的 Steam 內容與 GitHub 內容只有既有封面及其 manifest 記錄不同；GitHub 保留倉庫原有封面與簡介。發布後須獨立下載並核對全部 payload 雜湊，不能只依上傳成功訊息。
 
 SteamCMD VDF 使用官方文件列出的純量鍵值欄位：appid、publishedfileid、contentfolder、previewfile、visibility、title、description、changenote。不可把只含值的 tags 陣列直接寫成 KeyValues 區塊；該格式會在區塊結尾發生解析錯誤。模組 info.txt 的 STEAM_TAG 與 SteamCMD VDF 是不同介面。
 

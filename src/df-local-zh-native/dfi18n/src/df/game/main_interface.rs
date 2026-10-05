@@ -8,6 +8,22 @@ pub fn get_help_mut() -> &'static mut Help {
 // game.main_interface.help
 static GAME_MAIN_INTERFACE_HELP: OnceLock<usize> = OnceLock::new();
 
+// DFHack resolves this one-byte field in the process-lifetime global game
+// interface. No widget pointer is retained and no game data is written.
+static SQUAD_SCHEDULE_OPEN: OnceLock<usize> = OnceLock::new();
+pub(crate) fn squad_schedule_open() -> bool {
+  SQUAD_SCHEDULE_OPEN.get().is_some_and(|address|
+    unsafe { std::ptr::read_volatile(*address as *const u8) == 1 })
+}
+#[unsafe(no_mangle)]
+extern "C" fn set_game_main_interface_squad_schedule_open(state: *mut std::ffi::c_void) -> i32 {
+  let address=lua53_sys::check_integer(state,1) as usize;
+  assert_ne!(address,0,"Missing native squad schedule flag");
+  let registered=SQUAD_SCHEDULE_OPEN.get_or_init(||address);
+  assert_eq!(*registered,address,"Native squad schedule flag address changed");
+  0
+}
+
 // Set game.main_interface.help from Lua
 #[unsafe(no_mangle)]
 extern "C" fn set_game_main_interface_help(lua_state: *mut std::ffi::c_void) -> i32 {

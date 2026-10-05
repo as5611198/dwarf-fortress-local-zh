@@ -3,7 +3,10 @@
 local world, page, boxes, cursor, title_cursor, published, prepared, source_cache, title_delay
 local plain_boxes={}
 local plain_layouts={}
+local health_layouts={}
 local nickname_display
+local preferences
+local adventure_background, background_names, adventure_journal
 local pairs_to_translate={
     {'raw_thought_str','thought_box','/Thoughts'},
     {'thoughts_raw_memory_str','thoughts_memory_box','/Thoughts'},
@@ -16,6 +19,8 @@ local function reset()
     source_cache,title_delay={},0
     plain_boxes={}
     plain_layouts={}
+    health_layouts={}
+    background_names=nil
 end
 reset()
 
@@ -24,10 +29,14 @@ local function plain(value)
         :gsub('%[C:%d+:%d+:%d+%]', ''):gsub('%[P%]', ''):gsub('%[R%]', '')
 end
 
-local function color_spans(value)
-    local text=dfhack.df2utf(value):gsub('^%[P%]','')
+local function color_spans(value,is_utf8,initial_color)
+    local text=(is_utf8 and value or dfhack.df2utf(value)):gsub('^%[P%]','')
     local spans,colors={},{}
     local color,tag=string.char(7),'[C:7:0:0]'
+    if initial_color and initial_color>=0 and initial_color<128 then
+        color=string.char(initial_color)
+        tag=('[C:%d:%d:%d]'):format(initial_color%8,math.floor(initial_color/8)%8,math.floor(initial_color/64))
+    end
     local offset=1
     local function append(fragment)
         if fragment=='' then return end
@@ -66,6 +75,26 @@ local function source_at(sheets,index)
     return source,spans
 end
 
+local function restore_health(box)
+    local id=tostring(box)
+    local layout=health_layouts[id]
+    if not layout then return end
+    for _,part in ipairs(layout.parts) do
+        local old=boxes[part.id]
+        if old then
+            for j=part.first,math.min(part.last,#box.line-1) do
+                local k=j-part.first+1
+                if box.line[j].text==old.keys[k] then
+                    box.line[j].text=old.lines[k].text
+                    box.line[j].color=old.lines[k].color
+                end
+            end
+            boxes[part.id]=nil
+        end
+    end
+    health_layouts[id]=nil
+end
+
 local function restore(sheets)
     local vectors={'personality_box','thought_box','thoughts_memory_box','unit_health_box',
         'skill_description_box','kill_description_box'}
@@ -73,6 +102,7 @@ local function restore(sheets)
       local vector=sheets[name]
       for i=0,(vector and #vector or 0)-1 do
         local box=vector[i]
+        if name=='unit_health_box' then restore_health(box) end
         local old=boxes[tostring(box)]
         if old and #box.line==#old.lines then
             for j=0,#box.line-1 do
@@ -102,9 +132,9 @@ function language_changed()
     page=nil;reset()
 end
 
-local function prepare_plain(box,source,width,runtime,field_id,native_rows)
+local function prepare_plain(box,source,width,runtime,field_id,native_rows,prepared_translation,identity)
     if not box or not source or source=='' or not source:match('[A-Za-z]') or #box.text==0 then return end
-    local id=tostring(box)
+    local id=identity or tostring(box)
     if runtime.display_rows and (width or 0)<8 then
         local layout=plain_layouts[id]
         if not layout or layout.source~=source or #layout.lines~=#box.text then return end
@@ -127,9 +157,9 @@ local function prepare_plain(box,source,width,runtime,field_id,native_rows)
         end
     end
     plain_boxes[id]=nil
-    if runtime.observe then runtime.observe(plain(source),'display',field_id) end
-    local translated=runtime.translation(plain(source))
-    if not translated or translated:match('[A-Za-z]') then return end
+    if not prepared_translation and runtime.observe then runtime.observe(plain(source),'display',field_id) end
+    local translated=prepared_translation or runtime.translation(plain(source))
+    if not translated or (not prepared_translation and translated:match('[A-Za-z]')) then return end
     local capacity=math.floor((width or 0)/2)
     local length=utf8.len(translated)
     if capacity<4 or not length or length>capacity*#box.text then return end
@@ -148,7 +178,8 @@ local function prepare_plain(box,source,width,runtime,field_id,native_rows)
                 fragment=translated:sub(begin,ending-1)
             end
             native_rows[#native_rows+1]={address=address,source=dfhack.df2utf(box.text[i].value),
-                translation=fragment,width=width}
+                translation=fragment,width=width,
+                verified_name_literals=prepared_translation~=nil and field_id=='setupadventure.background_text'}
         end
         plain_layouts[id]={source=source,width=width,lines=lines}
         return
@@ -169,23 +200,111 @@ local function prepare_plain(box,source,width,runtime,field_id,native_rows)
     plain_boxes[id]={source=source,width=width,lines=lines,keys=keys}
 end
 
+local function prepare_hover(interface,runtime,native_rows)
+    -- Only the currently displayed tooltip is meaningful. The fixed native
+    -- array also contains hundreds of hidden/stale instructions.
+    if not runtime.display_rows or not interface.hover_instructions_on then return end
+    local index=interface.current_hover
+    local vector=interface.hover_instruction
+    if type(index)~='number' or index%1~=0 or not vector or index<0 or index>=#vector or
+        interface.last_displayed_hover_inst~=index then return end
+    local box=vector[index]
+    if not box or #box.text==0 or #box.text>32 or #native_rows+#box.text>256 then return end
+    local parts,width,size={},0,0
+    for i=0,#box.text-1 do
+        local value=box.text[i].value
+        -- Preserve row-ending spaces when rebuilding the complete source.
+        -- Unsupported key/color markup keeps DF's original display path.
+        if type(value)~='string' or #value>256 or value:find('[^ -~]') or
+            value:find('[%[%]{}]') then return end
+        size=size+#value;if size>4096 then return end
+        parts[#parts+1]=value;width=math.max(width,#value)
+    end
+    -- One scalar layout slot bounds cache growth as the hover changes. Never
+    -- retain DF userdata or string addresses beyond this publication batch.
+    local before=#native_rows
+    prepare_plain(box,table.concat(parts),width,runtime,'main_interface.hover_instruction',
+        native_rows,nil,'visible_hover_instruction')
+    if #native_rows==before then return end
+    local chunks={}
+    for i=before+1,#native_rows do chunks[#chunks+1]=native_rows[i].translation end
+    local characters={}
+    for _,cp in utf8.codes(table.concat(chunks)) do characters[#characters+1]=utf8.char(cp) end
+    local capacity=math.floor(width/2)
+    local first,wrapped=1,{}
+    local closing='，。！？；：、）》」』】〉〕〗〙〛…,.!?;:)]}'
+    local opening='（《「『【〈〔〖〘〚([{'
+    for i=1,#chunks do
+        local last=math.min(first+capacity-1,#characters)
+        while last>=first and last<#characters and
+            (closing:find(characters[last+1],1,true) or opening:find(characters[last],1,true)) do
+            last=last-1
+        end
+        if last<first and first<=#characters then break end
+        wrapped[i]=table.concat(characters,'',first,last)
+        first=last+1
+    end
+    if first<=#characters or #wrapped~=#chunks then
+        -- A punctuation run can exhaust the conservative native row capacity.
+        -- Remove only this tooltip, preserving any item/other paragraph batch.
+        for i=#native_rows,before+1,-1 do native_rows[i]=nil end
+        return
+    end
+    for i,text in ipairs(wrapped) do native_rows[before+i].translation=text end
+end
+
 local function preference_subject(source,sheets,runtime)
     local unit=sheets.active_id and df.unit.find(sheets.active_id)
     if not unit then return source end
+    if preferences and preferences.mask_need and (source:find(' after being unable to pray to ',1,true) or source:find(' after communing with ',1,true)) then
+        local names={}
+        local soul=unit.status.current_soul
+        for i,need in ipairs(soul and soul.personality and soul.personality.needs or {}) do
+            if i>=64 then break end
+            local deity=need.deity_id>=0 and df.historical_figure.find(need.deity_id)
+            if deity then
+                -- Unit sheets can use either the native or translated surname.
+                -- Bind both from the same historical figure, never arbitrary text.
+                for _,english in ipairs({false,true}) do
+                    names[#names+1]=dfhack.df2utf(dfhack.translation.translateName(deity.name,english))
+                end
+            end
+        end
+        local request,bindings=preferences.mask_need(source,names)
+        if request then return request,{id=unit.id or sheets.active_id,bindings=bindings} end
+    end
     local name=dfhack.df2utf(dfhack.translation.translateName(dfhack.units.getVisibleName(unit),false))
     if source:sub(1,#name+7)~=name..' likes ' then return source end
-    if source:find('{DWARF_NAME}',1,true) then return nil end
-    return '{DWARF_NAME}'..source:sub(#name+1),{id=unit.id or sheets.active_id,name=name}
+    if not preferences then return nil end
+    local forms={}
+    local soul=unit.status.current_soul
+    local types={LikePoeticForm={df.poetic_form,'poetic_form_id'},
+        LikeMusicalForm={df.musical_form,'musical_form_id'},LikeDanceForm={df.dance_form,'dance_form_id'}}
+    for _,pref in ipairs(soul and soul.preferences or {}) do
+        local kind=types[df.unitpref_type[pref.type]]
+        local form=kind and kind[1].find(pref[kind[2]])
+        if form then forms[#forms+1]=dfhack.df2utf(dfhack.translation.translateName(form.name,true)) end
+    end
+    local request,bindings=preferences.mask(source,name,forms)
+    return request,bindings and {id=unit.id or sheets.active_id,bindings=bindings}
 end
 
-local function prepare_colored_rows(spans,box,runtime)
+local function prepare_colored_rows(spans,box,runtime,source)
     if not runtime.announcement_key then return end
     local capacity=math.floor(box.width/2)
     if capacity<4 then return end
     local translated,complete={},true
+    -- Thoughts split a single sentence across semantic colors. Translate it as
+    -- a whole, then lay out the returned colors without re-decoding UTF-8.
+    local full=source and runtime.translation(source)
+    local ready=type(full)=='string' and utf8.len(full) and color_spans(full,true,spans[1].color:byte(1))
+    if ready then
+        for _,span in ipairs(ready) do if span.source:find('[A-Za-z{}]') then ready=nil;break end end
+    end
+    if ready then spans=ready end
     for i,span in ipairs(spans) do
-        if runtime.observe then runtime.observe(span.source,'display','view_sheets.personality_color_span') end
-        local text=span.source:match('[A-Za-z]') and runtime.translation(span.source) or span.source
+        if not ready and runtime.observe then runtime.observe(span.source,'display','view_sheets.personality_color_span') end
+        local text=ready and span.source or (span.source:match('[A-Za-z]') and runtime.translation(span.source) or span.source)
         if type(text)~='string' or text=='' or not utf8.len(text) or text:match('[A-Za-z{}%[%]]') then
             complete=false
         else translated[i]=text end
@@ -214,8 +333,8 @@ local function prepare_colored_rows(spans,box,runtime)
     return keys,colors
 end
 
-local function prepare_box(box, source, runtime, sheets, prepared_translation, spans)
-    local id=tostring(box)
+local function prepare_box(box, source, runtime, sheets, prepared_translation, spans, identity)
+    local id=identity or tostring(box)
     local old=boxes[id]
     if old and (box.width~=old.width or old.source~=source or #box.line~=#old.lines) then
         for j=0,math.min(#box.line,#old.lines)-1 do
@@ -234,7 +353,7 @@ local function prepare_box(box, source, runtime, sheets, prepared_translation, s
     end
     if old then return function() end end
     if spans then
-        local keys,colors=prepare_colored_rows(spans,box,runtime)
+        local keys,colors=prepare_colored_rows(spans,box,runtime,source)
         if not keys then return end
         local lines={}
         for j=0,#box.line-1 do lines[j+1]={text=box.line[j].text,color=box.line[j].color} end
@@ -247,13 +366,10 @@ local function prepare_box(box, source, runtime, sheets, prepared_translation, s
     if not request then return end
     local translation=prepared_translation or runtime.translation(request)
     if subject and translation then
-        local _,tokens=translation:gsub('{DWARF_NAME}','')
-        if tokens~=1 or sheets.active_id~=subject.id then return end
-        local name=(runtime.name_translation or runtime.translation)(subject.name)
-        if not name or name:match('[A-Za-z]') then return end
-        translation=translation:gsub('{DWARF_NAME}',function() return name end)
+        if sheets.active_id~=subject.id then return end
+        translation=preferences.restore(translation,subject.bindings,runtime.name_translation or runtime.translation)
     end
-    if type(translation)~='string' or translation:match('[A-Za-z]') then return end
+    if type(translation)~='string' or (not subject and translation:match('[A-Za-z]')) then return end
     local length=utf8.len(translation)
     local capacity=math.floor(box.width/2)
     if not length or capacity<4 or length>capacity*#box.line then return end
@@ -267,7 +383,9 @@ local function prepare_box(box, source, runtime, sheets, prepared_translation, s
             local ending=utf8.offset(translation,math.min(first+capacity,length+1)) or #translation+1
             local color=lines[j+1].color:sub(1,1)
             if color=='' then color=string.char(7) end
-            local key=runtime.colored_key(translation:sub(begin,ending-1),color)
+            local render_key=subject and runtime.literal_colored_key or runtime.colored_key
+            if not render_key then return end
+            local key=render_key(translation:sub(begin,ending-1),color)
             if not key or #key>box.width then return end
             keys[j+1]=key
         end
@@ -279,6 +397,87 @@ local function prepare_box(box, source, runtime, sheets, prepared_translation, s
             box.line[j].color=string.rep(color~='' and color or string.char(7),#keys[j+1])
         end
         boxes[id]={source=source,lines=lines,keys=keys,width=box.width}
+    end
+end
+
+-- A health box combines independently meaningful paragraphs using [B]. Keep
+-- native row ranges, rather than flattening an unknown appearance paragraph
+-- into an otherwise supported physical-ability sentence. Cache only scalars;
+-- DF may rebuild its vectors between polls, so no line pointers are retained.
+local function prepare_health_box(box,value,runtime,sheets)
+    if not box or #value>8192 or #box.line>512 then return end
+    local id=tostring(box)
+    local layout=health_layouts[id]
+    if layout and (layout.raw~=value or layout.width~=box.width or layout.count~=#box.line) then
+        restore_health(box);layout=nil
+    end
+    if layout then
+        local rebuilt=false
+        for _,part in ipairs(layout.parts) do
+            local old=boxes[part.id]
+            for j=part.first,part.last do
+                local k=j-part.first+1
+                local expected=old and old.keys[k] or part.rows[k]
+                if box.line[j].text~=expected then rebuilt=true;break end
+            end
+            if rebuilt then break end
+        end
+        if rebuilt then restore_health(box);layout=nil end
+    end
+    if not layout then
+        local function normalize(s) return s:gsub('%s+',' '):match('^%s*(.-)%s*$') end
+        local parts,offset={},1
+        local text=dfhack.df2utf(value)
+        while true do
+            local at=text:find('[B]',offset,true)
+            local fragment=text:sub(offset,at and at-1 or #text):match('^%s*(.-)%s*$')
+            -- fragment is already UTF-8: remove only supported markup here.
+            local clean=fragment:gsub('%[C:[0-7]:[0-7]:[01]%]',''):gsub('^%[P%]','')
+            if clean:find('[',1,true) or clean:find(']',1,true) then return end
+            -- Adventure can omit the ability paragraph while retaining [B][B].
+            -- Keep native blank rows, but do not ask the translator for empty prose.
+            if normalize(clean)~='' then
+                parts[#parts+1]={source=fragment,plain=clean,id=id..':health:'..(#parts+1)}
+                if #parts>32 then return end
+            end
+            if not at then break end
+            offset=at+3
+        end
+        if #parts==0 then return end
+        local line=0
+        for _,part in ipairs(parts) do
+            while line<#box.line and box.line[line].text:match('^%s*$') do line=line+1 end
+            part.first=line
+            local rows={}
+            while line<#box.line and not box.line[line].text:match('^%s*$') do
+                rows[#rows+1]=dfhack.df2utf(box.line[line].text);line=line+1
+            end
+            part.last=line-1
+            if #rows==0 or normalize(table.concat(rows,' '))~=normalize(part.plain) then return end
+            part.rows={}
+            for j=part.first,part.last do part.rows[j-part.first+1]=box.line[j].text end
+            part.spans=color_spans(part.source,true,box.line[part.first].color:byte(1))
+            if not part.spans then part.source=part.plain:match('^%s*(.-)%s*$') end
+        end
+        while line<#box.line and box.line[line].text:match('^%s*$') do line=line+1 end
+        if line~=#box.line then return end
+        layout={raw=value,width=box.width,count=#box.line,parts=parts};health_layouts[id]=layout
+    end
+    for _,part in ipairs(layout.parts) do
+        local rows={}
+        for j=part.first,part.last do
+            rows[j-part.first]={text=box.line[j].text,color=box.line[j].color}
+        end
+        local count=part.last-part.first+1
+        local proxy={width=box.width,line=setmetatable(rows,{__len=function() return count end})}
+        local commit=prepare_box(proxy,part.source,runtime,sheets,nil,part.spans,part.id)
+        if commit then
+            commit()
+            for j=part.first,part.last do
+                local row=rows[j-part.first]
+                box.line[j].text=row.text;box.line[j].color=row.color
+            end
+        end
     end
 end
 
@@ -297,6 +496,91 @@ function poll(runtime)
     local active_world=dfhack.isWorldLoaded() and dfhack.getSavePath() or nil
     local sheets=df.global.game.main_interface.view_sheets
     if world~=active_world then world=active_world; page=nil; reset() end
+    if active_world and runtime.display_rows then
+        local screen=dfhack.gui.getCurViewscreen()
+        if df.viewscreen_adventure_logst and screen and screen._type==df.viewscreen_adventure_logst then
+            if page~='adventure_log:'..tostring(screen) then
+                if dfhack.isMapLoaded() then restore(sheets) end
+                reset();page='adventure_log:'..tostring(screen)
+            end
+            adventure_journal=adventure_journal or reqscript('df-local-zh-adventure-journal')
+            runtime.display_rows(adventure_journal.bindings(screen,runtime.translation))
+            return
+        end
+    end
+    if active_world and not dfhack.isMapLoaded() and runtime.display_rows then
+        local screen=dfhack.gui.getCurViewscreen()
+        if df.viewscreen_setupadventurest and screen and screen._type==df.viewscreen_setupadventurest and (screen.mode==0 or screen.mode==5) then
+            local sheet=screen.mode==5 and screen.active_sheet_index>=0 and screen.active_sheet_index<#screen.csheet and screen.csheet[screen.active_sheet_index] or nil
+            local context='setupadventure:'..tostring(screen)..':'..screen.mode..':'..tostring(screen.active_sheet_index)..':'..tostring(sheet and sheet.sub_mode)
+            if page~=context then reset();page=context end
+            local native_rows={}
+            local function setup_box(box,field,translate)
+                if not box or #box.text==0 or #box.text>32 then return end
+                local source,width,size={},0,0
+                for i=0,#box.text-1 do
+                    local text=box.text[i].value
+                    -- Fixed explanations are ASCII; background identities may be
+                    -- CP437. Decode once after joining, never split UTF-8 bytes.
+                    if type(text)~='string' or #text>256 or text:find('[\0-\31\127]') or (not translate and text:find('[^ -~]')) then return end
+                    size=size+#text;if size>4096 then return end
+                    source[#source+1]=text;width=math.max(width,#text)
+                end
+                -- The longest native row is a conservative lower bound on the
+                -- box width. prepare_plain checks that all Chinese fits; native
+                -- drawing retains its foreground/background and string storage.
+                if translate then
+                    local full=table.concat(source)
+                    local translated=translate(dfhack.df2utf(full))
+                    if not translated then return end
+                    prepare_plain(box,full,width,runtime,field,native_rows,translated)
+                else
+                    -- Preserve real paragraph separators and their native colors.
+                    -- A missing paragraph must not block a separate known one.
+                    local first=0
+                    while first<#box.text do
+                        if source[first+1]:match('^ *$') then first=first+1
+                        else
+                            local last=first
+                            local lines,parts,part_width={},{},0
+                            while last<#box.text and not source[last+1]:match('^ *$') do
+                                lines[last-first]=box.text[last]
+                                parts[#parts+1]=source[last+1];part_width=math.max(part_width,#source[last+1])
+                                last=last+1
+                            end
+                            local count=last-first
+                            setmetatable(lines,{__len=function() return count end})
+                            prepare_plain({text=lines},table.concat(parts),part_width,runtime,field,native_rows,nil,tostring(box)..':'..first)
+                            first=last
+                        end
+                    end
+                end
+            end
+            if screen.mode==0 then
+                for i=0,2 do setup_box(screen.destiny_desc[i],'setupadventure.destiny_desc.'..i) end
+                setup_box(screen.difficulty_desc,'setupadventure.difficulty_desc')
+            elseif sheet then
+                if sheet.sub_mode==9 then
+                    adventure_background=adventure_background or reqscript('df-local-zh-adventure-background')
+                    setup_box(sheet.background_text,'setupadventure.background_text',function(source)
+                        if not background_names or background_names.source~=source or background_names.site~=sheet.start_site_id or background_names.position~=sheet.background_start_squad_epp_id then
+                            local site,leaders=adventure_background.identities(sheet)
+                            background_names={source=source,site=sheet.start_site_id,position=sheet.background_start_squad_epp_id,name=site,leaders=leaders}
+                        end
+                        return adventure_background.translate(source,background_names.name,background_names.leaders,runtime.translation)
+                    end)
+                elseif sheet.sub_mode==7 then
+                    setup_box(sheet.appearance_text,'setupadventure.appearance_text')
+                elseif sheet.sub_mode==8 then
+                    setup_box(sheet.personal_values_text,'setupadventure.personal_values_text')
+                    setup_box(sheet.personality_text,'setupadventure.personality_text')
+                    setup_box(sheet.civ_values_text,'setupadventure.civ_values_text')
+                end
+            end
+            runtime.display_rows(native_rows)
+            return
+        end
+    end
     if not active_world or not dfhack.isMapLoaded() then
         if runtime.display_rows then runtime.display_rows({}) end
         return
@@ -317,6 +601,7 @@ function poll(runtime)
         prepare_plain(sheets.description,sheets.raw_description,sheets.description_width,runtime,'view_sheets.raw_description',native_rows)
         prepare_plain(sheets.current_thought,sheets.raw_current_thought,sheets.current_thought_width,runtime,'view_sheets.raw_current_thought',native_rows)
     end
+    prepare_hover(df.global.game.main_interface,runtime,native_rows)
     if runtime.display_rows then runtime.display_rows(native_rows) end
     if focus:find('ViewSheets/UNIT/',1,true) then
         for _,pair in ipairs(pairs_to_translate) do
@@ -326,11 +611,17 @@ function poll(runtime)
                 local start=count>0 and cursor%count or 0
                 for offset=0,math.min(count,8)-1 do
                     local index=(start+offset)%count
-                    local source=plain(raw[index])
+                    local value=type(raw[index])=='string' and raw[index] or raw[index].value
+                    if pair[3]=='/Health' then
+                        prepare_health_box(display[index],value,runtime,sheets)
+                    else
+                    local spans=pair[3]=='/Thoughts' and color_spans(value) or nil
+                    local source=spans and dfhack.df2utf(value) or plain(value)
                     if source:match('[A-Za-z]') then
                         if runtime.observe then runtime.observe(source,'display','view_sheets.'..pair[1]) end
-                        local commit=prepare_box(display[index],source,runtime,sheets)
+                        local commit=prepare_box(display[index],source,runtime,sheets,nil,spans)
                         if commit then commit() end
+                    end
                     end
                 end
                 if count>0 then cursor=(start+8)%count end
@@ -355,16 +646,10 @@ function poll(runtime)
                     local commit=prepare_box(sheets.personality_box[cursor],source,runtime,sheets,nil,spans)
                     if commit then commit() end
                 elseif needs then
-                    if not prepared[source] then
-                        local translated=runtime.translation(source)
-                        if translated and not translated:match('[A-Za-z]') then prepared[source]=translated end
-                    end
                     -- Each paragraph keeps atomic text/palette readiness. An unknown
                     -- deity or one slow model request must not hold the whole page.
-                    if prepared[source] then
-                        local commit=prepare_box(sheets.personality_box[cursor],source,runtime,sheets,prepared[source])
-                        if commit then commit() end
-                    end
+                    local commit=prepare_box(sheets.personality_box[cursor],source,runtime,sheets)
+                    if commit then commit() end
                 else
                     local commit=prepare_box(sheets.personality_box[cursor],source,runtime,sheets)
                     if commit then commit() end
@@ -396,13 +681,17 @@ function poll(runtime)
 end
 
 function start(runtime)
+    preferences=preferences or reqscript('df-local-zh-preferences')
     nickname_display=nickname_display or reqscript('df-local-zh-nickname-display')
     -- Unit sheets can contain many rolling rows. Twenty-frame polling keeps
     -- the display translation available without competing with the render
     -- loop in large worlds. A later poll still observes changed pages.
     require('repeat-util').scheduleUnlessAlreadyScheduled('df-local-zh-unit-text',20,'frames',function()
         local ok,err=pcall(poll,runtime)
-        if not ok then dfhack.printerr('df-local-zh-unit-text: '..tostring(err)) end
+        if not ok then
+            if runtime.display_rows then runtime.display_rows({}) end
+            dfhack.printerr('df-local-zh-unit-text: '..tostring(err))
+        end
         local name_ok,name_err=pcall(nickname_display.poll,runtime)
         if not name_ok then dfhack.printerr('df-local-zh-nickname-display: '..tostring(name_err)) end
     end)
@@ -421,7 +710,7 @@ function start_cached()
     local script=dfhack.internal.scripts[dfhack.findScript('df-local-zh-runtime')]
     assert(script and script.env,'Translation runtime must already be loaded')
     local runtime=script.env
-    start({colored_key=runtime.colored_key,announcement_key=runtime.announcement_key,
+    start({colored_key=runtime.colored_key,literal_colored_key=runtime.literal_colored_key,announcement_key=runtime.announcement_key,
         name_translation=runtime.unit_name_translation,display_rows=runtime.display_rows,
         translation=runtime.unit_translation,publish=runtime.publish,
         observe=reqscript('df-local-zh-prefetch').observe})

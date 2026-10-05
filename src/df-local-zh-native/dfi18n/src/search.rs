@@ -19,6 +19,7 @@ impl SearchMemo {
   fn clear(&mut self) { self.worlds.clear();self.order.clear();self.count=0; }
   fn remove(&mut self, world: &str, source: &str) {
     if self.worlds.get_mut(world).is_some_and(|rows| rows.remove(source).is_some()) { self.count-=1; }
+    if self.worlds.get(world).is_some_and(HashMap::is_empty) { self.worlds.remove(world); }
     self.order.retain(|(old_world,old_source)| old_world!=world || old_source!=source);
   }
   fn get(&mut self, world: &str, source: &str) -> Option<Arc<PreparedText>> {
@@ -42,12 +43,25 @@ impl SearchMemo {
 #[derive(Default)]
 struct Node { children: HashMap<u8,usize>, values: Vec<String> }
 
+// One validated snapshot per language, matching prewarm's ownership. Build
+// off the search lock; replacement must retire both omitted rows and worlds.
+pub(crate) struct PreloadedIndex {
+  world: String,
+  rows: HashMap<String,(String,Option<String>)>,
+}
+impl PreloadedIndex {
+  pub(crate) fn new(world:&str,rows:impl IntoIterator<Item=(String,String,Option<String>)>)->Self {
+    Self {world:world.into(),rows:rows.into_iter().map(|(source,text,baseline)|
+      (clean(&source).to_lowercase(),(clean(&text),baseline.map(|text|clean(&text))))).collect()}
+  }
+}
+
 #[derive(Default)]
 struct SearchIndex {
   literals: HashMap<String, String>,
   aliases: HashMap<String, Vec<String>>,
   completed: BoundedMap<(String, String), String>,
-  preloaded: HashMap<(String, String), (String, Option<String>)>,
+  preloaded: Option<PreloadedIndex>,
   nodes: Vec<Node>,
   memo: Mutex<SearchMemo>,
 }
@@ -90,7 +104,7 @@ impl SearchIndex {
     if let Some(text)=self.literals.get(source) { return text.clone(); }
     let key=(world.into(),source.into());
     let completed=self.completed.get(&key);
-    if let Some((text,baseline))=self.preloaded.get(&key) {
+    if let Some((text,baseline))=self.preloaded.as_ref().filter(|p|p.world==world).and_then(|p|p.rows.get(source)) {
       if completed==baseline.as_ref() { return text.clone(); }
     }
     if let Some(text)=completed { return text.clone(); }
@@ -154,17 +168,19 @@ pub fn aliases(language: &str, rows: impl IntoIterator<Item=(String,String)>) {
 pub fn completed(world: &str, language: &str, source: &str, translated: &str) {
   indices().write().unwrap().entry(language.into()).or_default().complete(world,source,translated);
 }
-pub(crate) fn preloaded_batch(world:&str,language:&str,rows:impl IntoIterator<Item=(String,String,Option<String>)>) {
+pub(crate) fn replace_preloaded(language:&str,prepared:PreloadedIndex)->Option<PreloadedIndex> {
   let mut indices=indices().write().unwrap();let index=indices.entry(language.into()).or_default();
-  for (source,text,baseline) in rows {
-    let source=clean(&source).to_lowercase();
-    index.memo.get_mut().unwrap().remove(world,&source);
-    index.preloaded.insert((world.into(),source),(clean(&text),baseline.map(|text|clean(&text))));
-  }
+  index.memo.get_mut().unwrap().clear();
+  // The caller drops the retired index outside publication/context locks.
+  index.preloaded.replace(prepared)
 }
 pub fn matches(source: &str, query: &str) -> bool {
   let language=lang::current_lang_tag();let world=native_cache::current_world();
   indices().read().unwrap().get(&language).is_some_and(|index| index.matches(&world,source,query))
+}
+#[cfg(test)]
+pub(crate) fn fixture_matches(language:&str, world:&str, source:&str, query:&str)->bool {
+  indices().read().unwrap().get(language).is_some_and(|index| index.matches(world,source,query))
 }
 static QUERIES: OnceLock<RwLock<HashMap<String,String>>>=OnceLock::new();
 static QUERY_COUNT: AtomicUsize=AtomicUsize::new(0);
@@ -278,6 +294,21 @@ pub fn attach() -> anyhow::Result<()> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn removing_last_memo_row_releases_world_and_text() {
+    let mut memo=SearchMemo::default();
+    for n in 0..10000 {
+      let world=format!("retired-world-{n}");
+      let text=Arc::new(PreparedText::new("中文"));
+      let weak=Arc::downgrade(&text);
+      memo.insert(&world,"source",text);
+      memo.remove(&world,"source");
+      assert!(weak.upgrade().is_none());
+    }
+    assert_eq!(memo.count,0);
+    assert!(memo.order.is_empty());
+    assert!(memo.worlds.is_empty(),"Removed worlds must not accumulate empty maps");
+  }
   fn index() -> SearchIndex {
     let mut index=SearchIndex::default();
     for (source,translated) in [("iron","鐵"),("magnetite","磁鐵礦"),("goblet","高腳杯"),
@@ -287,17 +318,39 @@ mod tests {
     index
   }
   #[test]
-  fn model_completion_wins_over_a_late_preload_search_batch() {
+  fn model_completion_wins_over_a_late_preload_search_snapshot() {
     let language="preload-search-fixture";
     completed("one",language,"Fixture label","模型新譯文");
-    preloaded_batch("one",language,[("Fixture label".into(),"快取舊譯文".into(),None)]);
+    replace_preloaded(language,PreloadedIndex::new("one",[("Fixture label".into(),"快取舊譯文".into(),None)]));
     let guard=indices().read().unwrap();
     assert_eq!(guard[language].localized("one","fixture label"),"模型新譯文");
     drop(guard);
-    preloaded_batch("one",language,[("Second label".into(),"快取譯文".into(),None)]);
+    replace_preloaded(language,PreloadedIndex::new("one",[("Second label".into(),"快取譯文".into(),None)]));
     assert_eq!(indices().read().unwrap()[language].localized("one","second label"),"快取譯文");
     completed("one",language,"Second label","最新譯文");
     assert_eq!(indices().read().unwrap()[language].localized("one","second label"),"最新譯文");
+  }
+  #[test]
+  fn repeated_preload_replacement_keeps_one_world_and_preserves_dictionaries() {
+    let language="preload-churn-fixture";
+    literals(language,[("iron".into(),"鐵".into())]);
+    aliases(language,[("goblet".into(),"高腳杯".into())]);
+    for n in 0..1000 {
+      let world=format!("world-{n}");
+      let retired=replace_preloaded(language,PreloadedIndex::new(&world,
+        [(format!("Label {n}"),format!("譯文{n}"),None)]));
+      if n>0 {assert_eq!(retired.unwrap().rows.len(),1);}
+      let guard=indices().read().unwrap();let index=&guard[language];
+      assert_eq!(index.preloaded.as_ref().unwrap().rows.len(),1);
+      assert!(index.matches(&world,&format!("Label {n}"),"譯文"));
+      assert!(index.matches(&world,"iron goblet","鐵 高腳杯"));
+      if n>0 {assert!(!index.matches(&format!("world-{}",n-1),&format!("Label {}",n-1),"譯文"));}
+    }
+    replace_preloaded(language,PreloadedIndex::new("empty",[]));
+    let guard=indices().read().unwrap();let index=&guard[language];
+    assert!(index.preloaded.as_ref().unwrap().rows.is_empty());
+    assert_eq!(index.memo.lock().unwrap().count,0);
+    assert!(index.matches("empty","iron goblet","鐵 高腳杯"));
   }
   #[test]
   fn chinese_query_matches_localized_compound_names_and_ore() {

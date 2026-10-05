@@ -1,0 +1,15 @@
+SQLite 3.53.2, bundled by libsqlite3-sys 0.38.2
+Upstream: https://sqlite.org/copyright.html
+Notice reproduced from sqlite3/sqlite3.c in the bundled source:
+
+2001 September 15
+
+The author disclaims copyright to this source code. In place of
+a legal notice, here is a blessing:
+
+    May you do good and not evil.
+    May you find forgiveness for yourself and forgive others.
+    May you share freely, never taking more than you give.
+
+The Rust bindings' MIT license is included separately under
+rust-broker/libsqlite3-sys-0.38.2/LICENSE.

@@ -28,6 +28,7 @@ fn addst(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, just: u8, 
     None=>text::TextBlock::get(&request),
   };
   let columns = text_block.columns();
+  logging::trace_selected(&request, &text_block, "addst", "lower");
   let id = text_block.add_to_screen(screen::Layer::Lower, request.coordinate());
 
   if !control::is_enabled() {
@@ -71,6 +72,8 @@ fn addst_flag(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, just:
       return;
     }
   }
+
+  logging::trace_selected(&request, &text_block, "addst_flag", "lower");
 
   if !control::is_enabled() {
     return call_addst_flag(gps_ptr, string_ptr, just, space, sflag);
@@ -120,6 +123,7 @@ fn addcoloredst(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, col
   markup.set_width(string_bytes.len() as i32);
 
   let text_block = markup.text_block();
+  logging::trace_selected(&request, &text_block, "addcoloredst", "lower");
   let columns = text_block.columns();
   let id = text_block.add_to_screen(screen::Layer::Lower, request.coordinate());
 
@@ -154,6 +158,7 @@ fn top_addst(gps_ptr: *const ffi::c_void, string_ptr: *const ffi::c_void, just: 
   };
   let columns = text_block.columns();
   let id = text_block.add_to_screen(screen::Layer::Upper, request.coordinate());
+  logging::trace_selected(&request, &text_block, "top_addst", "upper");
 
   if !control::is_enabled() {
     return call_top_addst(gps_ptr, string_ptr, just, space);
@@ -352,6 +357,7 @@ extern "C" fn dfhack_addstr_flag(lua_state: *mut ffi::c_void) -> i32 {
   // Log the translation request and update the text block
   logging::log_text(&request, &bt, ptr::null());
   let text_block = text::TextBlock::get(&request);
+  logging::trace_selected(&request, &text_block, "dfhack", "lower");
   let id = text_block.add_to_screen(screen::Layer::Lower, request.coordinate());
 
   if !control::is_enabled() {
@@ -508,6 +514,7 @@ fn handle_help_mtb(string_ptr: *const ffi::c_void, bt: &str) -> bool {
             }
             markup::sync(&markup, address, control::is_enabled());
             let text_block = markup::get(&markup).text_block();
+            logging::trace_selected(&request, &text_block, "help_mtb", "upper");
 
             // no need to occupy the tiles if not enabled as the original function will do the rendering
             if control::is_enabled() {

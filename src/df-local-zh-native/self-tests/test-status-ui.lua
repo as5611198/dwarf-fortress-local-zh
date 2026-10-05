@@ -64,6 +64,12 @@ end,defclass=function()
 end,COLOR_WHITE=7,COLOR_LIGHTCYAN=11,COLOR_LIGHTGREEN=10,COLOR_LIGHTRED=12,COLOR_YELLOW=14},
 {__index=_G})
 assert(loadfile(script_root..'/df-local-zh-status-ui.lua','t',env))()
+
+data.broker.runtime.history={state='loading',attempts=1}
+assert(env.background_state(data)=='恢復翻譯紀錄','Startup history needs a visible loading state')
+data.broker.runtime.history={state='retrying',attempts=2}
+assert(env.background_state(data)=='紀錄讀取重試中','History I/O failure must not look like ordinary text collection')
+data.broker.runtime.history={state='ready',attempts=2}
 data.sources={pending=67}
 data.native={pending=0,queued=0,stalled=41}
 assert(env.background_state(data)=='背景整理','Ongoing text collection must not look like an initial prewarm')

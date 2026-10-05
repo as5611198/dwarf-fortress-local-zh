@@ -8,6 +8,10 @@ import {convertCsv, convertRules, mergeTraditionalRuleOverride, canonicalizeCrea
 import {buildSimplified} from './build-language-data.mjs';
 import {buildCreatureDictionaries} from './build-creature-dictionaries.mjs';
 import {buildArenaCorrections} from './build-arena-corrections.mjs';
+import {buildOfflinePersonality} from './build-offline-personality.mjs';
+import {buildOfflineLife} from './build-offline-life.mjs';
+import {buildOfflineAppearance} from './build-offline-appearance.mjs';
+import {buildOfflineCreatures} from './build-offline-creatures.mjs';
 import {ownedRows} from './official-owned.mjs';
 import {simplify} from './language-data.mjs';
 
@@ -18,7 +22,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(value => {
   if (split < 3 || !value.startsWith('--')) throw new Error(`Expected --name=value: ${value}`);
   return [value.slice(2, split), value.slice(split + 1)];
 }));
-const version = args.version ?? '0.5.2';
+const version = args.version ?? '0.5.11';
 if (!/^\d+\.\d+\.\d+(?:-[\w.-]+)?$/.test(version)) throw new Error('Invalid version');
 const output = resolve(args.output ?? join(root, 'distribution/steam/df-local-zh-complete'));
 const core = resolve(args['native-dll'] ?? join(root, 'src/df-local-zh-native/target/release/df_local_zh_core.dll'));
@@ -55,7 +59,14 @@ const data=join(output,'dfi18n-data');
 await mkdir(join(output,'broker/data'),{recursive:true});
 await mkdir(join(output,'libs'),{recursive:true});
 await mkdir(join(output,'self-tests'),{recursive:true});
-for(const name of ['ime-editor.lua','ime-clipboard.lua','ime-render-order.lua','search-literal-render.lua','keybinding-labels.lua','os-ime-acceptance.lua','extended-adapters.lua','editor-boundaries.lua','runtime-response-recovery.lua','runtime-reviewed-fallback.lua','names-worker-performance.lua','shortcut-routing.lua','rename-native-entry.lua','nickname-display.lua','settings-mailbox-handoff.lua','official-clear-ui.lua']) {
+await cp(join(root,'src/df-local-zh-native/self-tests/offline-preferences.lua'),join(output,'self-tests/offline-preferences.lua'));
+await cp(join(root,'src/df-local-zh-native/self-tests/offline-thoughts.lua'),join(output,'self-tests/offline-thoughts.lua'));
+await cp(join(root,'src/df-local-zh-native/self-tests/offline-narrative.lua'),join(output,'self-tests/offline-narrative.lua'));
+await cp(join(root,'src/df-local-zh-native/self-tests/offline-narrative-layout.lua'),join(output,'self-tests/offline-narrative-layout.lua'));
+await cp(join(root,'src/df-local-zh-native/self-tests/test-hover-instructions.lua'),join(output,'self-tests/test-hover-instructions.lua'));
+await cp(join(root,'src/df-local-zh-native/self-tests/test-resident-professions.lua'),join(output,'self-tests/test-resident-professions.lua'));
+await cp(join(root,'src/df-local-zh-native/self-tests/test-legends-occasion-names.lua'),join(output,'self-tests/test-legends-occasion-names.lua'));
+for(const name of ['ime-editor.lua','ime-clipboard.lua','ime-render-order.lua','search-literal-render.lua','keybinding-labels.lua','os-ime-acceptance.lua','extended-adapters.lua','editor-boundaries.lua','runtime-response-recovery.lua','runtime-journal-boundaries.lua','runtime-reviewed-fallback.lua','names-worker-performance.lua','shortcut-routing.lua','rename-native-entry.lua','nickname-display.lua','settings-mailbox-handoff.lua','official-clear-ui.lua','expected-native.lua','test-legends-fallback.lua','test-runtime-queue-io.lua','test-text-viewer-color.lua']) {
   await cp(join(root,'src/df-local-zh-native/self-tests',name),join(output,'self-tests',name));
 }
 await cp(core,join(output,'libs/df_local_zh_core.dll'));
@@ -154,13 +165,19 @@ for(const language of ['zh-Hant','zh-Hans']) {
 }
 const creatureCounts=await buildCreatureDictionaries(output);
 await buildArenaCorrections(output);
-await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與 Rust 本機服務。需要 DFHack；不需要 Node.js 或另外訂閱中文資料包。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料、原生核心與 Rust 背景服務，於設定切換。玩家無須安裝 Node.js；網路請求、AI 補譯及官方譯庫同步由隨包元件處理。靜態與已安裝譯庫可離線使用。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：修正關閉 AI 時調整音量等數值後變回英文；新增本機數字模板，涵蓋音量、間隔、房間數量、數值範圍與歷史計數。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
+await buildOfflinePersonality(output);
+await buildOfflineLife(output);
+await buildOfflineAppearance(output);
+const offlineCreatureCounts=await buildOfflineCreatures(output);
+await writeFile(join(output,'info.txt'),`[ID:df-local-zh-complete]\n[NUMERIC_VERSION:1]\n[DISPLAYED_VERSION:${version}]\n[EARLIEST_COMPATIBLE_NUMERIC_VERSION:1]\n[AUTHOR:Local Chinese contributors; DFI18n contributors; Chinese Wiki translation team]\n[NAME:矮人要塞中文化（繁體／簡體整合）]\n[DESCRIPTION:內含繁體與簡體資料、自有原生核心與 Rust 本機服務。需要 DFHack；不需要 Node.js 或另外訂閱中文資料包。]\n[STEAM_TITLE:矮人要塞中文化（繁體／簡體整合）]\n[STEAM_DESCRIPTION:Windows DF 53.16 / DFHack 53.16-r1.1。單一模組內含繁簡資料、原生核心與 Rust 背景服務，於設定切換。玩家無須安裝 Node.js；網路請求、AI 補譯及官方譯庫同步由隨包元件處理。靜態與已安裝譯庫可離線使用。請勿同時啟用其他 DFI18n 原生核心。來源採 MIT、CC BY-NC 4.0、OFL，詳見 ATTRIBUTION.md。]\n[STEAM_CHANGELOG:${version}：擴充人物性格、外觀、喜好、生物介紹、冒險介面與傳說事件的繁簡離線翻譯；新增節慶與升任紀念故事，修正分頁快取及長期翻譯快取讀取；保留原生顏色與連結。部分動態內容仍需 AI，尚未驗證整體 90% 覆蓋。]\n[STEAM_TAG:dfhack]\n[STEAM_TAG:translation]\n[STEAM_TAG:chinese]\n`);
 await cp(join(root,'docs/PLAYER-INSTALL.md'),join(output,'README.md'));
 const counts={};
 for(const language of ['zh-Hant','zh-Hans']) {
   let simpleRows=0;
   for(const path of await files(join(data,'simple',language))) simpleRows+=parse(await readFile(path,'utf8'),{columns:true,bom:true,skip_empty_lines:true}).length;
-  counts[language]={simpleRows,rulesetFiles:(await files(join(data,'rulesets',language))).length,creatureRows:creatureCounts[language]};
+  counts[language]={simpleRows,rulesetFiles:(await files(join(data,'rulesets',language))).length,
+    creatureRows:creatureCounts[language],offlineCreatureDescriptions:offlineCreatureCounts[language+'Descriptions'],
+    offlineLegendsRaceLabels:offlineCreatureCounts[language+'LegendsRaces']};
 }
 const manifestFiles=[];
 const binaryExtensions=/\.(?:dll|exe|node|otf|png|jpg|jpeg|gif|so|dylib|zip|bin)$/i;
@@ -178,7 +195,8 @@ const manifest={package:'df-local-zh-complete',version,generatedAt:new Date().to
   runtime:'rust',requiresNode:false,brokerSha256:sha256(await readFile(rustBroker)),
   languages:['zh-Hant','zh-Hans'],requiresOriginalEngine:false,requiresOriginalDataSubscription:false,
   requiredWorkshopItems:[],requiresDFHack:true,privateRuntimeExcluded:true,upstreamDataBundled:true,upstreamRedistributionApproved:true,
-  upstreamLicenseMetadata:[approved],sourceMetadata:metadata,changes:['Allow confirmed local cloud-library removal, disable automatic downloads across save scopes, retain anti-rollback authority and permit reinstall',
+  upstreamLicenseMetadata:[approved],sourceMetadata:metadata,changes:['Offline-first finite grammar index, reviewed personality/value/ability composition, species material equipment and local Lua lookup',
+    'Allow confirmed local cloud-library removal, disable automatic downloads across save scopes, retain anti-rollback authority and permit reinstall',
     'Remove macro shortcut collisions; preserve Enter newlines and IME editing; translate surname and profession after custom nicknames',
     'Pre-release audit: runtime retry recovery, context isolation, bounded queues/caches, SDL ownership fixes and clipboard limits',
     'Incremental atomic name exports, cached hot-path modules, terminal failure reporting and IME composition recovery',

@@ -8,6 +8,20 @@ use lua53_sys as lua;
 
 use crate::translation;
 use df_local_zh_broker::numeric_templates::NumericTemplates;
+use df_local_zh_broker::offline_prose::OfflineProse;
+static PROSE: OnceLock<RwLock<HashMap<String,OfflineProse>>> = OnceLock::new();
+pub fn literal_term(lang:&str,text:&str)->Option<String> {
+  let dicts=get_dicts();let dict=dicts.get(lang)?;
+  dict.get(text).or_else(||dict.get(&text.to_ascii_lowercase())).map(|(t,_)|t.clone())
+}
+fn prose()->&'static RwLock<HashMap<String,OfflineProse>> {PROSE.get_or_init(||RwLock::new(HashMap::new()))}
+pub fn reviewed(lang:&str,text:&str)->Option<translation::TranslationResponse> {
+  let is_reviewed=get_dicts().get(lang).and_then(|d|d.get(text))
+    .is_some_and(|(_,tags)|tags.get("REVIEWED").map(String::as_str)==Some("1"));
+  if is_reviewed {return translate(lang,translation::TranslationRequest::lookup(text).context());}
+  prose().read().unwrap().get(lang)?.lookup(text).map(|translated|
+    translation::TranslationResponse{translated,alignment:Default::default()})
+}
 
 static NUMERIC: OnceLock<RwLock<HashMap<String, NumericTemplates>>> = OnceLock::new();
 fn numeric() -> &'static RwLock<HashMap<String, NumericTemplates>> {
@@ -18,6 +32,7 @@ fn numeric() -> &'static RwLock<HashMap<String, NumericTemplates>> {
 pub fn reset() {
   get_dicts_mut().clear();
   numeric().write().unwrap().clear();
+  prose().write().unwrap().clear();
 }
 
 // Simple dictionary maps original text to translated text along with tags
@@ -61,6 +76,166 @@ mod arena_tests {
   use crate::{translator,translation,native_cache};
   #[test]
   #[ignore="requires DF_LOCAL_PACKAGE integration data path"]
+  fn packaged_contextual_adventure_actor_headers() {
+    let root=std::path::PathBuf::from(std::env::var("DF_LOCAL_PACKAGE").unwrap());
+    let mut results=Vec::new();
+    for language in ["zh-Hant","zh-Hans"] {
+      let mut dict=SimpleDictionary::new();
+      let mut files=std::fs::read_dir(root.join("dfi18n-data/simple").join(language)).unwrap()
+        .map(|p|p.unwrap().path()).filter(|p|p.extension().is_some_and(|e|e=="csv")).collect::<Vec<_>>();
+      files.sort();
+      for file in files {
+        let mut candidate=SimpleDictionary::new();
+        load_csv(file,|row:Entry|{candidate.insert(row.text,(row.translation,parse_tags(&row.tags)));}).unwrap();
+        merge_dictionary(&mut dict,candidate);
+      }
+      get_dicts_mut().insert(language.into(),dict);
+      super::super::rulesets::fixture_rules(language,&root.join("dfi18n-data/rulesets").join(language));
+      for (source,hant,hans) in [
+        ("The human mason Inspuz Uromarad","人類石匠 Inspuz Uromarad","人类石匠 Inspuz Uromarad"),
+        ("The human planter Itlud Gomnifih","人類播種者 Itlud Gomnifih","人类种植者 Itlud Gomnifih"),
+        ("The human mason Test Different","人類石匠 Test Different","人类石匠 Test Different"),
+      ] {
+        let context=translation::TranslationContext::addst {
+          content:source.into(),viewscreen:"::t::dungeonmode/Default".into(),
+          coordinate:Default::default(),color_pair:Default::default(),
+        };
+        let response=super::super::dungeon_labels::translate(&context,language).unwrap();
+        assert_eq!(response.translated,if language=="zh-Hans"{hans}else{hant},"{source}: {language}");
+        assert!(translator::static_lookup(language,source).is_none(),"contextual meaning leaked into static lookup");
+        results.push(serde_json::json!({"source":source,"language":language,"translation":response.translated}));
+      }
+    }
+    if let Ok(path)=std::env::var("DF_ACTOR_HEADER_OUTPUT") {
+      std::fs::write(path,serde_json::to_vec_pretty(&serde_json::json!({
+        "scope":"contextual native lookup regression; not visual or coverage acceptance",
+        "samples":results})).unwrap()).unwrap();
+    }
+  }
+  #[test]
+  #[ignore="diagnostic only; requires DF_LOCAL_PACKAGE, DF_RAW_CORPUS and DF_RAW_NATIVE_OUTPUT"]
+  fn packaged_native_raw_corpus_diagnostic() {
+    let root=std::path::PathBuf::from(std::env::var("DF_LOCAL_PACKAGE").unwrap());
+    let corpus:serde_json::Value=serde_json::from_slice(&std::fs::read(std::env::var("DF_RAW_CORPUS").unwrap()).unwrap()).unwrap();
+    let mut results=Vec::new();
+    let before=crate::tasks::SUBMISSIONS.load(std::sync::atomic::Ordering::SeqCst);
+    for language in ["zh-Hant","zh-Hans"] {
+      let mut dict=SimpleDictionary::new();
+      let mut files=std::fs::read_dir(root.join("dfi18n-data/simple").join(language)).unwrap()
+        .map(|p|p.unwrap().path()).filter(|p|p.extension().is_some_and(|e|e=="csv")).collect::<Vec<_>>();
+      files.sort();
+      for file in files {
+        let mut candidate=SimpleDictionary::new();
+        load_csv(file,|row:Entry|{candidate.insert(row.text,(row.translation,parse_tags(&row.tags)));}).unwrap();
+        merge_dictionary(&mut dict,candidate);
+      }
+      let mut number=NumericTemplates::default();let mut paragraphs=OfflineProse::default();paragraphs.set_language(language);
+      for (source,(target,tags)) in &dict {
+        number.insert(source,target);
+        if tags.get("REVIEWED").map(String::as_str)==Some("1") {
+          if let Some(kind)=tags.get("PROSE") {paragraphs.insert(source,target,kind);}
+        }
+      }
+      get_dicts_mut().insert(language.into(),dict);
+      numeric().write().unwrap().insert(language.into(),number);
+      prose().write().unwrap().insert(language.into(),paragraphs);
+      super::super::rulesets::fixture_rules(language,&root.join("dfi18n-data/rulesets").join(language));
+      for (page,entry) in corpus["pages"].as_object().unwrap() {
+        for value in entry["sources"].as_array().unwrap() {
+          let source=value.as_str().unwrap();
+          let start=std::time::Instant::now();
+          let response=translator::static_lookup(language,source);
+          results.push(serde_json::json!({"page":page,"language":language,"source":source,
+            "translation":response.map(|r|r.translated),"ms":start.elapsed().as_secs_f64()*1000.0}));
+        }
+      }
+    }
+    assert_eq!(crate::tasks::SUBMISSIONS.load(std::sync::atomic::Ordering::SeqCst),before);
+    std::fs::write(std::env::var("DF_RAW_NATIVE_OUTPUT").unwrap(),serde_json::to_vec_pretty(&serde_json::json!({
+      "scope":"native static_lookup raw fragment diagnostic, not whole-game or visual acceptance",
+      "workerSubmissions":0,"samples":results})).unwrap()).unwrap();
+  }
+  #[test]
+  #[ignore="requires DF_LOCAL_PACKAGE integration data path"]
+  fn packaged_native_item_material_and_shape_semantics() {
+    let root=std::path::PathBuf::from(std::env::var("DF_LOCAL_PACKAGE").unwrap());
+    for language in ["zh-Hant","zh-Hans"] {
+      let mut dict=SimpleDictionary::new();
+      let mut files=std::fs::read_dir(root.join("dfi18n-data/simple").join(language)).unwrap()
+        .map(|p|p.unwrap().path()).filter(|p|p.extension().is_some_and(|e|e=="csv")).collect::<Vec<_>>();
+      files.sort();
+      for file in files {
+        let mut candidate=SimpleDictionary::new();
+        load_csv(file,|row:Entry|{candidate.insert(row.text,(row.translation,parse_tags(&row.tags)));}).unwrap();
+        merge_dictionary(&mut dict,candidate);
+      }
+      get_dicts_mut().insert(language.into(),dict);
+      super::super::rulesets::fixture_rules(language,&root.join("dfi18n-data/rulesets").join(language));
+      for (source,hant,hans) in [
+        ("This is an iron battle axe. It is encrusted with diamonds.","這是鐵戰斧。 它鑲嵌著鑽石。","这是铁战斧。 它镶嵌着钻石。"),
+        ("On the item is an image of diamonds in diamond.","物品上有以鑽石製成的菱形圖像。","物品上有以钻石制成的菱形图像。"),
+        ("On the item is an image of diamonds in silver.","物品上有以銀製成的菱形圖像。","物品上有以银制成的菱形图像。"),
+        ("diamonds","菱形","菱形"),
+      ] {
+        let want=if language=="zh-Hans"{hans}else{hant};
+        assert_eq!(translator::static_lookup(language,source).unwrap().translated,want,"{language}: {source}");
+        if source.starts_with("On ") || source.starts_with("This ") {
+          assert_eq!(super::super::item_lookup(language,source).unwrap().translated,want);
+        }
+      }
+    }
+  }
+  #[test]
+  #[ignore="requires DF_OFFLINE_AUDIT and DF_LOCAL_PACKAGE"]
+  fn offline_first_corpus_audit() {
+    use std::path::PathBuf;
+    let task=PathBuf::from(std::env::var("DF_OFFLINE_AUDIT").unwrap());
+    let package=PathBuf::from(std::env::var("DF_LOCAL_PACKAGE").unwrap());
+    let corpus:Vec<serde_json::Value>=serde_json::from_slice(&std::fs::read(task.join("corpus.json")).unwrap()).unwrap();
+    let mut results=vec![];
+    for language in ["zh-Hant","zh-Hans"] {
+      for baseline in [true,false] {
+        let data=if baseline {task.join("baseline-data")}else{package.join("dfi18n-data")};
+        let tag=format!("audit-{language}-{baseline}");
+        let mut dict=SimpleDictionary::new();
+        let mut files=std::fs::read_dir(data.join("simple").join(language)).unwrap().map(|p|p.unwrap().path())
+          .filter(|p|p.extension().is_some_and(|x|x=="csv")).collect::<Vec<_>>();files.sort();
+        for file in files {
+          let mut candidate=SimpleDictionary::new();
+          load_csv(file,|row:Entry|{candidate.insert(row.text,(row.translation,parse_tags(&row.tags)));}).unwrap();
+          merge_dictionary(&mut dict,candidate);
+        }
+        let mut number=NumericTemplates::default();let mut paragraphs=OfflineProse::default();paragraphs.set_language(language);
+        for (source,(target,tags)) in &dict {
+          number.insert(source,target);
+          if let Some(kind)=tags.get("PROSE") {paragraphs.insert(source,target,kind);}
+        }
+        get_dicts_mut().insert(tag.clone(),dict);numeric().write().unwrap().insert(tag.clone(),number);
+        prose().write().unwrap().insert(tag.clone(),paragraphs);
+        let load_start=std::time::Instant::now();
+        super::super::rulesets::fixture_rules(&tag,&data.join("rulesets").join(language));
+        if baseline {super::super::rulesets::fixture_baseline_equipment(&tag);}
+        let load_ms=load_start.elapsed().as_secs_f64()*1000.0;
+        for row in &corpus {
+          let source=row["source"].as_str().unwrap();let start=std::time::Instant::now();
+          let lookup=|| {
+            if baseline {super::super::rulesets::translate_equipment(&tag,source)
+              .or_else(||translate(&tag,translation::TranslationRequest::lookup(source).context()))}
+            else {translator::static_lookup(&tag,source)}
+          };
+          let response=lookup();let first_us=start.elapsed().as_secs_f64()*1e6;
+          let start=std::time::Instant::now();
+          for _ in 0..100 {std::hint::black_box(lookup());}
+          results.push(serde_json::json!({"language":language,"baseline":baseline,"group":row["group"],
+            "category":row["category"],"source":source,"translation":response.map(|r|r.translated),
+            "first_us":first_us,"average_us":start.elapsed().as_secs_f64()*1e4,"load_ms":load_ms}));
+        }
+      }
+    }
+    std::fs::write(task.join("cold-corpus-results.json"),serde_json::to_vec_pretty(&results).unwrap()).unwrap();
+  }
+  #[test]
+  #[ignore="requires DF_LOCAL_PACKAGE integration data path"]
   fn packaged_numeric_ui_and_existing_number_rules() {
     let root=std::path::PathBuf::from(std::env::var("DF_LOCAL_PACKAGE").unwrap());
     for language in ["zh-Hant","zh-Hans"] {
@@ -84,7 +259,8 @@ mod arena_tests {
       }
       for source in ["Music Volume (Adventure): 84%","Average Seconds Between Tracks/Interludes (Fortress): 239",
         "Meeting Area: 57","Bedroom: 112","Range: -1 to 12,345","Historical figures: 3024",
-        "An abridged chronicle (21000 events total):","Nearest site: 7 days' travel SW"] {
+        "An abridged chronicle (21000 events total):","Nearest site: 7 days' travel SW",
+        "0 pts","1 pts","6 pts","101 pts","99999 pts"] {
         assert!(index.lookup(source).is_some(),"{language} {source}");
       }
       // Existing rule paths already support changing ages and kill counts.
@@ -241,6 +417,13 @@ pub fn translate(
 
   let dicts = get_dicts();
   dicts.get(lang_tag).and_then(|dict| {
+    // Reviewed sentence composition must beat full paragraphs imported from
+    // an older model cache. Explicit reviewed whole-string corrections win.
+    if !dict.get(text).is_some_and(|(_,tags)|tags.get("REVIEWED").map(String::as_str)==Some("1")) {
+      if let Some(translated)=prose().read().unwrap().get(lang_tag).and_then(|p|p.lookup(text)) {
+        return Some(translation::TranslationResponse{translated,alignment:Default::default()});
+      }
+    }
     let mut prefix="";
     let mut body=text;
     static PALETTE:OnceLock<regex::Regex>=OnceLock::new();
@@ -323,6 +506,14 @@ extern "C" fn load_simple_dict(lua_state: *mut std::ffi::c_void) -> i32 {
     let mut templates=numeric().write().unwrap();
     let index=templates.entry(lang_tag.clone()).or_default();
     for (source,(text,_)) in &candidate { index.insert(source,text); }
+  }
+  {
+    let mut indexes=prose().write().unwrap();
+    let composed=indexes.entry(lang_tag.clone()).or_default();
+    composed.set_language(&lang_tag);
+    for (source,(text,tags)) in &candidate {
+      composed.insert(source,text,tags.get("PROSE").map(String::as_str).unwrap_or(""));
+    }
   }
   merge_dictionary(dict,candidate);
   log::info!("Loaded Simple translator data for language {lang_tag:?} from {path_str:?}");

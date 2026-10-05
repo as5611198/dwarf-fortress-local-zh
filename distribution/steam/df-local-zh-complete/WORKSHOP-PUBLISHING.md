@@ -6,6 +6,8 @@
 
 以下是開發者流程：在 `src/broker` 執行 `npm ci --ignore-scripts`。在 `src/df-local-zh-native` 設定 `$env:RUSTFLAGS='-C target-feature=+crt-static'`，執行 `cargo build --target x86_64-pc-windows-msvc --release -p df-local-zh-broker -p df_local_zh_core`，使所有相依套件採一致的靜態 CRT。Broker 啟動 DLL 由 `src/broker/launcher.cpp` 使用 MSVC `/std:c++17 /LD /MT /EHsc` 建置。確認 EXE/DLL 的系統依賴，再組包；不可沿用舊 Node 啟動器。
 
+若 MSVC LNK1104 指向實際存在但超長的相依套件路徑，設定 `CARGO_TARGET_DIR` 為較短的可寫路徑再建置；組包的 `--native-dll`／`--broker-exe` 也須指向實際產物。2026-10-04 持久快取候選版使用了獨立短路徑，詳見 [驗證紀錄](CACHE-PERSISTENCE-20261004.md)，不能沿用原 target 中較舊的 Broker。
+
 從倉庫根目錄執行：
 
 ```powershell

@@ -52,6 +52,8 @@ impl TextFragment {
   pub fn content(&self) -> &str {
     &self.content
   }
+
+  pub fn color_pair(&self) -> types::ColorPair { self.color_pair }
 }
 
 // A row of text consisting of multiple fragments

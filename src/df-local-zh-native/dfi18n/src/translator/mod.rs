@@ -4,6 +4,9 @@ use crate::{broker_client, game, lang, native_cache, tasks, translation};
 
 mod rulesets;
 mod simple;
+mod setup_adventure;
+mod dungeon_labels;
+mod fortress_labels;
 
 const SYNC_RULE_BYTES:usize=160;
 const WORKER_RULE_BYTES:usize=4096;
@@ -25,6 +28,35 @@ extern "C" fn local_rules_refresh(_state:*mut std::ffi::c_void)->i32 {
 pub(crate) fn static_lookup(language:&str,source:&str)->Option<translation::TranslationResponse> {
   rulesets::translate_equipment(language,source)
     .or_else(||simple::translate(language,translation::TranslationRequest::lookup(source).context()))
+    .or_else(||rulesets::translate_finite(language,source))
+    .or_else(||combat_lookup(language,source))
+    .or_else(||item_lookup(language,source))
+    .or_else(||history_lookup(language,source))
+    .or_else(||preference_lookup(language,source))
+}
+fn history_lookup(language:&str,source:&str)->Option<translation::TranslationResponse> {
+  df_local_zh_broker::offline_history::lookup_with_terms(source,&|s|simple::literal_term(language,s)
+    .or_else(||rulesets::translate_equipment(language,s).map(|r|r.translated)),language=="zh-Hans")
+    .map(|translated|translation::TranslationResponse{translated,alignment:Default::default()})
+}
+fn item_lookup(language:&str,source:&str)->Option<translation::TranslationResponse> {
+  df_local_zh_broker::offline_items::lookup(source,&|s|simple::literal_term(language,s)
+      .or_else(||rulesets::preference_material(language,s))
+      .or_else(||rulesets::translate_equipment(language,s).map(|r|r.translated))
+      .or_else(||rulesets::translate_finite(language,s).map(|r|r.translated)),language=="zh-Hans")
+      .map(|translated|translation::TranslationResponse{translated,alignment:Default::default()})
+}
+fn combat_lookup(language:&str,source:&str)->Option<translation::TranslationResponse> {
+  df_local_zh_broker::offline_combat::lookup(source,&|s|simple::literal_term(language,s)
+    .or_else(||rulesets::translate_equipment(language,s).map(|r|r.translated)),language=="zh-Hans")
+    .map(|translated|translation::TranslationResponse{translated,alignment:Default::default()})
+}
+fn preference_lookup(language:&str,source:&str)->Option<translation::TranslationResponse> {
+  df_local_zh_broker::offline_preferences::lookup(source,&|s|simple::literal_term(language,s)
+    .or_else(||rulesets::preference_material(language,s))
+    .or_else(||rulesets::translate_equipment(language,s).map(|r|r.translated))
+    .or_else(||rulesets::translate_finite(language,s).map(|r|r.translated)),language=="zh-Hans")
+    .map(|translated|translation::TranslationResponse{translated,alignment:Default::default()})
 }
 #[cfg(test)]
 pub(crate) fn fixture_static(source:&str,translation:&str) {simple::fixture_insert(source,translation,"LEFT");}
@@ -51,20 +83,15 @@ pub fn should_skip_translation(original: &str) -> bool {
 pub fn translate(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
   if let Some(response)=crate::search::display_query(request.original()) { return Some(response); }
   let lang_tag = lang::current_lang_tag();
+  if let Some(response)=fortress_labels::translate(request.context(),&lang_tag) {return Some(response)}
+  if let Some(response)=setup_adventure::translate(request.context(),&lang_tag) {return Some(response)}
+  if let Some(response)=dungeon_labels::translate(request.context(),&lang_tag) {return Some(response)}
   if let Some(response)=crate::nickname_display::lookup(request.original(),&lang_tag) {return Some(response)}
   if let Some(response)=crate::official::fixed(&lang_tag,request.original()) {return Some(response)}
   if let Some(response)=crate::chinese::direct(request.original(),&lang_tag) { return Some(response); }
 
-  if let Some(response) = rulesets::translate_equipment(&lang_tag, request.original()) {
-    return Some(response);
-  }
-  // Exact dictionary lookups must not depend on worker readiness or old misses.
-  if let Some(response) = simple::translate(&lang_tag, request.context()) {
-    return Some(response);
-  }
-
-  let stable_key = native_cache::key(&lang_tag, request);
   if let Some(response)=static_lookup(&lang_tag,request.original()) {return Some(response)}
+  let stable_key = native_cache::key(&lang_tag, request);
   if let Some(response)=refreshed_rules(&lang_tag,request) {return Some(response)}
   if let Some(response)=crate::official::lookup(&lang_tag,request.original()) {return Some(response)}
   if let Some(response) = native_cache::lookup(&stable_key) { return Some(response); }
@@ -105,11 +132,12 @@ pub async fn translate_task(request: translation::TranslationRequest) {
 pub fn known(request: &translation::TranslationRequest) -> Option<translation::TranslationResponse> {
   if let Some(response)=crate::search::display_query(request.original()) { return Some(response); }
   let language = lang::current_lang_tag();
+  if let Some(response)=fortress_labels::translate(request.context(),&language) {return Some(response)}
+  if let Some(response)=setup_adventure::translate(request.context(),&language) {return Some(response)}
+  if let Some(response)=dungeon_labels::translate(request.context(),&language) {return Some(response)}
   if let Some(response)=crate::nickname_display::lookup(request.original(),&language) {return Some(response)}
   crate::official::fixed(&language,request.original())
     .or_else(||crate::chinese::direct(request.original(),&language))
-    .or_else(|| rulesets::translate_equipment(&language, request.original()))
-    .or_else(|| simple::translate(&language, request.context()))
     .or_else(||static_lookup(&language,request.original()))
     .or_else(||refreshed_rules(&language,request))
     .or_else(||crate::official::lookup(&language,request.original()))
@@ -181,6 +209,31 @@ extern "C" fn cache_lookup(state: *mut std::ffi::c_void) -> i32 {
   if let Some(response) = known(&translation::TranslationRequest::lookup(&content)) {
     lua::push_string(state, &response.translated);
   } else { lua::push_nil(state); }
+  1
+}
+
+// Explicit pins and installed local data only: no learned/official cache and no
+// dispatch. Lua unit adapters use this before their persisted display caches.
+#[unsafe(no_mangle)]
+extern "C" fn local_lookup(state:*mut std::ffi::c_void)->i32 {
+  let source=lua::check_string(state,1);let language=lang::current_lang_tag();
+  // Legends headings are requested before the broker's dictionary loader is
+  // ready on a cold page. Keep these two finite labels available in the
+  // synchronous native path as well as the broker dictionary.
+  let response=match (language.as_str(),source.as_str()) {
+    ("zh-Hant","Related Historical Figures")=>Some(translation::TranslationResponse{translated:"相關歷史人物".into(),alignment:Default::default()}),
+    ("zh-Hans","Related Historical Figures")=>Some(translation::TranslationResponse{translated:"相关历史人物".into(),alignment:Default::default()}),
+    ("zh-Hant","Related Entities")=>Some(translation::TranslationResponse{translated:"相關組織".into(),alignment:Default::default()}),
+    ("zh-Hans","Related Entities")=>Some(translation::TranslationResponse{translated:"相关组织".into(),alignment:Default::default()}),
+    _=>None,
+  }.or_else(||crate::official::fixed(&language,&source))
+    .or_else(||simple::reviewed(&language,&source))
+    .or_else(||rulesets::translate_equipment(&language,&source))
+    .or_else(||rulesets::translate_finite(&language,&source))
+    .or_else(||item_lookup(&language,&source))
+    .or_else(||history_lookup(&language,&source))
+    .or_else(||preference_lookup(&language,&source));
+  if let Some(response)=response {lua::push_string(state,&response.translated);} else {lua::push_nil(state);}
   1
 }
 
@@ -260,6 +313,15 @@ mod immediate_tests {
     let response = translate(&request).expect("Exact dictionary hit must return on the first Hook call");
     assert_eq!(response.translated, "原生當幀命中");
     assert!(matches!(response.alignment, translation::TextAlignment::Center));
+    assert_eq!(tasks::SUBMISSIONS.load(Ordering::SeqCst), before);
+  }
+
+  #[test]
+  fn complete_combat_label_returns_on_first_hook_without_a_worker() {
+    simple::fixture_insert("Combat source weapon", "鐵彎刀", "LEFT");
+    let request = translation::TranslationRequest::fixture("strike/pommel/Combat source weapon", false, 0);
+    let before = tasks::SUBMISSIONS.load(Ordering::SeqCst);
+    assert_eq!(translate(&request).unwrap().translated, "打擊／柄頭／鐵彎刀");
     assert_eq!(tasks::SUBMISSIONS.load(Ordering::SeqCst), before);
   }
 

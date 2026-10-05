@@ -32,4 +32,20 @@ for _,case in ipairs({{name='missing'}, {name='invalid',content='{'},
     assert(reads==1,case.name..': repeated render lookups must not reread the file')
     if case.name=='valid' then assert(reviewed.translation(source,'zh-Hans')=='人工校订文字。') end
 end
+do
+    local local_calls=0
+    local runtime=setmetatable({dfhack={isWorldLoaded=function() return false end},reqscript=function(name)
+        if name=='df-local-zh-core/native' then return {
+            local_lookup=function(s) local_calls=local_calls+1;return s==source and '本機即時句庫。' or nil end,
+            official_library_lookup=function() error('Old cloud text must not override reviewed local prose') end,
+        } end
+        if name=='df-local-zh-core/mod' then return {} end
+        if name=='df-local-zh-paths' then return {broker_data=function() return 'fixture' end} end
+        error('Unexpected lookup: '..name)
+    end},{__index=_G})
+    assert(loadfile(root..'/df-local-zh-runtime.lua','t',runtime))()
+    assert(runtime.translation(source)=='本機即時句庫。')
+    assert(runtime.unit_translation(source)=='本機即時句庫。')
+    assert(local_calls==2)
+end
 print('RUNTIME_REVIEWED_FALLBACK PASS: missing/invalid index preserves runtime translation; valid bilingual corrections win')

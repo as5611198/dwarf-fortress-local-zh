@@ -1,11 +1,11 @@
 {
   "package": "df-local-zh-complete",
-  "version": "0.5.2",
-  "generatedAt": "2026-10-03T13:17:08.192Z",
+  "version": "0.5.11",
+  "generatedAt": "2026-10-05T14:37:53.156Z",
   "releaseMode": "standalone-bilingual",
   "runtime": "rust",
   "requiresNode": false,
-  "brokerSha256": "c035aeab7a27507dd88d95e43b2db42172f5fc513d8305c0e476cd5987a1e7cd",
+  "brokerSha256": "d8175348a8ede5d5c7be90aa123b05ac89aa5a6dab69ebf63f662eed34b53b88",
   "languages": [
     "zh-Hant",
     "zh-Hans"
@@ -657,6 +657,7 @@
     ]
   },
   "changes": [
+    "Offline-first finite grammar index, reviewed personality/value/ability composition, species material equipment and local Lua lookup",
     "Allow confirmed local cloud-library removal, disable automatic downloads across save scopes, retain anti-rollback authority and permit reinstall",
     "Remove macro shortcut collisions; preserve Enter newlines and IME editing; translate surname and profession after custom nicknames",
     "Pre-release audit: runtime retry recovery, context isolation, bounded queues/caches, SDL ownership fixes and clipboard limits",
@@ -674,17 +675,21 @@
   ],
   "counts": {
     "zh-Hant": {
-      "simpleRows": 11384,
+      "simpleRows": 38539,
       "rulesetFiles": 147,
-      "creatureRows": 4667
+      "creatureRows": 7053,
+      "offlineCreatureDescriptions": 951,
+      "offlineLegendsRaceLabels": 2539
     },
     "zh-Hans": {
-      "simpleRows": 14826,
+      "simpleRows": 41981,
       "rulesetFiles": 147,
-      "creatureRows": 4667
+      "creatureRows": 7053,
+      "offlineCreatureDescriptions": 951,
+      "offlineLegendsRaceLabels": 2539
     }
   },
-  "nativeCoreSha256": "a093f10de15a1013a51210a865086da70384dcf0dd1f394cb3a9dbcfa3024100",
+  "nativeCoreSha256": "cdd145e9a6c927966daa7c615c0cb68a7038a989b0b241590569b72b802667f5",
   "files": [
     {
       "path": "ATTRIBUTION.md",
@@ -712,7 +717,7 @@
     },
     {
       "path": "WORKSHOP-PUBLISHING.md",
-      "sha256": "52b7d213861c8e43d7d399e82c982cc7eb67c74f28b8ab115c8bc5d8c5617ca0"
+      "sha256": "1a880e323cbd7921df11f8fb5869088323bd1056ee1dbd72d69657543351eaea"
     },
     {
       "path": "broker/LICENSE-STATUS.json",
@@ -724,7 +729,7 @@
     },
     {
       "path": "broker/corrections.csv",
-      "sha256": "057535d6b81e7454275ede84baeb73b02ba6428b4e2cb3a91d68093ded0179a0"
+      "sha256": "0ea033b97a8bcf7d49ab564551e4fec03347945fe006afa3f18ee6bdf42cb49f"
     },
     {
       "path": "broker/data/announcement-rules-zh-Hans/announcement_date.toml",
@@ -768,15 +773,15 @@
     },
     {
       "path": "broker/data/creature-name-keys.json",
-      "sha256": "5ab1e6cfbbad3bb0e0f02e54f5b69cc7405e0526d7d0a08bc8b90c5572a8c664"
+      "sha256": "280efcd4a394b3a78ebf8808eb04d6f692cc9b68318b2ff451f5c95545e3d09a"
     },
     {
       "path": "broker/data/creature-names-zh-Hans.csv",
-      "sha256": "4846af9038ea232f5ca9e9ce3076f6e02d6da25e381d56d4bb0bd96e4e182fd9"
+      "sha256": "3039cc6b0a0e63b27c5f959dc28f7469845c9f04a4e7d8e9b056f2595cc0c372"
     },
     {
       "path": "broker/data/creature-names-zh-Hant.csv",
-      "sha256": "d23a53df20a25da0481b9d17cf10d02d51cdc0946b0df7c97f47c9e095d74c23"
+      "sha256": "1a60ebe92cbaa53d65686ffad26267db74c7677655e18da5b645eed451cf5177"
     },
     {
       "path": "broker/data/fortress-hover.json",
@@ -832,7 +837,7 @@
     },
     {
       "path": "broker/data/race-map.json",
-      "sha256": "6596b4b4c7e90cff0680cdf25c0a1284d0c5b3cf2c7486d1e4e5546e44865d71"
+      "sha256": "8faec6250e63effc51db77eabb7f302ab61b6a6fb71aeeb788afdae758528c30"
     },
     {
       "path": "broker/data/reviewed-raw-names-zh-Hans.csv",
@@ -852,7 +857,7 @@
     },
     {
       "path": "broker/df-local-zh-broker.exe",
-      "sha256": "c035aeab7a27507dd88d95e43b2db42172f5fc513d8305c0e476cd5987a1e7cd"
+      "sha256": "d8175348a8ede5d5c7be90aa123b05ac89aa5a6dab69ebf63f662eed34b53b88"
     },
     {
       "path": "broker/glossary-zh-Hans.json",
@@ -940,7 +945,7 @@
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hans/index.toml",
-      "sha256": "ff8e2297a922327f00bca950175e18c0cffcd04caff3194f2dc73162b42829e8"
+      "sha256": "50e45e3bcacc41b3fa715b71b64b3d6e9b735cc199f7c9b46b5c01a09e5eab1f"
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hans/items/altar.toml",
@@ -1528,7 +1533,7 @@
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hant/index.toml",
-      "sha256": "ff8e2297a922327f00bca950175e18c0cffcd04caff3194f2dc73162b42829e8"
+      "sha256": "50e45e3bcacc41b3fa715b71b64b3d6e9b735cc199f7c9b46b5c01a09e5eab1f"
     },
     {
       "path": "dfi18n-data/rulesets/zh-Hant/items/altar.toml",
@@ -2087,8 +2092,20 @@
       "sha256": "c97e7042d678b589aaf6e65aca5c4e5ce6dea51ddacde05b0fe4ad0ab5e5e3ab"
     },
     {
+      "path": "dfi18n-data/simple/zh-Hans/offline-adventure-ui.csv",
+      "sha256": "27edb7e14d6263d1cf69344c782dcbc86a532356718b8221f9c8cb452647f72f"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hans/offline-combat-verbs.csv",
+      "sha256": "e32a3c8ca39e4f748ef630b30406539685ee18da6ba8b3948cd2689ef3d089c2"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hans/offline-ui-labels.csv",
+      "sha256": "8553ac8a31d32f1316d231f1c9bfee767037b9d37d1c984e3eeeb3dff46fe975"
+    },
+    {
       "path": "dfi18n-data/simple/zh-Hans/visual-blocks.csv",
-      "sha256": "7af16332a1bc88b4e7ecbd5e7ccce0662a78f93d15247de7b12e895337cf8983"
+      "sha256": "37f82b4184930c1abea760ed9366fb14d3aa5c66ad82c91c95422f86a5e9215c"
     },
     {
       "path": "dfi18n-data/simple/zh-Hans/zz-local-community-reviewed.csv",
@@ -2096,7 +2113,7 @@
     },
     {
       "path": "dfi18n-data/simple/zh-Hans/zz-local-corrections.csv",
-      "sha256": "81151892e4c3c5ad8b9966abc6c2e0ebe0e82cc097f99846fdddabf182986f16"
+      "sha256": "3c65e8171d332abc8e41885a8907980d40ca12f7d12cfbe31c2ada2085c27daf"
     },
     {
       "path": "dfi18n-data/simple/zh-Hans/zz-local-fortress-ui.csv",
@@ -2132,11 +2149,27 @@
     },
     {
       "path": "dfi18n-data/simple/zh-Hans/zzzzzzz-creature-names.csv",
-      "sha256": "4846af9038ea232f5ca9e9ce3076f6e02d6da25e381d56d4bb0bd96e4e182fd9"
+      "sha256": "3039cc6b0a0e63b27c5f959dc28f7469845c9f04a4e7d8e9b056f2595cc0c372"
     },
     {
       "path": "dfi18n-data/simple/zh-Hans/zzzzzzzz-arena-corrections.csv",
       "sha256": "dafc685651b2bb3f6864d74898de86146b4de7eb60fd85e4259bcdd1c0cb79bd"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hans/zzzzzzzzz-offline-personality.csv",
+      "sha256": "ff16e598f9cfcdeee10363b7a4bd46549f51c9ef6572a4ba79c55d1f81da661d"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hans/zzzzzzzzzz-offline-life.csv",
+      "sha256": "bfbfcfd1bce91ed5834a5a39f8d49f93dfc323342b13dd6de118db073032b677"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hans/zzzzzzzzzzz-offline-appearance.csv",
+      "sha256": "19589a9e08beefec91742f39d04a5a3252a55a8bcc4ff5683738dee55cb9f98f"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hans/zzzzzzzzzzz-offline-creatures.csv",
+      "sha256": "9c0ee5de2f06b5cdceb1a2ad646c8ec5c758c06d67c3e1d64f8920edd6d6f83c"
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/00-upstream.csv",
@@ -2151,8 +2184,20 @@
       "sha256": "911eef765a87617b64eef9b3c2f75c75c7af23ffeefd4e0d87621cf291e60362"
     },
     {
+      "path": "dfi18n-data/simple/zh-Hant/offline-adventure-ui.csv",
+      "sha256": "2c35d04f688e958a42f473f4c4823230f57462e7e31ffb30da3de307dfc25ddb"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hant/offline-combat-verbs.csv",
+      "sha256": "e2d7030979b533e09934b0a3715c7de41f160be0e947c58da6f4a257cd517154"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hant/offline-ui-labels.csv",
+      "sha256": "40dbe804948aca0f73e8f8ff0051bb3b47b747d5236d7d514d18c73aa4fbfafb"
+    },
+    {
       "path": "dfi18n-data/simple/zh-Hant/visual-blocks.csv",
-      "sha256": "27eafbfba9e2f357cdac5c05ae6dfd5465b5d536d3636e8d3b59ae7e22feb652"
+      "sha256": "85a07ab364ff755601c66b4655210009566e2ccc6b95ecf3d43747f60dbb4834"
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/zz-local-community-reviewed.csv",
@@ -2160,7 +2205,7 @@
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/zz-local-corrections.csv",
-      "sha256": "057535d6b81e7454275ede84baeb73b02ba6428b4e2cb3a91d68093ded0179a0"
+      "sha256": "0ea033b97a8bcf7d49ab564551e4fec03347945fe006afa3f18ee6bdf42cb49f"
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/zz-local-fortress-ui.csv",
@@ -2196,23 +2241,47 @@
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/zzzzzzz-creature-names.csv",
-      "sha256": "d23a53df20a25da0481b9d17cf10d02d51cdc0946b0df7c97f47c9e095d74c23"
+      "sha256": "1a60ebe92cbaa53d65686ffad26267db74c7677655e18da5b645eed451cf5177"
     },
     {
       "path": "dfi18n-data/simple/zh-Hant/zzzzzzzz-arena-corrections.csv",
       "sha256": "5c6ea43e90dd8b3fac366ad21ed0ff7efeef8d5ac6cfeffba151ee29d3fe1c10"
     },
     {
+      "path": "dfi18n-data/simple/zh-Hant/zzzzzzzzz-offline-personality.csv",
+      "sha256": "9881355225771ab0830013a07026d8b76502f73c7477362a4c9732f30aff1f19"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hant/zzzzzzzzzz-offline-life.csv",
+      "sha256": "9cecd43fca7af62919d64e367bbe0c6c312a7e594132f2a874518435370f35be"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hant/zzzzzzzzzzz-offline-appearance.csv",
+      "sha256": "0c3977ca09401391fe0e46726e8c8a6c3ae5fe5a269eeb31e89aa38ab31e612c"
+    },
+    {
+      "path": "dfi18n-data/simple/zh-Hant/zzzzzzzzzzz-offline-creatures.csv",
+      "sha256": "03902a53a486cb601e4c39ddfb06b64ceea98775f35cf0287cd9ae2a07030c3f"
+    },
+    {
       "path": "info.txt",
-      "sha256": "140eaa76222f82033e5137c83dc9eeb5519f1e5f0a64fb0ac07a20c3ffdee1ee"
+      "sha256": "e4a14584f6b8ec6798f7b936da594201b2889df4552ea1d4e7b2fef24e222a5f"
     },
     {
       "path": "libs/df_local_zh_core.dll",
-      "sha256": "a093f10de15a1013a51210a865086da70384dcf0dd1f394cb3a9dbcfa3024100"
+      "sha256": "cdd145e9a6c927966daa7c615c0cb68a7038a989b0b241590569b72b802667f5"
     },
     {
       "path": "preview.png",
       "sha256": "0680f90d5fd1dee906adced8ec6bd1af3f81e39defcd306e9a13894a1a7218c7"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-adventure-background.lua",
+      "sha256": "58004e78958d6da81e728c8ad482ed78660db9d0bf460ccedba67383a9ad7914"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-adventure-journal.lua",
+      "sha256": "8ead62e9a6d2aa6bfac859d40008deb407e141306385223ac1a59299bed2b03a"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-adventure.lua",
@@ -2240,7 +2309,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-core/globals.lua",
-      "sha256": "8eca4ec1ede901d2d3dd2c4c5fb663e6d7f158bf1515de88d91f75d1523a7adb"
+      "sha256": "39229d1c9ebd0e359ee71c66d39f1b10fc74df16b3159e42d010aa0931f30333"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-core/helpers.lua",
@@ -2252,7 +2321,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-core/native.lua",
-      "sha256": "9537480231f2fc3d4e269d3f743c5ee56d70521287b52d3070485cdcd7707374"
+      "sha256": "1096bad08fc8b37656b8111554980659e8e1d475060bc2479f6068ef17001d03"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-creature-names.lua",
@@ -2264,7 +2333,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-embark.lua",
-      "sha256": "be322504b573416800f0946959ccc8533d7844e5c3c652af167d06a5defdf16d"
+      "sha256": "f1790f087e7530c4ac7adc3eada91ab69592d721da762694c846399606f21837"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-equipment-test.lua",
@@ -2292,11 +2361,11 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-legends-list.lua",
-      "sha256": "1e955741f7a1ccee48e8eed915ad527f12b3e750c2ad47f0b9b13cafa7e54e8f"
+      "sha256": "91ad30f47dbbbfa3943cb1576e0615df76535b1638f90aad9ed83a926b21ad0e"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-legends.lua",
-      "sha256": "e7439954c5a560814adeaca326d82e85a3bd1896bfba94d77bb61634cf1ea124"
+      "sha256": "802d786c023af886a48527ef046577f7b33bc1f2404fd64d4fb6b047d1395194"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-list-overlay.lua",
@@ -2320,7 +2389,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-narrative.lua",
-      "sha256": "f0f37059526b404960eb1901cbc09666450e7a26d5df3c07ce7f07483af26064"
+      "sha256": "4b06366fc8cb310aa0ba96877174929ef4357966ec1c62c29ea924103c97b498"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-native-prewarm-test.lua",
@@ -2332,11 +2401,19 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-nickname-display.lua",
-      "sha256": "0e7c9a88d16c3fdadb638f90350d1e6f2c2f98fb6c76d6fa1e92f8ce1d87a594"
+      "sha256": "4dc4b1dee79dfac1652d09df1d17edab2d8c9a2a1b6a84969934200d0d5d8437"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-offline-narrative.lua",
+      "sha256": "058d6fa3cc475f252548e9ef9faab44d676c44cff3a261b0b5f1200987e3d6bf"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-paths.lua",
       "sha256": "e70436c29dc4878d5f2f49e214d4e922d479fb05d959ecf19b92383aa30f3284"
+    },
+    {
+      "path": "scripts_modinstalled/df-local-zh-preferences.lua",
+      "sha256": "1bc8069be889663084d0bd4554626707c258c079d505cd0f686696b76a4578f2"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-prefetch.lua",
@@ -2356,7 +2433,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-runtime.lua",
-      "sha256": "c16da6d4a0effd5c46be2f24e12b3083250641aef2ffc9f42403930306c1a46f"
+      "sha256": "27486046a3968b40a920bb14844dc934d8ad64632d29aee777d46124c43176df"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-search-editor.lua",
@@ -2384,7 +2461,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-status-ui.lua",
-      "sha256": "69c85b7b5416bd9ffed7812bf4ac860b2f11ecb7b4cb061831fb2a9957834639"
+      "sha256": "a299862c227666621d2c799e20dc344b7c49845f0f60eda529b7f8cfe985fe43"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-status.lua",
@@ -2392,7 +2469,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-text-overlay.lua",
-      "sha256": "ec7f986c35249fdfcadc892c4d1e5df21e9515f5b751b9c55e06b9675432156f"
+      "sha256": "f891ea5da00da1d910ec4c5a0af78efa74151f14872dd5269b490915046fd26e"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-title-overlay.lua",
@@ -2408,7 +2485,7 @@
     },
     {
       "path": "scripts_modinstalled/df-local-zh-unit-text.lua",
-      "sha256": "a13fe43cfd4dbe7d02412d2ad58b326929809847f3739afc0091cef3846f6da6"
+      "sha256": "0462a2038e24c52f31ee12a24b9bd9097a7f7bccf5ca373582f0487cefdb86cc"
     },
     {
       "path": "scripts_modinstalled/df-local-zh-visible-text.lua",
@@ -2432,11 +2509,15 @@
     },
     {
       "path": "self-tests/creature-dictionaries.json",
-      "sha256": "e226afb1678abdea2ad9f72a4021dc89f743da5f5872d3e187a2c46050e5db47"
+      "sha256": "956c991d1053c908620381c6b667782470a8302fc1c31329cb1d907e0433ba65"
     },
     {
       "path": "self-tests/editor-boundaries.lua",
       "sha256": "3f43649f3ab10085d8e63b95e1cd39ce9602579fff5c2353595a915c5c64fd75"
+    },
+    {
+      "path": "self-tests/expected-native.lua",
+      "sha256": "e551934ba6ced44cbc4061c9215f38745453c4e29bf3474df59c9c947aa92f6e"
     },
     {
       "path": "self-tests/extended-adapters.lua",
@@ -2464,11 +2545,27 @@
     },
     {
       "path": "self-tests/nickname-display.lua",
-      "sha256": "85735a90807903f9cd234fa018e0eb188da811b0c88b39d339e825f67abbeee9"
+      "sha256": "3ce43cfc5d3de46a40eab881771e23821e152c4681f786583f2ccb21c4fc20fe"
     },
     {
       "path": "self-tests/official-clear-ui.lua",
       "sha256": "1f1e0e93491613bba99d6a91512caf065b16412a237176520ce9d37d4142d751"
+    },
+    {
+      "path": "self-tests/offline-narrative-layout.lua",
+      "sha256": "92fdf604489d8190f43522b5406aec16f7a1a51eb04959d8b4f33e355cda22ba"
+    },
+    {
+      "path": "self-tests/offline-narrative.lua",
+      "sha256": "a246dfc5e6aacb411485e435b4fb89f28822d8b81282e9370350fe31e18e1003"
+    },
+    {
+      "path": "self-tests/offline-preferences.lua",
+      "sha256": "340abe06ee446126950cc7955b57a87cce4a926a85fce6c2189f72d3bc61ecf1"
+    },
+    {
+      "path": "self-tests/offline-thoughts.lua",
+      "sha256": "d220961a411dcbafea9c4517b1a97c54a93536c38d60ae09c942fdeea91d7b3e"
     },
     {
       "path": "self-tests/os-ime-acceptance.lua",
@@ -2479,12 +2576,16 @@
       "sha256": "8e1971ed569acc3179bd2693ff14a2b493986f107abbd679458660e1df67133a"
     },
     {
+      "path": "self-tests/runtime-journal-boundaries.lua",
+      "sha256": "d2a14dfcae0e2d02a49d0e261abbb75a87b6e1c12a426c194c8bb9b5542ce2e0"
+    },
+    {
       "path": "self-tests/runtime-response-recovery.lua",
       "sha256": "fd86660179dc7fc4f1c811225ee3358d251b68014a83b3b08d8da63a944cbc34"
     },
     {
       "path": "self-tests/runtime-reviewed-fallback.lua",
-      "sha256": "cf2411b3d9e1b63dfe01f85d1584cace90cd0763ae8ccdfb8e06a53ff0a583c0"
+      "sha256": "cb417f8501a7589feeda710d2f36f26bab335cd48e848260774a254bd6bf5831"
     },
     {
       "path": "self-tests/search-literal-render.lua",
@@ -2497,6 +2598,34 @@
     {
       "path": "self-tests/shortcut-routing.lua",
       "sha256": "f779d26e7720a18e1add95478097496f4d1ed17bc387d9b82fe62e44bd90cd0d"
+    },
+    {
+      "path": "self-tests/test-hover-instructions.lua",
+      "sha256": "cf9768830d6bcd7d627e2d6dd6db73fda5edb19bbf8803e65ea2e9f6995e3fb1"
+    },
+    {
+      "path": "self-tests/test-legends-fallback.lua",
+      "sha256": "98037e667958c9877d7942686aaabdaa9a9254cb7202eb956d8dc57975472924"
+    },
+    {
+      "path": "self-tests/test-legends-occasion-names.lua",
+      "sha256": "a2f2d161448201c47d996d339d000bb89c70094129484a069f98feadd30c4c31"
+    },
+    {
+      "path": "self-tests/test-resident-professions.lua",
+      "sha256": "f251018877729d4f099fd5dc102b69b686b811264a18d67ff039e9900735ea32"
+    },
+    {
+      "path": "self-tests/test-runtime-queue-io.lua",
+      "sha256": "634554a8155992c588a885f840603816356f82e43ae046fe517cea594320d614"
+    },
+    {
+      "path": "self-tests/test-text-viewer-color.lua",
+      "sha256": "c5d8b0e0fddd83c8597eeb97aab559611edc542ddb5d9b7b979605ef25abc8f3"
+    },
+    {
+      "path": "third-party-licenses/SQLite-public-domain.txt",
+      "sha256": "e9a6827198b4e944314fc7a249cebe8cef3e6708a05f9374d856f5faf9b2d6a6"
     },
     {
       "path": "third-party-licenses/dfi18n-data-CC-BY-NC-4.0.md",
@@ -2512,7 +2641,7 @@
     },
     {
       "path": "third-party-licenses/rust-broker/DEPENDENCIES.json",
-      "sha256": "1b58c3e2819b2f8caf94940bfda10b979936b56056f509680e240b27540c6f4f"
+      "sha256": "8c654a4c5fa164a04a4ce8bcd92658de903e151525b1348d287e6f7d665cca6c"
     },
     {
       "path": "third-party-licenses/rust-broker/aho-corasick-1.1.4/COPYING",
@@ -2859,6 +2988,22 @@
       "sha256": "7365cc8878a1d7ce155a58c4ca09c3d7a6be413efa5334a80ea842912b669349"
     },
     {
+      "path": "third-party-licenses/rust-broker/fallible-iterator-0.3.0/LICENSE-APACHE",
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fallible-iterator-0.3.0/LICENSE-MIT",
+      "sha256": "0816e154b159ba255c563f7c8c7df5bbb8cc5fc96f5ab8cf9f4743b4f41fe7eb"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fallible-streaming-iterator-0.1.9/LICENSE-APACHE",
+      "sha256": "c6596eb7be8581c18be736c846fb9173b69eccf6ef94c5135893ec56bd92ba08"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/fallible-streaming-iterator-0.1.9/LICENSE-MIT",
+      "sha256": "8dcec5569a9be5b0e086c80faed6f1aefa670af0ec29cecc2f714303096887e0"
+    },
+    {
       "path": "third-party-licenses/rust-broker/fastrand-2.5.0/LICENSE-APACHE",
       "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
     },
@@ -2892,6 +3037,10 @@
     },
     {
       "path": "third-party-licenses/rust-broker/foldhash-0.1.5/LICENSE",
+      "sha256": "b1181a40b2a7b25cf66fd01481713bc1005df082c53ef73e851e55071b102744"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/foldhash-0.2.0/LICENSE",
       "sha256": "b1181a40b2a7b25cf66fd01481713bc1005df082c53ef73e851e55071b102744"
     },
     {
@@ -3029,6 +3178,14 @@
     {
       "path": "third-party-licenses/rust-broker/hashbrown-0.17.1/LICENSE-MIT",
       "sha256": "ff8f68cb076caf8cefe7a6430d4ac086ce6af2ca8ce2c4e5a2004d4552ef52a2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashlink-0.12.2/LICENSE-APACHE",
+      "sha256": "c144680885b29e4719e2a51f0aab5439a1e02d980692b5aaf086cae12727f28b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/hashlink-0.12.2/LICENSE-MIT",
+      "sha256": "e915669a595b11a200873df8286561881b0e04932f6412a585db6297ba0bc97c"
     },
     {
       "path": "third-party-licenses/rust-broker/http-1.5.0/LICENSE-APACHE",
@@ -3181,6 +3338,10 @@
     {
       "path": "third-party-licenses/rust-broker/libloading-0.9.0/LICENSE",
       "sha256": "b29f8b01452350c20dd1af16ef83b598fea3053578ccc1c7a0ef40e57be2620f"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/libsqlite3-sys-0.38.2/LICENSE",
+      "sha256": "c10c1f27337546471e5f7e4e97fdd398b35b9d4e126115dcd22de8d8e65abf6f"
     },
     {
       "path": "third-party-licenses/rust-broker/litemap-0.8.3/LICENSE",
@@ -3359,6 +3520,14 @@
       "sha256": "ad64fcb9589f162720f3cc5010ad76ca6ad3764e11861f9192c489df176bb71d"
     },
     {
+      "path": "third-party-licenses/rust-broker/pkg-config-0.3.34/LICENSE-APACHE",
+      "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/pkg-config-0.3.34/LICENSE-MIT",
+      "sha256": "378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397"
+    },
+    {
       "path": "third-party-licenses/rust-broker/plain-0.2.3/LICENSE-APACHE",
       "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
     },
@@ -3517,6 +3686,10 @@
     {
       "path": "third-party-licenses/rust-broker/rkyv_derive-0.8.18/LICENSE",
       "sha256": "635111a955495b5d8d34b8052f69656e8e45f6437f9266329077b9aad5fbe8d3"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/rusqlite-0.40.2/LICENSE",
+      "sha256": "c10c1f27337546471e5f7e4e97fdd398b35b9d4e126115dcd22de8d8e65abf6f"
     },
     {
       "path": "third-party-licenses/rust-broker/rustc-demangle-0.1.26/LICENSE-APACHE",
@@ -3963,6 +4136,14 @@
       "sha256": "436bc5a105d8e57dcd8778730f3754f7bf39c14d2f530e4cde4bd2d17a83ec3d"
     },
     {
+      "path": "third-party-licenses/rust-broker/vcpkg-0.2.15/LICENSE-APACHE",
+      "sha256": "3708458dee7f359ac6c9c5558023ed481be87e5372c43ebd7f2ca7ad23c12026"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/vcpkg-0.2.15/LICENSE-MIT",
+      "sha256": "ff7d99434986ba68f6575d689fd9cc11d93a486876b19004e1bacc0f6ca554d4"
+    },
+    {
       "path": "third-party-licenses/rust-broker/version_check-0.9.5/LICENSE-APACHE",
       "sha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2"
     },
@@ -3987,11 +4168,83 @@
       "sha256": "ce7bc3499fee93d5022ef430d5e4201e79a6d9154f3974e42f41349f0569e09b"
     },
     {
+      "path": "third-party-licenses/rust-broker/windows-0.62.2/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-0.62.2/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-collections-0.3.2/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-collections-0.3.2/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-core-0.62.2/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-core-0.62.2/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-future-0.3.2/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-future-0.3.2/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-implement-0.60.2/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-implement-0.60.2/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-interface-0.59.3/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-interface-0.59.3/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
       "path": "third-party-licenses/rust-broker/windows-link-0.2.1/license-apache-2.0",
       "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
     },
     {
       "path": "third-party-licenses/rust-broker/windows-link-0.2.1/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-numerics-0.3.1/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-numerics-0.3.1/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-result-0.4.1/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-result-0.4.1/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-strings-0.5.1/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-strings-0.5.1/license-mit",
       "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
     },
     {
@@ -4016,6 +4269,14 @@
     },
     {
       "path": "third-party-licenses/rust-broker/windows-targets-0.52.6/license-mit",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-threading-0.2.1/license-apache-2.0",
+      "sha256": "c16f8dcf1a368b83be78d826ea23de4079fe1b4469a0ab9ee20563f37ff3d44b"
+    },
+    {
+      "path": "third-party-licenses/rust-broker/windows-threading-0.2.1/license-mit",
       "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383"
     },
     {

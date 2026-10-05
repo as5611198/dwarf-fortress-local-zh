@@ -65,6 +65,14 @@ pub fn braced_item(source: &str) -> Option<&str> {
 }
 pub fn validate(source: &str, output: &str) -> Result<String> {
   let value = output.trim();
+  // This complete vanilla badge is literal UI prose, not a DF markup token.
+  // Unknown brackets and all embedded key/color/format tokens remain opaque.
+  if source == "[Viewed]" {
+    let inner = value.strip_prefix('[').and_then(|s| s.strip_suffix(']'))
+      .ok_or_else(|| anyhow::anyhow!("badge wrapper mismatch"))?;
+    validate("Viewed", inner)?;
+    return Ok(value.into());
+  }
   if let Some(inner)=braced_item(source) {
     let translated=value.strip_prefix('{').and_then(|s|s.strip_suffix('}'))
       .ok_or_else(||anyhow::anyhow!("item wrapper mismatch"))?;
@@ -222,6 +230,17 @@ pub fn append(path: &Path, value: &Value) -> Result<()> {
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn viewed_badge_is_prose_while_unknown_brackets_remain_opaque() {
+    assert_eq!(validate("[Viewed]", "[已閱]").unwrap(), "[已閱]");
+    assert_eq!(validate("[Viewed]", "[已阅]").unwrap(), "[已阅]");
+    for bad in ["已閱", "[Viewed]", "[]", "[已閱 2]", "[已閱][KEY:9]"] {
+      assert!(validate("[Viewed]",bad).is_err(),"{bad}");
+    }
+    assert!(validate("[UNKNOWN]", "[未知]").is_err());
+    assert!(validate("[KEY:9] Zoom in", "[KEY:10]放大").is_err());
+    assert!(validate("[C:2:0:1]Zoom in[C:7:0:0]", "放大").is_err());
+  }
   #[test]
   fn item_quality_braces_are_not_named_placeholders() {
     assert!(validate("{olm Remains}", "{洞螈殘骸}").is_ok());

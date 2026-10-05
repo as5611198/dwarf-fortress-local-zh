@@ -31,9 +31,11 @@ local function paint(x,y,text,color)
 end
 
 function background_state(data)
+    local b=data.broker or {};local r=b.runtime or {};local history=r.history or {}
+    if data.online and history.state=='loading' then return '恢復翻譯紀錄' end
+    if data.online and history.state=='retrying' then return '紀錄讀取重試中' end
     if data.paused then return '已暫停' end
     if not data.online then return '服務離線' end
-    local b=data.broker or {};local r=b.runtime or {}
     if (b.backgroundActive or 0)+(b.backgroundQueued or 0)+
             (r.backgroundActive or 0)+(r.backgroundQueued or 0)>0 then return '翻譯中' end
     local n,u,s=data.native or {},data.unit or {},data.sources or {}

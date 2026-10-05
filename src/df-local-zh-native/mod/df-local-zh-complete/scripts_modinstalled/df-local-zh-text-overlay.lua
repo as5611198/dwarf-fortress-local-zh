@@ -95,7 +95,8 @@ function TextOverlay:onRenderBody()
     if not state or state.key ~= current_key then state = capture(screen, focus, width, height) end
     for _, segment in ipairs(state.rows) do
         if segment.width >= 7 then
-            local key = runtime.short_lookup(segment.text, true, nil, segment.width) or runtime.pending_key()
+            local key,status = runtime.short_lookup(segment.text, true, nil, segment.width)
+            key = key or runtime.pending_key(status)
             if key then
                 dfhack.screen.fillRect({ch = 32, fg = COLOR_WHITE, bg = segment.background},
                     segment.x, segment.y, segment.x + segment.width - 1, segment.y)

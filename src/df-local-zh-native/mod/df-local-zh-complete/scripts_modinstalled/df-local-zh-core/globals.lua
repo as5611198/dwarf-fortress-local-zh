@@ -13,4 +13,5 @@ GLOBALS = {
   "gps.texblits",
   "gps.display_title",
   "game.main_interface.help",
+  "game.main_interface.squad_schedule.open",
 }

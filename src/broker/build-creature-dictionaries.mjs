@@ -9,6 +9,7 @@ import { simplify } from './language-data.mjs';
 export async function buildCreatureDictionaries(packageRoot) {
   const broker = join(packageRoot, 'broker');
   const races = JSON.parse(await readFile(join(broker, 'data/race-map.json'), 'utf8'));
+  const supplemental = JSON.parse(await readFile(new URL('./offline-creature-labels.json', import.meta.url), 'utf8'));
   const configPath = join(broker, 'config.json');
   const config = JSON.parse(await readFile(configPath, 'utf8'));
   const counts = {};
@@ -17,6 +18,8 @@ export async function buildCreatureDictionaries(packageRoot) {
   for (const language of ['zh-Hant', 'zh-Hans']) {
     const rules = TOML.parse(await readFile(join(packageRoot,
       `dfi18n-data/rulesets/${language}/creatures/name.toml`), 'utf8'));
+    const castes = TOML.parse(await readFile(join(packageRoot,
+      `dfi18n-data/rulesets/${language}/creatures/caste.toml`), 'utf8'));
     const rows = new Map();
     const add = (text, translation) => {
       if (typeof translation !== 'string' || /[{}]/.test(text + translation)) return;
@@ -26,11 +29,17 @@ export async function buildCreatureDictionaries(packageRoot) {
         rows.set(key, { text: key, translation, tags: '[CREATURE:1][REVIEWED:1]' });
       }
     };
-    for (const group of rules.rulesets ?? []) {
+    // Caste tables contain complete female/male labels omitted by the species
+    // name table. Load them first so reviewed species terminology still wins.
+    for (const group of [...(castes.rulesets ?? []),...(rules.rulesets ?? [])]) {
       if (!['singular', 'plural'].includes(group.name)) continue;
-      for (const [source, translation] of Object.entries(group.rules ?? {})) add(source, translation);
+      for (const [source, translation] of Object.entries(group.rules ?? {})) {
+        add(source, translation);
+        if (group.name==='singular' && / (?:man|woman)$/.test(source))
+          add(source.replace(/ (man|woman)$/,(_,sex)=>sex==='man'?' men':' women'),translation);
+      }
     }
-    // Reviewed race labels override rules and cover world-specific creature IDs.
+    // Reviewed vanilla race labels override imported rule terminology.
     for (const { source, translation } of Object.values(races.races)) {
       add(source, language === 'zh-Hans' ? simplify(translation) : translation);
     }
@@ -45,6 +54,11 @@ export async function buildCreatureDictionaries(packageRoot) {
     for(const [text,row] of rows) {
       if(/ man$| men$/i.test(text) && /\s*男人/.test(row.translation))
         row.translation=row.translation.replace(/\s*男人/g,'人');
+    }
+    // Exact labels from vanilla NAME/CASTE_NAME fields. No runtime plural or
+    // gender guessing, and existing reviewed spellings retain precedence.
+    for (const [source, translation] of Object.entries(supplemental)) {
+      if (!rows.has(source)) add(source, language === 'zh-Hans' ? simplify(translation) : translation);
     }
     const csv = stringify([...rows.values()].sort((a, b) => a.text.localeCompare(b.text, 'en')),
       { header: true, columns: ['text', 'translation', 'tags'] });

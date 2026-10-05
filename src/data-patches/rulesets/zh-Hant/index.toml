@@ -1,5 +1,7 @@
 [[rulesets]]
 [rulesets.rules]
+"{professions}" = "{professions}"
+"{tiles::plants}" = "{tiles::plants}"
 "{visual_ui}" = "{visual_ui}"
 "{plain_needs}" = "{plain_needs}"
 "{preference}" = "{preference}"

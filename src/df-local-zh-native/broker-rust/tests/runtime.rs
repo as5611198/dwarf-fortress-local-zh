@@ -39,6 +39,114 @@ fn files(d: &std::path::Path) -> std::path::PathBuf {
 }
 
 #[tokio::test]
+async fn removed_registry_retires_cached_names_and_recreated_world_is_isolated() {
+  let d = tempfile::tempdir().unwrap();
+  let cfg = files(d.path());
+  let root = d.path().join("state");
+  let app = App::load(&cfg, &root).unwrap();
+  let path = root.join("data/world-names.json");
+  atomic(&path, &json!({"world":"old","entities":[{"id":"figure:1","aliases":["Urist"]}]})).unwrap();
+  let old = app.registry("old");
+  assert_eq!(old["entities"][0]["aliases"][0], "Urist");
+  assert!(Arc::ptr_eq(&old, &app.registry("old")), "unchanged revision should share its snapshot");
+  std::fs::remove_file(&path).unwrap();
+  assert_eq!(app.registry("old")["entities"], json!([]), "removed names must not survive in the broker");
+  let retired = Arc::downgrade(&old);
+  drop(old);
+  assert!(retired.upgrade().is_none(), "no historical registry remains owned by the cache");
+  atomic(&path, &json!({"world":"new","entities":[{"id":"figure:2","aliases":["Domas"]}]})).unwrap();
+  assert_eq!(app.registry("new")["entities"][0]["aliases"][0], "Domas");
+  assert_eq!(app.registry("old")["entities"], json!([]));
+}
+
+#[tokio::test]
+async fn registry_index_restores_names_and_updates_identity_without_provider_calls() {
+  let d = tempfile::tempdir().unwrap();
+  let cfg = files(d.path());
+  let root = d.path().join("state");
+  atomic(&cfg.parent().unwrap().join("name-dictionary.json"), &json!({"Urist":"烏里斯特","Domas":"多瑪斯"})).unwrap();
+  let template = "{{DFE0}} arrived.";
+  append(&root.join("translations.jsonl"), &json!({"policy":POLICY,"language":"zh-Hant","kind":"entity",
+    "source":template,"key":cache_key(template,"zh-Hant","entity"),"translation":"{{DFE0}}抵達了。"})).unwrap();
+  let app = App::load(&cfg, &root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+  atomic(&root.join("active-context.json"), &json!({"version":1,"world":"names","language":"zh-Hant"})).unwrap();
+  let path = app.runtime.join("world-names.json");
+  atomic(&path, &json!({"world":"names","entities":[
+    {"id":"figure:1","nativeName":"Urist","aliases":["Urist"]},
+    {"id":"figure:2","nativeName":"Domas","aliases":["Urist","Domas"]},
+    {"id":"figure:3","aliases":["NotMentioned"]}
+  ]})).unwrap();
+  // Shared aliases still resolve in registry order, not hash-map iteration order.
+  assert_eq!(app.translate("Urist arrived.", "zh-Hant", "names", 0).await.unwrap(), "多瑪斯抵達了。");
+  assert_eq!(app.pin("figure:1", "zh-Hant", "names").await.unwrap(), "烏里斯特");
+  let request = json!({"world":"names","language":"zh-Hant","text":"Urist","kind":"legends-name",
+    "namePolicy":"native-v2","entityKind":"figure","entityId":1});
+  assert_eq!(app.runtime_row(&request).await.unwrap()["translation"], "烏里斯特");
+  atomic(&path, &json!({"world":"names","entities":[
+    {"id":"figure:1","nativeName":"Domas","aliases":["Domas"]}
+  ]})).unwrap();
+  assert_eq!(app.pin("figure:1", "zh-Hant", "names").await.unwrap(), "多瑪斯");
+  assert!(app.runtime_row(&request).await.is_err(), "retired native identity must not be accepted");
+  assert_eq!(app.translate("Domas arrived.", "zh-Hant", "names", 0).await.unwrap(), "多瑪斯抵達了。");
+  assert_eq!(app.pool.requests.load(Ordering::Relaxed), 0);
+}
+
+#[tokio::test]
+async fn evicted_translation_remains_available_offline_after_restart_without_rewriting_journal() {
+  use std::io::Write;
+  let d = tempfile::tempdir().unwrap();
+  let cfg = files(d.path());
+  let root = d.path().join("state");
+  let path = root.join("translations.jsonl");
+  let mut journal = std::io::BufWriter::new(std::fs::File::create(&path).unwrap());
+  let first = "The old translation must remain available.";
+  let row = |source: &str, translation: &str| json!({"policy":POLICY,"language":"zh-Hant","kind":"exact",
+    "source":source,"key":cache_key(source,"zh-Hant","exact"),"translation":translation});
+  writeln!(journal,"{}",row(first,"舊譯文必須仍可使用。")).unwrap();
+  for i in 0..16_384 {
+    writeln!(journal,"{}",row(&format!("Archived message {i}."),&format!("歷史訊息 {i}。"))).unwrap();
+  }
+  journal.flush().unwrap();
+  drop(journal);
+  let before = std::fs::read(&path).unwrap();
+  for _ in 0..2 {
+    let app = App::load(&cfg, &root).unwrap();
+    app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+    assert_eq!(app.translate(first,"zh-Hant","",0).await.unwrap(),"舊譯文必須仍可使用。");
+    assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
+    assert!(app.health()["cached"].as_u64().unwrap() <= 16_384);
+  }
+  assert_eq!(std::fs::read(path).unwrap(),before);
+}
+
+#[tokio::test]
+async fn damaged_cache_query_is_not_sent_to_provider_and_releases_pending() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global",
+    "profiles":[{"id":"fixture","enabled":true,"baseUrl":"http://127.0.0.1:1","model":"fixture"}],
+    "settings":{"apiProfile":"fixture"}})).unwrap();
+  let db=rusqlite::Connection::open(root.join("translations-index-v1.sqlite3")).unwrap();
+  db.execute_batch("DROP TABLE records").unwrap();drop(db);
+  assert!(app.translate("Cache failure must not spend tokens.","zh-Hant","",0).await.is_err());
+  assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
+  assert_eq!(app.health()["pending"],0);
+}
+
+#[tokio::test]
+async fn reviewed_prose_is_available_without_ai_and_outranks_old_paragraphs() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let source="He is stubborn.  He dreams of raising a family.";
+  std::fs::write(cfg.parent().unwrap().join("hant.csv"),format!(
+    "text,translation,tags\nHe is stubborn.,他很固執。,[REVIEWED:1][PROSE:sentence]\nHe dreams of raising a family.,他夢想建立家庭。,[REVIEWED:1][PROSE:sentence]\n{source},舊譯文,\n")).unwrap();
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+  assert_eq!(app.translate(source,"zh-Hant","",0).await.unwrap(),"他很固執。  他夢想建立家庭。");
+  assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
+}
+
+#[tokio::test]
 async fn numeric_ui_changes_translate_offline_before_old_cache_and_respect_pins() {
   let d=tempfile::tempdir().unwrap();
   let cfg=files(d.path());
@@ -122,6 +230,148 @@ async fn single_runtime_sentence_reaches_provider(priority: &str) {
 #[tokio::test]
 async fn single_foreground_runtime_sentence_dispatches_without_legends_visibility() {
   single_runtime_sentence_reaches_provider("foreground").await;
+}
+
+#[tokio::test]
+#[cfg(windows)]
+async fn startup_history_sharing_violations_recover_without_resetting_completed_or_terminal_work() {
+  use std::os::windows::fs::OpenOptionsExt;
+  for journal in ["runtime-responses.jsonl","runtime-failures.jsonl"] {
+    let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+    let app=App::load(&cfg,&root).unwrap();
+    app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+    atomic(&root.join("active-context.json"),&json!({"version":1,"world":"recovery","language":"zh-Hant"})).unwrap();
+    let request=json!({"world":"recovery","language":"zh-Hant","text":"Health","priority":"foreground"});
+    let mut historical=app.runtime_row(&request).await.unwrap();
+    if journal=="runtime-failures.jsonl" {
+      let settings=app.settings.lock().unwrap();
+      historical["attempts"]=json!(31);historical["terminal"]=json!(true);
+      historical["retryGeneration"]=json!(hash(serde_json::to_vec(&json!([
+        settings.effective("recovery"),settings.selected("recovery"),Value::Null
+      ])).unwrap()));
+    }
+    let history_path=app.runtime.join(journal);append(&history_path,&historical).unwrap();
+    let held=std::fs::OpenOptions::new().read(true).share_mode(0).open(&history_path).unwrap();
+    append(&app.runtime.join("runtime-requests.jsonl"),&request).unwrap();
+    let mut fresh=request;fresh["text"]=json!("Wounds");
+    append(&app.runtime.join("runtime-requests.jsonl"),&fresh).unwrap();
+    atomic(&root.join("settings-request.json"),&json!({"id":"during-recovery","action":"save",
+      "scope":"global","settings":{"apiEnabled":false}})).unwrap();
+    let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+    let settings_responsive=tokio::time::timeout(Duration::from_secs(2),async {
+      loop {
+        if read_json(&root.join("settings-response.json"),65536)
+          .is_ok_and(|r|r["id"]=="during-recovery" && r["ok"]==true) {break;}
+        tokio::time::sleep(Duration::from_millis(20)).await;
+      }
+    }).await.is_ok();
+    let waiting_status=tokio::time::timeout(Duration::from_secs(2),async {
+      loop {
+        if let Ok(status)=read_json(&app.runtime.join("broker-status.json"),32768) {
+          if status["runtime"]["history"]["state"]=="retrying" {break status;}
+        }
+        tokio::time::sleep(Duration::from_millis(20)).await;
+      }
+    }).await.unwrap_or(Value::Null);
+    let attempts_while_locked=app.attempted.load(Ordering::Relaxed);
+    drop(held);
+    let recovered=tokio::time::timeout(Duration::from_secs(4),async {
+      loop {
+        if app.published.load(Ordering::Relaxed)>0 && read_json(&app.runtime.join("broker-status.json"),32768)
+          .is_ok_and(|v|v["runtime"]["history"]["state"]=="ready") {break;}
+        tokio::time::sleep(Duration::from_millis(20)).await;
+      }
+    }).await;
+    worker.abort();let _=worker.await;
+    assert_eq!(attempts_while_locked,0,"{journal}: incomplete history must not reset completed work or retry budgets");
+    assert!(settings_responsive,"History recovery must not block settings delivery");
+    assert_eq!(waiting_status["runtime"]["history"]["state"],"retrying");
+    recovered.expect("Releasing a history lock must recover automatically without another request or restart");
+    assert_eq!(app.attempted.load(Ordering::Relaxed),1,"Only fresh Wounds may dispatch after history recovery");
+    assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
+  }
+}
+
+#[tokio::test]
+async fn history_recovery_rechecks_the_current_world_and_language_before_dispatch() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"old","language":"zh-Hant"})).unwrap();
+  let old=json!({"world":"old","language":"zh-Hant","text":"Health","priority":"foreground"});
+  let historical=app.runtime_row(&old).await.unwrap();
+  let history=app.runtime.join("runtime-responses.jsonl");std::fs::create_dir(&history).unwrap();
+  append(&app.runtime.join("runtime-requests.jsonl"),&old).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  tokio::time::sleep(Duration::from_millis(250)).await;
+  let while_blocked=app.attempted.load(Ordering::Relaxed);
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"new","language":"zh-Hans"})).unwrap();
+  append(&app.runtime.join("runtime-requests.jsonl"),&json!({"world":"new","language":"zh-Hans","text":"Wounds","priority":"foreground"})).unwrap();
+  std::fs::remove_dir(&history).unwrap();append(&history,&historical).unwrap();
+  let result=tokio::time::timeout(Duration::from_secs(3),async {
+    while app.published.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(20)).await;}
+  }).await;
+  worker.abort();let _=worker.await;
+  result.expect("Recovery must resume in the currently active scope");
+  assert_eq!(while_blocked,0);assert_eq!(app.attempted.load(Ordering::Relaxed),1);
+  let lines=std::fs::read_to_string(&history).unwrap();
+  let rows:Vec<Value>=lines.lines().map(|s|serde_json::from_str(s).unwrap()).collect();
+  assert_eq!(rows.len(),2,"Old work must not be re-published after the scope switch");
+  assert_eq!(rows[1]["world"],"new");assert_eq!(rows[1]["language"],"zh-Hans");
+  assert_eq!(rows[1]["translation"],"伤口");
+  assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
+}
+
+#[tokio::test]
+async fn startup_journal_corruption_does_not_forget_later_completed_work() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"journal-test","language":"zh-Hant"})).unwrap();
+  let request=json!({"world":"journal-test","language":"zh-Hant","text":"Health","priority":"foreground"});
+  let completed=app.runtime_row(&request).await.unwrap();
+  std::fs::write(app.runtime.join("runtime-responses.jsonl"),b"\xff\xfe\n").unwrap();
+  append(&app.runtime.join("runtime-responses.jsonl"),&completed).unwrap();
+  append(&app.runtime.join("runtime-requests.jsonl"),&request).unwrap();
+  let mut fresh=request;fresh["text"]=json!("Wounds");
+  append(&app.runtime.join("runtime-requests.jsonl"),&fresh).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  let result=tokio::time::timeout(Duration::from_secs(3),async {
+    while app.published.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(10)).await;}
+  }).await;
+  worker.abort();let _=worker.await;
+  result.expect("Healthy new work must still complete after a corrupt history row");
+  assert_eq!(app.attempted.load(Ordering::Relaxed),1,"Completed Health must be restored even after invalid UTF-8, leaving only Wounds to dispatch");
+  assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
+}
+
+#[tokio::test]
+async fn journal_large_valid_legends_request_reaches_completion_without_api() {
+  let d=tempfile::tempdir().unwrap();let cfg=files(d.path());let root=d.path().join("state");
+  let link_text="A".repeat(2000);
+  std::fs::write(cfg.parent().unwrap().join("hant.csv"),format!("text,translation,tags\n{link_text},已知長名稱,\n")).unwrap();
+  let app=App::load(&cfg,&root).unwrap();
+  app.settings.lock().unwrap().apply(&json!({"scope":"global","settings":{"apiEnabled":false}})).unwrap();
+  atomic(&root.join("active-context.json"),&json!({"version":1,"world":"journal-test","language":"zh-Hant"})).unwrap();
+  atomic(&app.runtime.join("runtime-visible.json"),&json!({"world":"journal-test","ids":["paragraph"]})).unwrap();
+  let links:Vec<_>=(0..64).map(|id|json!({"type":1,"id":id,"text":link_text})).collect();
+  let text=(0..64).map(|i|format!("{{{{DFL{i}}}}}")).collect::<Vec<_>>().join(" ");
+  let request=json!({"world":"journal-test","language":"zh-Hant","text":text,"links":links,
+    "kind":"legends-paragraph","namePolicy":"native-v2","subjectId":1,"visibilityId":"paragraph","priority":"foreground"});
+  assert!(serde_json::to_vec(&request).unwrap().len()>64*1024);
+  append(&app.runtime.join("runtime-requests.jsonl"),&request).unwrap();
+  let worker=tokio::spawn(df_local_zh_broker::service::run_background(app.clone()));
+  let result=tokio::time::timeout(Duration::from_secs(3),async {
+    while app.published.load(Ordering::Relaxed)==0 {tokio::time::sleep(Duration::from_millis(10)).await;}
+  }).await;
+  worker.abort();
+  result.expect("A syntactically valid 64-link request must not be silently discarded by the journal reader");
+  let rows=std::fs::read_to_string(app.runtime.join("runtime-responses.jsonl")).unwrap();
+  let response:Value=serde_json::from_str(rows.lines().next().unwrap()).unwrap();
+  assert_eq!(response["translation"],text);
+  assert_eq!(response["links"].as_array().unwrap().len(),64);
+  for link in response["links"].as_array().unwrap() {assert_eq!(link["translation"],"已知長名稱");}
+  assert_eq!(app.pool.requests.load(Ordering::Relaxed),0);
 }
 
 #[tokio::test]

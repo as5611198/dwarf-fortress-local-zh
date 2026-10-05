@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 mod replacer;
 pub use replacer::*;
+pub mod finite;
 
 // A rule-based translator
 #[derive(Debug, Default, Clone)]

@@ -108,7 +108,8 @@ local function key_for(line, max_width)
     -- Use the normal dynamic queue for generated region, site, civilization,
     -- and settlement names. The pending key masks the native English row while
     -- a provider result is being validated and loaded into DFI18n.
-    return runtime.short_lookup(line.text, true, nil, max_width) or runtime.pending_key()
+    local key,status=runtime.short_lookup(line.text, true, nil, max_width)
+    return key or runtime.pending_key(status)
 end
 
 EmbarkOverlay = defclass(EmbarkOverlay, overlay.OverlayWidget)

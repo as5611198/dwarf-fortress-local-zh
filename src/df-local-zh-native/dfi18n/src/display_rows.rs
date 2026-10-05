@@ -11,6 +11,10 @@ pub(crate) struct Row {
   source: String,
   pub translation: String,
   pub width: usize,
+  // Set only by the Lua adapter after validating background identity literals.
+  // Ordinary prose retains the no-English completeness check.
+  #[serde(default)]
+  verified_name_literals: bool,
   #[serde(skip)]
   pub literal: bool,
 }
@@ -52,8 +56,8 @@ impl Bindings {
     let layout=rows.iter().map(|row|(row.source.clone(),row.translation.clone(),row.width)).collect();
     for row in rows {
       if row.address==0 || row.source.len()>8000 || row.source.contains('\0') ||
-        row.width==0 || row.width>1000 || row.translation.chars().count()*2>row.width ||
-        row.translation.chars().any(|c|c.is_ascii_alphabetic() || c=='\0' || c=='\n' || c=='\r') ||
+        row.width==0 || row.width>1000 || row.translation.chars().map(|c|if c.is_ascii() {1} else {2}).sum::<usize>()>row.width ||
+        row.translation.chars().any(|c|(!row.verified_name_literals && c.is_ascii_alphabetic()) || c.is_control()) ||
         next.insert(row.address,row).is_some() {return false}
     }
     if self.world!=world || self.language!=language || self.layout!=layout {self.positions.clear()}
@@ -111,14 +115,48 @@ extern "C" fn native_display_rows_status(state:*mut std::ffi::c_void)->i32 {
 #[cfg(test)]
 mod tests {
   use super::*;
+  #[test]
+  fn verified_names_fit_using_ascii_and_unicode_cells_without_overflow() {
+    let mut bindings=Bindings::default();
+    let input=serde_json::json!({"address":99,"source":"Hero's presence in Cave",
+      "translation":"Hero出現在Cave","width":14,"verified_name_literals":true});
+    assert!(bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(input.clone()).unwrap()]));
+    assert_eq!(bindings.lookup(99,"Hero's presence in Cave","fixture","zh-Hant").unwrap().translation,"Hero出現在Cave");
+    let mut too_wide=input.clone();too_wide["width"]=13.into();
+    assert!(!bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(too_wide).unwrap()]));
+    let mut unicode=input.clone();unicode["translation"]="𠮷出現在Cave".into();unicode["width"]=12.into();
+    assert!(bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(unicode.clone()).unwrap()]));
+    unicode["width"]=11.into();
+    assert!(!bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(unicode).unwrap()]));
+    for text in ["Hero\tCave", "Hero\u{001b}Cave"] {
+      let mut controls=input.clone();controls["translation"]=text.into();
+      assert!(!bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(controls).unwrap()]));
+    }
+  }
+  #[test]
+  fn verified_name_rows_require_explicit_opt_in_and_keep_bounds() {
+    let input=serde_json::json!({"address":99,"source":"You are a miner in Test Home,",
+      "translation":"你是Test Home的礦工。","width":54,"verified_name_literals":true});
+    let mut bindings=Bindings::default();
+    assert!(bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(input.clone()).unwrap()]));
+    assert_eq!(bindings.lookup(99,"You are a miner in Test Home,","fixture","zh-Hant").unwrap().translation,"你是Test Home的礦工。");
+    let mut invalid=input.clone();invalid.as_object_mut().unwrap().remove("verified_name_literals");
+    assert!(!bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(invalid).unwrap()]));
+    for text in ["Test\nHome", "Test\0Home", "Test\rHome"] {
+      let mut invalid=input.clone();invalid["translation"]=text.into();
+      assert!(!bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(invalid).unwrap()]));
+    }
+    let mut invalid=input;invalid["width"]=4.into();
+    assert!(!bindings.replace("fixture".into(),"zh-Hant".into(),vec![serde_json::from_value(invalid).unwrap()]));
+  }
   fn row(address:usize, source:&str, translated:&str)->Row {
-    Row {address,source:source.into(),translation:translated.into(),width:54,literal:false}
+    Row {address,source:source.into(),translation:translated.into(),width:54,literal:false,verified_name_literals:false}
   }
   #[test]
   fn binding_labels_keep_exact_text_and_do_not_allow_unrelated_translation() {
     let mut labels=Bindings::default();
     let rows=["Enter","Numpad Enter","Shift+Enter","Ctrl+Mwheel up","Leftbracket","Home","F11"]
-      .iter().enumerate().map(|(i,s)|Row {address:i+100,source:(*s).into(),translation:(*s).into(),width:s.len(),literal:false}).collect();
+      .iter().enumerate().map(|(i,s)|Row {address:i+100,source:(*s).into(),translation:(*s).into(),width:s.len(),literal:false,verified_name_literals:false}).collect();
     assert!(labels.replace_literals("world".into(),"zh-Hant".into(),rows));
     let hit=labels.lookup(100,"Enter","world","zh-Hant").unwrap();
     assert_eq!(hit.translation,"Enter");
@@ -136,7 +174,7 @@ mod tests {
   #[test]
   fn binding_label_batch_supports_full_categories_and_rejects_controls() {
     let mut labels=Bindings::default();
-    let rows=(1..=341).map(|address|Row {address,source:"Enter".into(),translation:"Enter".into(),width:5,literal:false}).collect();
+    let rows=(1..=341).map(|address|Row {address,source:"Enter".into(),translation:"Enter".into(),width:5,literal:false,verified_name_literals:false}).collect();
     assert!(labels.replace_literals("world".into(),"zh-Hant".into(),rows));
     assert_eq!(labels.rows.len(),341);
     assert!(!labels.replace_literals("world".into(),"zh-Hant".into(),vec![row(1,"Enter\n","Enter\n")]));

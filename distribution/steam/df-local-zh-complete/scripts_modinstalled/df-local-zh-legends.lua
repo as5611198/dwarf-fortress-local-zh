@@ -117,6 +117,47 @@ local pages = {}
 local frame = 0
 local headers = {}
 
+local function matches(words, group, saved)
+    if not saved or group.last >= #words then return false end
+    for index=group.first,group.last do
+        local word,old=words[index],saved[index]
+        if word.str~=old.str or word.px~=old.px or word.py~=old.py or
+                word.link_index~=old.link_index then return false end
+    end
+    return true
+end
+
+local function snapshot(words,group)
+    local saved={}
+    for index=group.first,group.last do
+        local word=words[index]
+        saved[index]={str=word.str,px=word.px,py=word.py,link_index=word.link_index}
+    end
+    return saved
+end
+
+local function restore_group(words,group)
+    if group.written and matches(words,group,group.written) then
+        for index=group.first,group.last do
+            words[index].str=group.original[index].str
+            words[index].px=group.original[index].px
+        end
+    end
+    group.written=nil
+end
+
+function restore_native(detail)
+    if current_world~=(dfhack.isWorldLoaded() and dfhack.getSavePath() or nil) then return end
+    local id=detail.mode..':'..detail.index
+    local page=pages[id]
+    if not page or page.detail~=detail then return end
+    local words=detail.text_box.word
+    if page.word_count==#words then
+        for _,group in ipairs(page.groups) do restore_group(words,group) end
+    end
+    pages[id]=nil
+end
+
 function poll(runtime)
     local world = dfhack.isWorldLoaded() and dfhack.getSavePath() or nil
     if world ~= current_world then
@@ -150,53 +191,77 @@ function poll(runtime)
     local header = headers[page_id]
     local current_header = dfhack.df2utf(detail.header)
     if not header or (current_header ~= header.key and current_header ~= header.source) then
-        header = {source = current_header}
+        header = {source = current_header,raw=detail.header}
         headers[page_id] = header
     end
     if source_needs_translation(header.source) then
         local figure_id = detail.mode == df.legends_mode_type.HFS and
             vs.histfigs[detail.index] or nil
         local key = runtime.short_lookup(header.source, true, 'CENTER', nil, figure_id)
-        if key then detail.header = key; header.key = key end
+        if key then detail.header = key; header.key = key
+        elseif current_header==header.key then detail.header=header.raw;header.key=nil end
     end
     if runtime.paragraph_lookup then
         local narrative=reqscript('df-local-zh-narrative')
         if require('plugins.overlay').isOverlayEnabled('df-local-zh-narrative-overlay.narratives') then
+            restore_native(detail)
             if narrative.poll(runtime) then return end
         else narrative.suspend() end
     end
     if runtime.set_visible then runtime.set_visible({}) end
     local page = pages[page_id]
-    local previous_groups = page and page.groups
-    if page and (#page.groups == 0 or page.word_count ~= #words or
-            (page.applied and page.groups[1] and
-            page.groups[1].last > page.groups[1].first and
-            #words[page.groups[1].last].str > 0)) then
+    if page and (page.detail~=detail or page.word_count~=#words) then
         page = nil
     end
+    frame=frame+1
+    local columns=dfhack.screen.getWindowSize()
+    local mode=runtime.narrative_mode and runtime.narrative_mode()
+    if page and page.applied and page.mode==mode and page.columns==columns and frame%20~=0 then return end
+    if page then
+        for _,group in ipairs(page.groups) do
+            if not matches(words,group,group.written or group.original) then
+                restore_native(detail);page=nil;break
+            end
+        end
+    end
     if not page then
-        local groups = collect(words, previous_groups)
+        -- Retain snapshots only for open tabs, never for every entity visited.
+        local live={}
+        for index=0,#vs.page-1 do
+            local tab=vs.page[index]
+            live[tab.mode..':'..tab.index]=true
+        end
+        for id in pairs(pages) do if not live[id] then pages[id]=nil end end
+        for id in pairs(headers) do if not live[id] then headers[id]=nil end end
+        local groups = collect(words)
         if #groups == 0 then return end
-        page = {word_count = #words, groups = groups, applied = false}
+        for _,group in ipairs(groups) do group.original=snapshot(words,group) end
+        page = {detail=detail,word_count = #words, groups = groups, applied = false}
         pages[page_id] = page
     end
 
-    frame = frame + 1
-    if page.applied and frame % 20 ~= 0 then return end
     local row_end = {}
-    local columns = dfhack.screen.getWindowSize()
     for _, group in ipairs(page.groups) do
+        restore_group(words,group)
         local key = runtime.short_lookup(group.source, true)
         local px = math.max(group.px, row_end[group.py] or 0)
-        if not key or px + #key > columns - 4 then key = runtime.pending_key() end
+        if key and px + #key > columns - 4 then key=nil end
         if key then
             words[group.first].px = px
             row_end[group.py] = px + #key + 1
+        else
+            -- Preserve the full native span, including its clickable identity.
+            for index=group.first,group.last do
+                words[index].px=group.original[index].px+px-group.px
+            end
+            row_end[group.py]=px+group.width+1
         end
         if key and dfhack.df2utf(words[group.first].str) ~= key then
             words[group.first].str = key
             for index = group.first + 1, group.last do words[index].str = '' end
         end
+        group.written=snapshot(words,group)
     end
     page.applied = true
+    page.mode=mode;page.columns=columns
 end

@@ -198,6 +198,9 @@ impl Service {
     snapshot.rows.get(&key.original).cloned()
   }
   fn commit(&self, generation: u64, snapshot: Snapshot) -> bool {
+    let search=crate::search::PreloadedIndex::new(&snapshot.progress.world,
+      snapshot.rows.iter().map(|(source,response)| (source.clone(),response.translated.clone(),
+        snapshot.previous.get(source).and_then(|r|r.as_ref()).map(|r|r.translated.clone()))));
     let desired = self.desired.lock().unwrap();
     if desired.generation != generation
       || desired.paused
@@ -209,8 +212,14 @@ impl Service {
       return false;
     }
     let snapshot = Arc::new(snapshot);
-    self.snapshots.write().unwrap().insert(snapshot.progress.language.clone(), snapshot.clone());
+    let retired=self.snapshots.write().unwrap().insert(snapshot.progress.language.clone(), snapshot.clone());
+    // Keep generation validation and both publications in the same critical
+    // section. A paused or obsolete preload cannot leave partial search rows.
+    let retired_search=crate::search::replace_preloaded(&snapshot.progress.language,search);
     *self.progress.lock().unwrap() = snapshot.progress.clone();
+    drop(desired);
+    drop(retired_search);
+    drop(retired);
     true
   }
   fn run(self: Arc<Self>) {
@@ -250,27 +259,8 @@ impl Service {
             })();
             match result {
               Ok(mut snapshot) => {
-                let search_rows: Vec<_> = snapshot
-                  .rows
-                  .iter()
-                  .map(|(source, response)| {
-                    (
-                      source.clone(),
-                      response.translated.clone(),
-                      snapshot.previous.get(source).and_then(|r| r.as_ref()).map(|r| r.translated.clone()),
-                    )
-                  })
-                  .collect();
                 snapshot.progress.elapsed_ms = started.elapsed().as_secs_f64() * 1000.0;
                 if self.commit(generation, snapshot) {
-                  for rows in search_rows.chunks(128) {
-                    let desired = self.desired.lock().unwrap();
-                    if desired.generation != generation || desired.paused {
-                      break;
-                    }
-                    // Index publication is bounded; it never acquires the dictionary lock.
-                    crate::search::preloaded_batch(&ctx.world, &ctx.language, rows.iter().cloned());
-                  }
                   let desired = self.desired.lock().unwrap();
                   if desired.generation == generation {
                     self.progress.lock().unwrap().elapsed_ms = started.elapsed().as_secs_f64() * 1000.0;
@@ -496,6 +486,37 @@ mod tests {
     service.request(None, false);
   }
   #[test]
+  fn replacement_snapshot_removes_retired_search_rows_and_memo() {
+    let language="prewarm-search-retirement";
+    let service=Service::default();
+    service.request(Some(context("one",language)),false);
+    let generation=service.desired.lock().unwrap().generation;
+    let make=|world:&str,rows| {
+      let bytes=serde_json::to_vec(&serde_json::json!({"version":1,"world":world,
+        "language":language,"revision":"fixture","rows":rows})).unwrap();
+      prepare(&bytes,world,language,|_|None).unwrap()
+    };
+    let first=make("one",serde_json::json!([{"text":"Retired label","translation":"已移除譯文","kind":"plain"}]));
+    assert!(service.commit(generation,first));
+    assert!(crate::search::fixture_matches(language,"one","Retired label","移除"));
+    assert!(service.commit(generation,make("one",serde_json::json!([]))));
+    assert!(!crate::search::fixture_matches(language,"one","Retired label","移除"),
+      "Search must retire rows and memo results omitted from an accepted snapshot");
+    service.request(Some(context("two",language)),false);
+    let next=service.desired.lock().unwrap().generation;
+    let row=serde_json::json!([{"text":"Current label","translation":"目前譯文","kind":"plain"}]);
+    assert!(service.commit(next,make("two",row.clone())));
+    assert!(crate::search::fixture_matches(language,"two","Current label","目前"));
+    assert!(!crate::search::fixture_matches(language,"one","Current label","目前"));
+    assert!(!service.commit(generation,make("one",serde_json::json!([]))));
+    assert!(crate::search::fixture_matches(language,"two","Current label","目前"),
+      "Obsolete work must not clear the newer search snapshot");
+    service.request(Some(context("two",language)),true);
+    assert!(!service.commit(next,make("two",serde_json::json!([]))));
+    assert!(crate::search::fixture_matches(language,"two","Current label","目前"),
+      "Paused work must leave the last accepted snapshot intact");
+  }
+  #[test]
   #[ignore = "requires DF_LOCAL_PREWARM and DF_LOCAL_BENCH_OUTPUT; read-only real data benchmark"]
   fn real_manifest_bulk_load_and_repeat_skip_without_model_workers() {
     use std::sync::atomic::Ordering;
@@ -522,13 +543,6 @@ mod tests {
     let existing = snapshot.rows.clone();
     let load_started = Instant::now();
     assert!(service.commit(generation, snapshot));
-    for rows in existing.iter().collect::<Vec<_>>().chunks(128) {
-      crate::search::preloaded_batch(
-        &world,
-        &language,
-        rows.iter().map(|(source, response)| ((*source).clone(), response.translated.clone(), None)),
-      );
-    }
     let publish_ms = load_started.elapsed().as_secs_f64() * 1000.0;
     let repeated = prepare(&bytes, &world, &language, |source| {
       existing.get(source).cloned().map(|r| (r, false))

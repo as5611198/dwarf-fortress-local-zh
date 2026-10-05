@@ -13,7 +13,17 @@ local sheets={personality_raw_str=vector({{value=raw}}),personality_box=vector({
     scroll_position_unit_skill=0}
 local focus='dwarfmode/ViewSheets/UNIT/Personality/Needs'
 local works={[1]='The Fuchsia Silkinesses',[2]='The Blue Song',[3]='The Quiet Dance'}
+local preference_env=setmetatable({},{__index=_G})
+assert(loadfile(dfhack.findScript('df-local-zh-preferences'),'t',preference_env))()
 local env=setmetatable({
+    reqscript=function(name)
+        if name=='df-local-zh-preferences' then return preference_env end
+        assert(name=='df-local-zh-nickname-display');return {poll=function() end}
+    end,
+    require=function(name)
+        assert(name=='repeat-util')
+        return {scheduleUnlessAlreadyScheduled=function() end,cancel=function() end}
+    end,
     df={global={game={main_interface={view_sheets=sheets}}},
         view_sheet_unit_knowledge_type={[14]='POETIC_FORM',[15]='MUSICAL_FORM',[16]='DANCE_FORM',[17]='WRITTEN_CONTENT'},
         poetic_form={find=function(id) return {name=works[id]} end},
@@ -40,6 +50,9 @@ end,colored_key=function(text,color)
     return key
 end,publish=function(source,text) published[source]=text; return true end}
 assert(loadfile((...) or dfhack.findScript('df-local-zh-unit-text'),'t',env))()
+-- Exercise the production initialization path while keeping timers isolated.
+runtime.literal_colored_key=runtime.colored_key
+env.start(runtime)
 env.poll(runtime)
 assert(requested['She is not distracted after leading an unexciting life.'],
     'The hook must translate the full paragraph before native line splitting')
@@ -68,7 +81,7 @@ end
 assert(works[1]=='The Fuchsia Silkinesses','World form names must not be mutated')
 focus='dwarfmode/ViewSheets/UNIT/Personality/Preferences'
 sheets.active_id=12
-env.df.unit={find=function(id) assert(id==12); return {sex=0,name='Doren Ushatesis'} end}
+env.df.unit={find=function(id) assert(id==12); return {sex=0,name='Doren Ushatesis',status={}} end}
 env.dfhack.units={getVisibleName=function(unit) return unit.name end}
 sheets.personality_raw_str=vector({{value='[C:7:0:1]Doren Ushatesis likes chicory.'}})
 lines=vector({{text='Doren Ushatesis likes chicory.',color=string.rep('G',29)}})
@@ -84,7 +97,7 @@ assert(requested['{DWARF_NAME} likes chicory.'] and not requested['Doren Ushates
     'Preferences must request a shared name-token template without sending the full name')
 assert(alias_text[lines[0].text]=='多雷 烏夏特埃錫斯喜歡菊苣。',
     'The preference subject must keep the same name as the unit header')
-local current_unit={sex=1,name='Feb Amemdakost'}
+local current_unit={sex=1,name='Feb Amemdakost',status={}}
 sheets.active_id=13
 env.df.unit.find=function(id) assert(id==13); return current_unit end
 runtime.name_translation=function(source) assert(source=='Feb Amemdakost'); return '費布 埃梅姆達科斯' end

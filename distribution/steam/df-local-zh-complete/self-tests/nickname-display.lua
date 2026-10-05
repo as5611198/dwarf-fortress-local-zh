@@ -26,4 +26,23 @@ s.native="`測試𠮷 A1'";s.english=s.native;s.native_surname='';s.english_surn
 translations.Mason='石匠'
 rows=mapping(env.prepare(s,lookup,'費布'))
 assert(rows[s.native..', Mason']=="`測試𠮷 A1', 石匠",'A nickname without a surname still needs its profession translated')
-print('NICKNAME_DISPLAY PASS: canonical surname, profession, literal nickname, quotes, missing translations, no nickname dispatch')
+local ordinary={nickname='',native='Feb Amemdakost',english='Feb Curlfloor',base='Feb Amemdakost',profession='Mason'}
+rows=mapping(env.prepare(ordinary,lookup,nil))
+assert(rows[ordinary.native..', Mason']=='費布 阿門達科斯特, 石匠')
+translations[ordinary.base]=nil
+rows=mapping(env.prepare(ordinary,lookup,nil))
+assert(rows[ordinary.native..', Mason']=='Feb Amemdakost, 石匠','Unknown canonical names must not block known professions')
+assert(rows[ordinary.english..', Mason']=='Feb Curlfloor, 石匠','Keep each verified literal spelling')
+translations.Mason=nil
+assert(#env.prepare(ordinary,lookup,nil)==0,'Unknown names and professions must not create bindings')
+local list_source={nickname='',native='Other Surname',english='Other Floor',profession='expedition leader'}
+translations['Expedition leader']='遠征隊領隊'
+rows=mapping(env.prepare_list(list_source,lookup))
+assert(rows['Other Surname, expedition leader']=='Other Surname, 遠征隊領隊','Native candidate roles can use canonical title-case terms')
+assert(rows['Other Floor, expedition leader']=='Other Floor, 遠征隊領隊','Preserve both literal candidate names')
+list_source.native="`鐵𠮷 A1' Surname";list_source.nickname='鐵𠮷 A1'
+rows=mapping(env.prepare_list(list_source,lookup))
+assert(rows[list_source.native..', expedition leader']==list_source.native..', 遠征隊領隊','Candidate nicknames remain literal')
+list_source.profession='Unknown role'
+assert(#env.prepare_list(list_source,lookup)==0,'Unknown candidate roles fall back atomically')
+print('NICKNAME_DISPLAY PASS: canonical surname, profession, literal names, quotes, missing translations, no nickname dispatch')

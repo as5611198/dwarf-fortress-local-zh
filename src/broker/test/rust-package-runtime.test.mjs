@@ -9,18 +9,26 @@ import {createServer} from 'node:net';
 import {DEFAULT_SETTINGS} from '../settings.mjs';
 import {cacheKey,POLICY_VERSION} from '../safety.mjs';
 const packageRoot=process.env.DF_LOCAL_ZH_PACKAGE_TEST_ROOT??fileURLToPath(new URL('../../../distribution/steam/df-local-zh-complete/',import.meta.url));
+const fixtureStops=new WeakMap();
 async function availablePort(){const server=createServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));const port=server.address().port;await new Promise(r=>server.close(r));return port;}
 async function launch(t,{state,config=join(packageRoot,'broker/config.json')}){
  const port=await availablePort(),url=`http://127.0.0.1:${port}`;
  const child=spawn(join(packageRoot,'broker/df-local-zh-broker.exe'),[config,state,'--port',String(port)],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,PATH:process.env.SystemRoot+'/System32',DF_LOCAL_ZH_GAME_ROOT:''}});
  let output='';child.stdout.on('data',v=>{output+=v;});child.stderr.on('data',v=>{output+=v;});
- const stop=async()=>{if(child.exitCode===null&&child.signalCode===null){const exited=new Promise(r=>child.once('exit',r));child.kill();await exited;}};t.after(stop);
+ const stop=async()=>{if(child.exitCode===null&&child.signalCode===null){const exited=new Promise(r=>child.once('exit',r));child.kill();await exited;}};
+ const stops=fixtureStops.get(t);if(stops)stops.push(stop);else t.after(stop);
  const start=performance.now();let health;
  while(performance.now()-start<15000){try{health=await (await fetch(url+'/health',{signal:AbortSignal.timeout(1000)})).json();if(health.engine==='rust')break;}catch{}if(child.exitCode!==null)throw Error(output);await new Promise(r=>setTimeout(r,50));}
  assert.equal(health?.engine,'rust',output);t.diagnostic(`Rust package start ${(performance.now()-start).toFixed(2)} ms; Node excluded from PATH`);
  return {url,child,stop,post:async body=>{const response=await fetch(url+'/v2/translate',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});return {status:response.status,body:await response.json()};}};
 }
-async function fixture(t){const state=await mkdtemp(join(tmpdir(),'df-rust-release-'));t.after(()=>rm(state,{recursive:true,force:true}));await writeFile(join(state,'settings.json'),JSON.stringify({version:1,defaults:{...DEFAULT_SETTINGS,apiEnabled:false,officialAutoDownload:false},saves:{}}));return state;}
+async function fixture(t){
+ const state=await mkdtemp(join(tmpdir(),'df-rust-release-')),stops=[];fixtureStops.set(t,stops);
+ // Node runs after hooks in registration order. Close SQLite owners before
+ // removing the fixture; an EBUSY cleanup failure otherwise strands children.
+ t.after(async()=>{for(const stop of stops)await stop();await rm(state,{recursive:true,force:true,maxRetries:10,retryDelay:100});});
+ await writeFile(join(state,'settings.json'),JSON.stringify({version:1,defaults:{...DEFAULT_SETTINGS,apiEnabled:false,officialAutoDownload:false},saves:{}}));return state;
+}
 test('actual Steam EXE translates both languages offline and preserves fixed and legacy cache data',async t=>{
  const state=await fixture(t);await writeFile(join(state,'fixed-zh-Hant.json'),JSON.stringify({Health:'自訂健康'}));
  const source='She is calm.',translation='她很冷靜。';await writeFile(join(state,'translations.jsonl'),JSON.stringify({policy:POLICY_VERSION,kind:'exact',language:'zh-Hant',source,translation,key:cacheKey(source,'zh-Hant')})+'\n');

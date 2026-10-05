@@ -20,7 +20,6 @@ const overrides = {
   oestocephalus: '歐斯托頭螈',
   'haunt of flame': '火焰幽魂',
   'moon horror': '月之恐獸',
-  "mezum's Soldier": '梅祖姆的士兵',
 };
 const resolved = new Map();
 const races = {};

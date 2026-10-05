@@ -1,0 +1,42 @@
+{
+  "subjects": {
+    "long moustache":"長長的髭鬚",
+    "medium-length sideburns":"中等長度的鬢角", "medium-length moustache":"中等長度的髭鬚",
+    "hair":"頭髮", "beard":"鬍鬚", "moustache":"髭鬚", "sideburns":"鬢角",
+    "eyes":"眼睛", "ears":"耳朵", "nose":"鼻子", "nose bridge":"鼻樑",
+    "head":"頭部", "skin":"皮膚", "teeth":"牙齒", "lips":"嘴唇", "voice":"聲音",
+    "very long hair":"長長的頭髮", "long hair":"長髮", "short hair":"短髮",
+    "very short hair":"極短的頭髮", "somewhat long hair":"較長的頭髮",
+    "somewhat short hair":"較短的頭髮", "somewhat narrow ears":"略窄的耳朵",
+    "somewhat splayed out ears":"略向外張開的耳朵", "eyelashes":"睫毛",
+    "very long beard":"長長的鬍鬚", "very long sideburns":"長長的鬢角", "very long moustache":"長長的髭鬚",
+    "nearly fuse-lobed ears":"耳垂幾乎貼連的耳朵",
+    "somewhat tall ears":"略高的耳朵", "quite dense hair":"相當濃密的頭髮",
+    "somewhat short head":"略短的頭部"
+  },
+  "eye_modifiers": {"slightly close-set":"間距略窄的", "sunken narrow":"深陷狹長的", "slightly wide-set narrow":"間距略寬且狹長的"},
+  "predicates": {
+    "hair": {"clean-shaven":"剃得乾乾淨淨", "neatly combed":"梳理得很整齊", "combed":"梳理整齊", "unkempt":"凌亂", "braided":"編成辮子", "tied back":"束在腦後", "tied in a pony tail":"束成馬尾", "curly":"捲曲", "straight":"筆直", "wavy":"呈波浪狀", "arranged in double braids":"編成雙辮"},
+    "beard": {"neatly combed":"梳理得很整齊", "combed":"梳理整齊", "unkempt":"凌亂", "braided":"編成辮子"},
+    "moustache": {"neatly combed":"梳理得很整齊", "combed":"梳理整齊", "unkempt":"凌亂", "braided":"編成辮子"},
+    "sideburns": {"clean-shaven":"剃得乾乾淨淨", "neatly combed":"梳理得很整齊", "combed":"梳理整齊", "unkempt":"凌亂", "braided":"編成辮子"},
+    "eyes": {"bulging":"向外凸出", "sunken":"深陷", "close-set":"間距狹窄", "incredibly close-set":"間距極為狹窄", "slightly wide-set":"間距略寬", "wide-set":"間距寬闊", "round":"圓潤", "slightly rounded":"略呈圓形", "narrow":"狹長"},
+    "ears": {"splayed out":"向外張開", "very splayed out":"大幅向外張開", "broad":"寬闊", "narrow":"窄小", "fuse-lobed":"耳垂貼連"},
+    "nose bridge": {"convex":"向外凸起", "very convex":"明顯向外凸起", "concave":"向內凹陷", "straight":"平直"},
+    "nose": {"broad":"寬大", "narrow":"窄小", "somewhat narrow":"略窄", "long":"修長", "short":"短小", "upturned":"上翹", "hooked":"呈鉤狀", "slightly hooked":"略呈鉤狀"},
+    "head": {"broad":"寬闊", "narrow":"狹窄", "somewhat narrow":"略顯狹窄", "long":"修長", "short":"短小"},
+    "teeth": {"tangled":"交錯不齊", "gapped":"間隙明顯", "long":"很長", "short":"很短"},
+    "lips": {"thick":"厚實", "thin":"纖薄"},
+    "voice": {"deep":"低沉", "raspy":"沙啞"},
+    "eyelashes": {"extremely long":"極長", "short":"很短"}
+  },
+  "features": {"ears":{"great swinging lobes":"有又大又晃動的耳垂"}},
+  "self": {"average in size":"體型中等"},
+  "has": {
+    "very low cheekbones":"顴骨很低", "low cheekbones":"顴骨低平", "somewhat low cheekbones":"顴骨略低",
+    "very high cheekbones":"顴骨很高", "high cheekbones":"顴骨高聳", "somewhat high cheekbones":"顴骨略高",
+    "a broad chin":"下巴寬闊", "a narrow chin":"下巴狹窄", "a square chin":"下巴方正",
+    "a jutting chin":"下巴突出", "a round chin":"下巴圓潤", "a deep voice":"聲音低沉", "a raspy voice":"聲音沙啞",
+    "a grating, raspy voice":"聲音刺耳而沙啞", "a scratchy voice":"聲音粗啞"
+  }
+}
